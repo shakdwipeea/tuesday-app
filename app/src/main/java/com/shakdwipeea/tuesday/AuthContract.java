@@ -7,6 +7,7 @@ package com.shakdwipeea.tuesday;
 public class AuthContract {
     interface View {
         void openGoogleLogin();
+        void openFacebookLogin();
         void displayError(String message);
     }
 }

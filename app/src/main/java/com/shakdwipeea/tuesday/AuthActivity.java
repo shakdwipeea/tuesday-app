@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,15 +27,25 @@ public class AuthActivity extends AppCompatActivity
     private AuthPresenter authPresenter;
     private ActivityAuthBinding binding;
 
+    //Google
     private GoogleApiClient googleApiClient;
+
+    //Facebook
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // configure facebook login
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth);
 
         authPresenter = new AuthPresenter(this);
         binding.setVm(authPresenter);
+
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -45,6 +57,10 @@ public class AuthActivity extends AppCompatActivity
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        //facebook login
+        binding.fbLoginButton.setReadPermissions("email", "public_profile");
+        binding.fbLoginButton.registerCallback(callbackManager, authPresenter);
     }
 
     @Override
@@ -62,6 +78,11 @@ public class AuthActivity extends AppCompatActivity
     public void openGoogleLogin() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void openFacebookLogin() {
+        binding.fbLoginButton.performClick();
     }
 
     @Override
