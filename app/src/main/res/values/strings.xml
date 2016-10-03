@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Tuesday</string>
+    <string name="sign_in_using">Sign In using</string>
+    <string name="no_post">We wont post anthing,promise!</string>
+    <string name="license_agreement">By signing up ,you agree to our terms and privacy policy</string>
+    <string name="web_app_oauth_id">501767762260-ta9ebsgoccp1o29mke84unmd5h2njg9c.apps.googleusercontent.com</string>
+</resources>

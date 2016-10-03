@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.shakdwipeea.tuesday.AuthPresenter" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#00bbd3"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.shakdwipeea.tuesday.AuthActivity">
+
+        <TextView
+            android:layout_marginLeft="67.5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:textSize="35sp"
+            android:textColor="#fff"
+            android:text="@string/sign_in_using" />
+
+        <LinearLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="36.5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="117dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:src="@drawable/ic_facebook"
+                android:layout_width="107dp"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:src="@drawable/ic_google_plus"
+                android:layout_width="107dp"
+                android:layout_height="match_parent"
+                android:onClick="@{vm::googleSignIn}"/>
+
+            <ImageButton
+                android:src="@drawable/ic_twitter"
+                android:layout_width="107dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="101dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#a7ffffff"
+            android:text="@string/no_post"/>
+
+        <TextView
+            android:layout_marginTop="19dp"
+            android:layout_gravity="bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#a7ffffff"
+            android:text="@string/license_agreement"/>
+    </LinearLayout>
+</layout>
+

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "501767762260",
+    "firebase_url": "https://tueday-e26f0.firebaseio.com",
+    "project_id": "tueday-e26f0",
+    "storage_bucket": "tueday-e26f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501767762260:android:c696a1b80a184750",
+        "android_client_info": {
+          "package_name": "com.shakdwipeea.tuesday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "501767762260-9968bfo5o02j9rkc07h15ks5dd26gdk0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shakdwipeea.tuesday",
+            "certificate_hash": "452F4279FD9D07CCAE05365A72A5775767628A65"
+          }
+        },
+        {
+          "client_id": "501767762260-ta9ebsgoccp1o29mke84unmd5h2njg9c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-ToG64heFBtI8whGjZ6p7sni8u81XVbI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "501767762260-ta9ebsgoccp1o29mke84unmd5h2njg9c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
