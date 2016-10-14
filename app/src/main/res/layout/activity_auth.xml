@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="com.shakdwipeea.tuesday.AuthPresenter" />
+            type="com.shakdwipeea.tuesday.auth.AuthPresenter" />
     </data>
 
     <LinearLayout
@@ -18,7 +18,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.shakdwipeea.tuesday.AuthActivity">
+        tools:context="com.shakdwipeea.tuesday.auth.AuthActivity">
 
         <TextView
             android:layout_marginLeft="67.5dp"
@@ -51,7 +51,8 @@
             <ImageButton
                 android:src="@drawable/ic_twitter"
                 android:layout_width="107dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:onClick="@{() -> vm.twitterSignIn()}"/>
 
         </LinearLayout>
 
@@ -63,6 +64,13 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp" />
+
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/twitter_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_marginTop="101dp"

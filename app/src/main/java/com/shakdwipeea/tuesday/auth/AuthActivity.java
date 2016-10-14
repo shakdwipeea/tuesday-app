@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday;
+package com.shakdwipeea.tuesday.auth;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -16,10 +16,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseUser;
+import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.databinding.ActivityAuthBinding;
+import com.shakdwipeea.tuesday.profile.ProfileActivity;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+
+import io.fabric.sdk.android.Fabric;
 
 public class AuthActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, AuthContract.View {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "x59bXU8G7xGYRtRZeA7BarNEg";
+    private static final String TWITTER_SECRET = "iQ7SvDY0QOi9XIFbbwtrJVY955nD48OSSG3xI5mc49QQbvCH8G";
+
 
     private static final int RC_SIGN_IN = 1234;
     private static final String TAG = "AuthActivity";
@@ -36,6 +48,8 @@ public class AuthActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
 
         // configure facebook login
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -48,7 +62,8 @@ public class AuthActivity extends AppCompatActivity
 
 
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_app_oauth_id))
                 .requestEmail()
                 .build();
@@ -61,6 +76,9 @@ public class AuthActivity extends AppCompatActivity
         //facebook login
         binding.fbLoginButton.setReadPermissions("email", "public_profile");
         binding.fbLoginButton.registerCallback(callbackManager, authPresenter);
+
+        //twitter
+        binding.twitterLoginButton.setCallback(authPresenter);
     }
 
     @Override
@@ -86,8 +104,20 @@ public class AuthActivity extends AppCompatActivity
     }
 
     @Override
+    public void openTwitterLogin() {
+        binding.twitterLoginButton.performClick();
+    }
+
+    @Override
     public void displayError(String message) {
         Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void openProfile(FirebaseUser user) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -106,6 +136,8 @@ public class AuthActivity extends AppCompatActivity
                 // ...
                 displayError("Could not authorize you.");
             }
+        } else {
+            binding.twitterLoginButton.onActivityResult(requestCode, resultCode, data);
         }
     }
 

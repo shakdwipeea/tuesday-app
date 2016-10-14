@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday;
+package com.shakdwipeea.tuesday.auth;
 
 import android.util.Log;
 import android.view.View;
@@ -13,6 +13,11 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -20,7 +25,7 @@ import static com.google.android.gms.internal.zzs.TAG;
  * Created by ashak on 02-10-2016.
  */
 
-public class AuthPresenter implements FacebookCallback<LoginResult> {
+public class AuthPresenter extends Callback<TwitterSession> implements FacebookCallback<LoginResult> {
     AuthContract.View view;
 
     private FirebaseAuth auth;
@@ -49,6 +54,7 @@ public class AuthPresenter implements FacebookCallback<LoginResult> {
             if (user != null) {
                 // User is signed in
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                view.openProfile(user);
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -96,12 +102,37 @@ public class AuthPresenter implements FacebookCallback<LoginResult> {
                 });
     }
 
+    private void handleTwitterSession(TwitterSession session) {
+        Log.d(TAG, "handleTwitterSession:" + session);
+
+        AuthCredential credential = TwitterAuthProvider.getCredential(
+                session.getAuthToken().token,
+                session.getAuthToken().secret);
+
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(task -> {
+                    Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                    // If sign in fails, display a message to the user. If sign in succeeds
+                    // the auth state listener will be notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "signInWithCredential", task.getException());
+                        view.displayError("Authentication failed.");
+                    }
+                });
+    }
+
     public void googleSignIn(View view) {
         this.view.openGoogleLogin();
     }
 
     public void facebookSignIn(View view) {
         this.view.openFacebookLogin();
+    }
+
+    public void twitterSignIn() {
+        view.openTwitterLogin();
     }
 
     // Facebook callback methods
@@ -120,5 +151,18 @@ public class AuthPresenter implements FacebookCallback<LoginResult> {
     @Override
     public void onError(FacebookException error) {
         view.displayError(error.getMessage());
+    }
+
+
+    // twitter callback methods
+    @Override
+    public void success(Result<TwitterSession> result) {
+        handleTwitterSession(result.data);
+    }
+
+    @Override
+    public void failure(TwitterException exception) {
+        exception.printStackTrace();
+        view.displayError(exception.getMessage());
     }
 }
