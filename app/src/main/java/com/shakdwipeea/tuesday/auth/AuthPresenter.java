@@ -136,7 +136,6 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
     }
 
     // Facebook callback methods
-
     @Override
     public void onSuccess(LoginResult loginResult) {
         Log.d(TAG, "Login Result " + loginResult);

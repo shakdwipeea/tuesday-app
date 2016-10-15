@@ -1,11 +1,15 @@
 package com.shakdwipeea.tuesday.auth;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.CallbackManager;
@@ -23,7 +27,12 @@ import com.shakdwipeea.tuesday.profile.ProfileActivity;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import io.fabric.sdk.android.Fabric;
+
+import static android.R.attr.mode;
 
 public class AuthActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, AuthContract.View {
@@ -34,6 +43,17 @@ public class AuthActivity extends AppCompatActivity
 
 
     private static final int RC_SIGN_IN = 1234;
+
+    // different modes of sign in to determine where to pass the onActivityResult
+    // in case of google auth we are explicitly launching the activity and setting
+    // the request code there
+    private enum AuthMode {
+        FACEBOOK_AUTH,
+        TWITTER_AUTH
+    }
+
+    AuthMode authMode;
+
     private static final String TAG = "AuthActivity";
 
     private AuthPresenter authPresenter;
@@ -45,11 +65,16 @@ public class AuthActivity extends AppCompatActivity
     //Facebook
     private CallbackManager callbackManager;
 
+    // a hack for not allowing the launch of ProfileActivity twice
+    private boolean profileLaunched;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
+
+        profileLaunched = false;
 
         // configure facebook login
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -60,6 +85,7 @@ public class AuthActivity extends AppCompatActivity
         authPresenter = new AuthPresenter(this);
         binding.setVm(authPresenter);
 
+        showHashKey(this);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions
@@ -100,11 +126,13 @@ public class AuthActivity extends AppCompatActivity
 
     @Override
     public void openFacebookLogin() {
+        authMode = AuthMode.FACEBOOK_AUTH;
         binding.fbLoginButton.performClick();
     }
 
     @Override
     public void openTwitterLogin() {
+        authMode = AuthMode.TWITTER_AUTH;
         binding.twitterLoginButton.performClick();
     }
 
@@ -115,9 +143,16 @@ public class AuthActivity extends AppCompatActivity
 
     @Override
     public void openProfile(FirebaseUser user) {
-        Intent intent = new Intent(this, ProfileActivity.class);
-        startActivity(intent);
-        finish();
+        // TODO: 15-10-2016 investigate why the authchanged is called twice
+        if (!profileLaunched) {
+            profileLaunched = true;
+            Intent intent = new Intent(this, ProfileActivity.class);
+            if (user.getPhotoUrl() != null)
+                intent.putExtra(ProfileActivity.PROFILE_IMAGE_EXTRA, user.getPhotoUrl().toString());
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
@@ -136,8 +171,10 @@ public class AuthActivity extends AppCompatActivity
                 // ...
                 displayError("Could not authorize you.");
             }
-        } else {
+        } else if (authMode == AuthMode.TWITTER_AUTH){
             binding.twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+        } else if (authMode == AuthMode.FACEBOOK_AUTH) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -148,5 +185,23 @@ public class AuthActivity extends AppCompatActivity
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         displayError("Google Play Services error.");
+    }
+
+    public  void showHashKey(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo("com.shakdwipeea.tuesday",
+                    PackageManager.GET_SIGNATURES);
+            for (android.content.pm.Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+
+                String sign= Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                Log.e("KeyHash:", sign);
+                //  Toast.makeText(getApplicationContext(),sign,     Toast.LENGTH_LONG).show();
+            }
+            Log.d("KeyHash:", "****------------***");
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 }
