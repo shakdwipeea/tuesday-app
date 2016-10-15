@@ -6,6 +6,9 @@ import android.view.View;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
@@ -19,6 +22,8 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import rx.Observable;
+
 import static com.google.android.gms.internal.zzs.TAG;
 
 /**
@@ -31,20 +36,22 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
 
-    public AuthPresenter(AuthContract.View view) {
+    public static Observable<String> profilePic;
+
+    AuthPresenter(AuthContract.View view) {
         this.view = view;
     }
 
-    public void subscribe() {
+    void subscribe() {
         init();
         auth.addAuthStateListener(authListener);
     }
 
-    public void unSubscribe() {
+    void unSubscribe() {
         if (authListener != null) auth.removeAuthStateListener(authListener);
     }
 
-    public void init() {
+    private void init() {
         //get firebase instance
         auth = FirebaseAuth.getInstance();
 
@@ -64,7 +71,7 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
     }
 
 
-    public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -98,8 +105,32 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
                         view.displayError("Authentication failed.");
                     }
 
-                    // ...
                 });
+
+        getFullFbProfilePic(token);
+    }
+
+    private Observable<String> getFullFbProfilePic(AccessToken accessToken) {
+        return Observable.create(subscriber -> {
+            new GraphRequest(
+                    accessToken,
+                    "...?fields={fieldname_of_type_ProfilePictureSource}",
+                    null,
+                    HttpMethod.GET,
+                    response -> {
+                        if (subscriber.isUnsubscribed()) {
+                            Log.e(TAG, "Subscriber has already unsubscribed.");
+                        } else {
+                            subscriber.onNext(parseGraphProfileResponse(response));
+                            subscriber.onCompleted();
+                        }
+                    }
+            ).executeAsync();
+        });
+    }
+
+    private String parseGraphProfileResponse(GraphResponse response) {
+        return null;
     }
 
     private void handleTwitterSession(TwitterSession session) {

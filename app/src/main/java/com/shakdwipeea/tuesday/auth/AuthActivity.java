@@ -32,8 +32,6 @@ import java.security.NoSuchAlgorithmException;
 
 import io.fabric.sdk.android.Fabric;
 
-import static android.R.attr.mode;
-
 public class AuthActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, AuthContract.View {
 
@@ -47,7 +45,7 @@ public class AuthActivity extends AppCompatActivity
     // different modes of sign in to determine where to pass the onActivityResult
     // in case of google auth we are explicitly launching the activity and setting
     // the request code there
-    private enum AuthMode {
+    public enum AuthMode {
         FACEBOOK_AUTH,
         TWITTER_AUTH
     }
