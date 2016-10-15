@@ -6,9 +6,6 @@ import android.view.View;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
@@ -106,31 +103,6 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
                     }
 
                 });
-
-        getFullFbProfilePic(token);
-    }
-
-    private Observable<String> getFullFbProfilePic(AccessToken accessToken) {
-        return Observable.create(subscriber -> {
-            new GraphRequest(
-                    accessToken,
-                    "...?fields={fieldname_of_type_ProfilePictureSource}",
-                    null,
-                    HttpMethod.GET,
-                    response -> {
-                        if (subscriber.isUnsubscribed()) {
-                            Log.e(TAG, "Subscriber has already unsubscribed.");
-                        } else {
-                            subscriber.onNext(parseGraphProfileResponse(response));
-                            subscriber.onCompleted();
-                        }
-                    }
-            ).executeAsync();
-        });
-    }
-
-    private String parseGraphProfileResponse(GraphResponse response) {
-        return null;
     }
 
     private void handleTwitterSession(TwitterSession session) {

@@ -6,7 +6,9 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.api.AuthService;
+import com.shakdwipeea.tuesday.auth.AuthActivity;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -14,7 +16,7 @@ import rx.schedulers.Schedulers;
  * Created by ashak on 15-10-2016.
  */
 
-public class ProfilePresenter implements ProfileContract.Presenter {
+class ProfilePresenter implements ProfileContract.Presenter {
     private static final String TAG = "ProfilePresenter";
 
     private ProfileContract.View profileView;
@@ -41,18 +43,24 @@ public class ProfilePresenter implements ProfileContract.Presenter {
             Log.d(TAG, "getHighResProfilePic: " + provider);
 
             if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER)) {
-                //get profile pic from fb
-                getPicFromFb();
+                displayPic(AuthService.getFbProfilePic());
             } else if (provider.equals(AuthService.GOOGLE_AUTH_PROVIDER)) {
-                getPicFromGoogle();
+                displayPic(AuthActivity.AuthMode.GOOGLE_AUTH);
+            } else if (provider.equals(AuthService.TWITTER_AUTH_PROVIDER)) {
+                displayPic(AuthActivity.AuthMode.TWITTER_AUTH);
             }
         } else {
             profileView.displayError("You are not logged in.");
         }
     }
 
-    private void getPicFromFb() {
-        AuthService.getFbProfilePic()
+    /**
+     * used for fb and twitter AuthService provides Observables with gives the profile pic,
+     * this function uses that observable to display the profile pic
+     * @param profilePicObservable Observable that provides url for high res profile pic
+     */
+    private void displayPic(Observable<String> profilePicObservable) {
+        profilePicObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -61,11 +69,38 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                 );
     }
 
-    private void getPicFromGoogle() {
+    /**
+     * used in case of google, twitter displays the profile pic by
+     * transforming existing low res url
+     */
+    private void displayPic(AuthActivity.AuthMode authMode) {
         String lowResUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
         if (lowResUrl != null) {
-            profileView.displayProfilePic(getHighResUrl(lowResUrl));
+            profileView.displayProfilePic(getHighResUrl(lowResUrl, authMode));
         }
+    }
+
+
+    private String getHighResUrl(String lowResUrl, AuthActivity.AuthMode authMode) {
+        switch (authMode) {
+            case GOOGLE_AUTH: return parseGoogleUrl(lowResUrl);
+            case TWITTER_AUTH: return parseTwitterUrl(lowResUrl);
+            default: return null;
+        }
+    }
+
+    /**
+     * the profile pic url in case of twitter is sth like
+     * http://pbs.twimg.com/profile_images/463646119960920064/_lMH5iFt_normal.jpeg
+     *
+     * Omit the underscore and variant to retrieve the original image.
+     * NOTE THE IMAGE CAN BE VERY LARGE
+     *
+     * @param lowResUrl the default low res image
+     * @return highResUrl
+     */
+    private String parseTwitterUrl(String lowResUrl) {
+        return lowResUrl.replace("_normal", "");
     }
 
     /**
@@ -76,7 +111,7 @@ public class ProfilePresenter implements ProfileContract.Presenter {
      *
      *  @param lowResUrl The default low res url
      */
-    private String getHighResUrl(String lowResUrl) {
+    private String parseGoogleUrl(String lowResUrl) {
         // find the dimension and change it to 400dp
         String[] urlParts = lowResUrl.split("/");
         String dimPart = urlParts[urlParts.length - 2];

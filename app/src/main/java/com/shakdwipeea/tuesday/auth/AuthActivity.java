@@ -47,7 +47,8 @@ public class AuthActivity extends AppCompatActivity
     // the request code there
     public enum AuthMode {
         FACEBOOK_AUTH,
-        TWITTER_AUTH
+        TWITTER_AUTH,
+        GOOGLE_AUTH
     }
 
     AuthMode authMode;

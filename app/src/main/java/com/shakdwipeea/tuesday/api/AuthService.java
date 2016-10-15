@@ -6,6 +6,11 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONException;
 
@@ -20,6 +25,7 @@ public class AuthService {
 
     public static String FACEBOOK_AUTH_PROVIDER = "facebook.com";
     public static String GOOGLE_AUTH_PROVIDER = "google.com";
+    public static String TWITTER_AUTH_PROVIDER = "twitter.com";
 
     /**
      * Creates an observable which will return the profile pic url
@@ -59,5 +65,25 @@ public class AuthService {
                 .getJSONObject()
                 .getJSONObject("data")
                 .getString("url");
+    }
+
+    public static Observable<String> getTwitterProfilePic() {
+        return Observable.create(subscriber -> {
+            Twitter.getApiClient().getAccountService().verifyCredentials(
+                    false,
+                    true,
+                    new Callback<User>() {
+                        @Override
+                        public void success(Result<User> result) {
+                            subscriber.onNext(result.data.profileImageUrl);
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void failure(TwitterException exception) {
+                            subscriber.onError(exception);
+                        }
+                    });
+        });
     }
 }
