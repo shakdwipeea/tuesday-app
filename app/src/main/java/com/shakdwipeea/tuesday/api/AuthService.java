@@ -19,6 +19,7 @@ public class AuthService {
     private static final String TAG = "AuthService";
 
     public static String FACEBOOK_AUTH_PROVIDER = "facebook.com";
+    public static String GOOGLE_AUTH_PROVIDER = "google.com";
 
     /**
      * Creates an observable which will return the profile pic url
@@ -29,7 +30,7 @@ public class AuthService {
         return Observable.create(subscriber -> {
             new GraphRequest(
                     AccessToken.getCurrentAccessToken(),
-                    "/me/picture?width=800&height=800&redirect=false",
+                    "/me/picture?width=400&height=400&redirect=false",
                     null,
                     HttpMethod.GET,
                     response -> {
