@@ -1,8 +1,11 @@
 package com.shakdwipeea.tuesday.profile;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,10 +19,14 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity implements ProfileContract.View {
+public class ProfileActivity extends AppCompatActivity
+        implements ProfileContract.View, ProfileContract.IntentActions {
     public static String TAG = "ProfileActivity";
 
     public static String PROFILE_IMAGE_EXTRA = "profilePic";
+
+    private static final int PHOTO_PICKER_REQUEST_CODE = 260;
+    private static final int REQUEST_IMAGE_CAPTURE = 582;
 
     private ContactAdapter arrayAdapter;
 
@@ -27,6 +34,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
     private ProfileContract.Presenter presenter;
     private Drawable thumbnailDrawable;
+
+    private BottomSheetBehavior bottomSheetBehavior;
 
     @Override
     protected void onResume() {
@@ -41,6 +50,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         setSupportActionBar(binding.toolbar);
 
         presenter = new ProfilePresenter(this);
+        binding.setHandler(presenter);
+        binding.setIntentHandler(this);
 
         // display the low res profile pic initially
         String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
@@ -52,6 +63,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
             getLowResDrawable(profilePic);
         }
 
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.editPicBottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
         List<String> items = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             items.add("I am item " + i);
@@ -62,6 +76,11 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         binding.profileToolbarContainer.scrollableview
                 .setLayoutManager(new LinearLayoutManager(this));
         binding.profileToolbarContainer.scrollableview.setAdapter(arrayAdapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void displayError(String error) {
@@ -98,6 +117,26 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     @Override
     public void displayName(String name) {
         binding.toolbar.setTitle(name);
+    }
+
+    @Override
+    public void openPhotoPicker() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, PHOTO_PICKER_REQUEST_CODE);
+    }
+
+    @Override
+    public void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void openImageMenu() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
 }

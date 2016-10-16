@@ -32,6 +32,11 @@ class ProfilePresenter implements ProfileContract.Presenter {
         getHighResProfilePic();
     }
 
+    @Override
+    public void changeProfilePic() {
+        profileView.openImageMenu();
+    }
+
     private void getHighResProfilePic() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && user.getProviders() != null) {

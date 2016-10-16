@@ -9,9 +9,19 @@ public interface ProfileContract {
         void displayError(String error);
         void displayProfilePic(String url);
         void displayName(String name);
+        void openImageMenu();
+    }
+
+    /**
+     * those actions which directly trigger an intent
+     */
+    interface IntentActions {
+        void openPhotoPicker();
+        void openCamera();
     }
 
     interface Presenter {
         void subscribe();
+        void changeProfilePic();
     }
 }
