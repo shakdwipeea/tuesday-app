@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -19,11 +20,13 @@ import android.view.MenuItem;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
+import com.shakdwipeea.tuesday.util.DeviceStorage;
+import com.shakdwipeea.tuesday.util.Util;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity
     private static final int PHOTO_PICKER_REQUEST_CODE = 260;
     private static final int REQUEST_IMAGE_CAPTURE = 582;
 
+    // we don't want to subscribe to presenter in case the intent has been launched
+    // for changing the profile pic as the presenter downloads the high res profile pic
     private boolean profileChangeIntentLaunched;
 
     private ContactAdapter arrayAdapter;
@@ -47,12 +52,11 @@ public class ProfileActivity extends AppCompatActivity
 
     private BottomSheetBehavior bottomSheetBehavior;
 
+    private String currentPhotoPath;
+
     @Override
     protected void onResume() {
         super.onResume();
-
-        // we don't want to subscribe to presenter in case the intent has been launched
-        // for changing the profile pic as the presenter downloads the high res profile pic
         if (!profileChangeIntentLaunched) presenter.subscribe();
     }
 
@@ -126,15 +130,14 @@ public class ProfileActivity extends AppCompatActivity
         switch (requestCode) {
             case PHOTO_PICKER_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    try {
-                        final Uri imageUri = data.getData();
-                        final InputStream imageStream = getContentResolver()
-                                .openInputStream(imageUri);
-                        presenter.updateProfilePic(imageStream);
-                    } catch (FileNotFoundException e) {
-                        displayError(e.getMessage());
-                        e.printStackTrace();
-                    }
+                    final Uri imageUri = data.getData();
+                    presenter.updateProfilePic(this, imageUri);
+                }
+                break;
+            case REQUEST_IMAGE_CAPTURE:
+                if (resultCode == RESULT_OK) {
+                    DeviceStorage.galleryAddPic(this, currentPhotoPath);
+                    presenter.updateProfilePic(currentPhotoPath);
                 }
         }
     }
@@ -180,7 +183,17 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void displayProfilePic(Bitmap image) {
-        binding.profilePic.setImageBitmap(image);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(image,
+                binding.profilePic.getHeight(), binding.profilePic.getWidth(), false);
+
+        binding.profilePic.setImageBitmap(scaledBitmap);
+    }
+
+    @Override
+    public void displayProfilePicFromPath(String photoPath) {
+        Bitmap bitmap = Util.resizeBitmapTo(photoPath,
+                binding.profilePic.getHeight(), binding.profilePic.getWidth());
+        binding.profilePic.setImageBitmap(bitmap);
     }
 
     @Override
@@ -199,9 +212,28 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     public void openCamera() {
         profileChangeIntentLaunched = true;
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+        try {
+            // create the file on device
+            File imageFile = DeviceStorage.createImageFile(this);
+            currentPhotoPath = imageFile.getAbsolutePath();
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            // check if anyone is present to handle the camera action
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // get the uri for file using a fileprovider
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.shakdwipeea.tuesday.fileprovider",
+                        imageFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+                // take the picture
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            } else {
+                displayError("Could not find any camera app. :/");
+            }
+        } catch (IOException e) {
+            displayError(e.getMessage());
         }
     }
 

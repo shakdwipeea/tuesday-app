@@ -1,8 +1,8 @@
 package com.shakdwipeea.tuesday.profile;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-
-import java.io.InputStream;
+import android.net.Uri;
 
 /**
  * Created by ashak on 15-10-2016.
@@ -12,7 +12,8 @@ public interface ProfileContract {
     interface View {
         void displayError(String error);
         void displayProfilePic(String url);
-        void displayProfilePic(Bitmap image);
+        void displayProfilePic(Bitmap bitmap);
+        void displayProfilePicFromPath(String imagePath);
         void displayName(String name);
         void openImageMenu();
         void launchAuth();
@@ -29,6 +30,7 @@ public interface ProfileContract {
     interface Presenter {
         void subscribe();
         void logout();
-        void updateProfilePic(InputStream imageStream);
+        void updateProfilePic(String filePath);
+        void updateProfilePic(Context context, Uri imageUri);
     }
 }

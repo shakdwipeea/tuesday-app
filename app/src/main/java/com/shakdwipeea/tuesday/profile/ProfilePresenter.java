@@ -1,5 +1,8 @@
 package com.shakdwipeea.tuesday.profile;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,8 +13,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.api.AuthService;
 import com.shakdwipeea.tuesday.api.ProfilePicService;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
+import com.shakdwipeea.tuesday.util.Util;
 
-import java.io.InputStream;
+import java.io.FileNotFoundException;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,26 +49,42 @@ class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     @Override
-    public void updateProfilePic(InputStream imageStream) {
-        // TODO: 16-10-2016 save profile pic to firebase
-        ProfilePicService.saveProfilePic(imageStream)
+    public void updateProfilePic(Context context, Uri imageUri) {
+        try {
+            // Get the stream to get the bitmap and display the image
+            Bitmap bitmap = BitmapFactory.decodeStream(
+                    Util.getInputStreamFromFileUri(context, imageUri)
+            );
+            profileView.displayProfilePic(bitmap);
+
+            // get the stream again, to upload and set as profile pic
+            updateProfilePic(Util.getInputStreamFromFileUri(context, imageUri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            profileView.displayError(e.getMessage());
+            getHighResProfilePic();
+        }
+    }
+
+    @Override
+    public void updateProfilePic(String filePath) {
+        updateProfilePic(filePath);
+        profileView.displayProfilePicFromPath(filePath);
+    }
+
+    private void updateProfilePic(Object file) {
+        ProfilePicService.saveProfilePic(file)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ProfilePicService::transformUrl)
                 .subscribe(
-                        url -> {
-                            saveProfilePicture(url);
-                            profileView.displayProfilePic(url);
-                        },
+                        this::saveProfilePicture,
                         throwable -> {
                             Log.e(TAG, "updateProfilePic: ", throwable);
                             profileView.displayError(throwable.getMessage());
                             getHighResProfilePic();
                         }
                 );
-//        Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
-//        profileView.displayProfilePic(scaledBitmap);
     }
 
     private void saveProfilePicture(String url) {

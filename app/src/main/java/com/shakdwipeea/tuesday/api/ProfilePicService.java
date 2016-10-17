@@ -8,7 +8,6 @@ import com.cloudinary.utils.ObjectUtils;
 import com.shakdwipeea.tuesday.api.entities.CloudinaryUploadResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 import rx.Observable;
@@ -20,14 +19,20 @@ import rx.Observable;
 public class ProfilePicService {
     private static final String TAG = "ProfilePicService";
 
-    public static Observable<CloudinaryUploadResponse> saveProfilePic(InputStream profileImageStream) {
+    /**
+     * Upload the profile pic to cloudinary and get the download url
+     *
+     * @param file The file to upload can be absolute path or an input stream
+     * @return Observable containing publicId and url
+     */
+    public static Observable<CloudinaryUploadResponse> saveProfilePic(Object file) {
         return Observable.create(subscriber -> {
             try {
                 Log.d(TAG, "saveProfilePic: starting upload");
                 // upload picture
                 Cloudinary cloudinary = new Cloudinary(CloudinaryConfig.CLOUDINARY_URL);
                 Map uploadResponse = cloudinary.uploader()
-                        .upload(profileImageStream, ObjectUtils.emptyMap());
+                        .upload(file, ObjectUtils.emptyMap());
 
                 Log.d(TAG, "saveProfilePic: Receiving download");
                 // receive response
