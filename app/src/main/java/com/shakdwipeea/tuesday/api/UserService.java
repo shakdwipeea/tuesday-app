@@ -44,7 +44,11 @@ public class UserService {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            subscriber.onNext((Boolean) dataSnapshot.getValue());
+                            if (dataSnapshot.getValue() == null)
+                                subscriber.onNext(false);
+                            else
+                                subscriber.onNext((Boolean) dataSnapshot.getValue());
+
                             subscriber.onCompleted();
                         }
 
