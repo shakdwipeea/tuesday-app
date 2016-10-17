@@ -1,15 +1,19 @@
 package com.shakdwipeea.tuesday.profile;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -32,6 +36,7 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity
         implements ProfileContract.View, ProfileContract.IntentActions {
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 123;
     public static String TAG = "ProfileActivity";
 
     public static String PROFILE_IMAGE_EXTRA = "profilePic";
@@ -132,13 +137,39 @@ public class ProfileActivity extends AppCompatActivity
                 if (resultCode == RESULT_OK) {
                     final Uri imageUri = data.getData();
                     presenter.updateProfilePic(this, imageUri);
+                } else {
+                    new File(currentPhotoPath).delete();
                 }
                 break;
             case REQUEST_IMAGE_CAPTURE:
                 if (resultCode == RESULT_OK) {
                     DeviceStorage.galleryAddPic(this, currentPhotoPath);
                     presenter.updateProfilePic(currentPhotoPath);
+                } else {
+
                 }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    openCamera();
+
+                } else {
+                    displayError("Cannot save photo then");
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -211,6 +242,10 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void openCamera() {
+        if (!hasPermission()) {
+            return;
+        }
+
         profileChangeIntentLaunched = true;
 
         try {
@@ -222,9 +257,7 @@ public class ProfileActivity extends AppCompatActivity
             // check if anyone is present to handle the camera action
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 // get the uri for file using a fileprovider
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.shakdwipeea.tuesday.fileprovider",
-                        imageFile);
+                Uri photoURI = Uri.fromFile(imageFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
                 // take the picture
@@ -235,6 +268,22 @@ public class ProfileActivity extends AppCompatActivity
         } catch (IOException e) {
             displayError(e.getMessage());
         }
+    }
+
+    private boolean hasPermission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_EXTERNAL_STORAGE);
+
+            return false;
+        }
+
+        return true;
     }
 
     @Override

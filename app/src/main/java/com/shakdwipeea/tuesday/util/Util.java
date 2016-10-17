@@ -39,4 +39,5 @@ public class Util {
             throws FileNotFoundException {
         return context.getContentResolver().openInputStream(uri);
     }
+
 }

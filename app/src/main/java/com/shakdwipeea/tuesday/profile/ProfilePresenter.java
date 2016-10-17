@@ -7,11 +7,13 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.api.AuthService;
 import com.shakdwipeea.tuesday.api.ProfilePicService;
+import com.shakdwipeea.tuesday.api.UserService;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.util.Util;
 
@@ -31,6 +33,10 @@ class ProfilePresenter implements ProfileContract.Presenter {
     private ProfileContract.View profileView;
 
     private FirebaseUser user;
+    private String provider;
+
+    private UserService userService;
+
 
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
@@ -39,12 +45,18 @@ class ProfilePresenter implements ProfileContract.Presenter {
     @Override
     public void subscribe() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        getHighResProfilePic();
+        userService = new UserService();
+        setupProfile();
     }
 
     @Override
     public void logout() {
         FirebaseAuth.getInstance().signOut();
+
+        // explicit sign out from facebook
+        if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER))
+            LoginManager.getInstance().logOut();
+
         profileView.launchAuth();
     }
 
@@ -58,21 +70,21 @@ class ProfilePresenter implements ProfileContract.Presenter {
             profileView.displayProfilePic(bitmap);
 
             // get the stream again, to upload and set as profile pic
-            updateProfilePic(Util.getInputStreamFromFileUri(context, imageUri));
+            updateProfilePicFromObject(Util.getInputStreamFromFileUri(context, imageUri));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             profileView.displayError(e.getMessage());
-            getHighResProfilePic();
+            setupProfile();
         }
     }
 
     @Override
     public void updateProfilePic(String filePath) {
-        updateProfilePic(filePath);
+        updateProfilePicFromObject(filePath);
         profileView.displayProfilePicFromPath(filePath);
     }
 
-    private void updateProfilePic(Object file) {
+    private void updateProfilePicFromObject(Object file) {
         ProfilePicService.saveProfilePic(file)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -82,7 +94,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
                         throwable -> {
                             Log.e(TAG, "updateProfilePic: ", throwable);
                             profileView.displayError(throwable.getMessage());
-                            getHighResProfilePic();
+                            setupProfile();
                         }
                 );
     }
@@ -92,46 +104,53 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .setPhotoUri(Uri.parse(url))
                 .build();
 
-        updateProfile(profileChangeRequest);
+        userService.updateProfile(profileChangeRequest)
+                .doOnCompleted(() -> userService.setHighResProfilePic(true))
+                .subscribe(
+                        aVoid ->  {},
+                        throwable -> {
+                            profileView.displayError(throwable.getMessage());
+                            setupProfile();
+                        }
+                );
     }
 
-    private void updateProfile(UserProfileChangeRequest request) {
-        user.updateProfile(request)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "saveProfilePicture: Profile updated");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "saveProfilePicture: " + e.getMessage());
-                    profileView.displayError("Could not save profile picture");
-                    getHighResProfilePic();
-                });
-    }
-
-    private void getHighResProfilePic() {
+    private void setupProfile() {
         if (user != null && user.getProviders() != null) {
             // display user name
             profileView.displayName(user.getDisplayName());
 
             // get auth provider
-            String provider = user.getProviders().get(0);
-            Log.d(TAG, "getHighResProfilePic: " + provider);
+            provider = user.getProviders().get(0);
+            Log.d(TAG, "setupProfile: " + provider);
 
-            if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER)) {
-                displayPic(AuthService.getFbProfilePic());
-            } else if (provider.equals(AuthService.GOOGLE_AUTH_PROVIDER)) {
-                displayPic(AuthActivity.AuthMode.GOOGLE_AUTH);
-            } else if (provider.equals(AuthService.TWITTER_AUTH_PROVIDER)) {
-                displayPic(AuthActivity.AuthMode.TWITTER_AUTH);
-            }
+            // check if user already has a high resolution photo o/w get one
+            userService.hasHighResProfilePic()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .filter(value -> !value)
+                    .doOnNext(aBoolean -> getHighResPicFromProvider())
+                    .subscribe();
         } else {
             profileView.displayError("You are not logged in.");
         }
     }
 
     /**
-     * used for fb and twitter AuthService provides Observables with gives the profile pic,
+     * Get high res photo based on provider
+     */
+    private void getHighResPicFromProvider() {
+        if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER)) {
+            displayPic(AuthService.getFbProfilePic());
+        } else if (provider.equals(AuthService.GOOGLE_AUTH_PROVIDER)) {
+            displayPic(AuthActivity.AuthMode.GOOGLE_AUTH);
+        } else if (provider.equals(AuthService.TWITTER_AUTH_PROVIDER)) {
+            displayPic(AuthActivity.AuthMode.TWITTER_AUTH);
+        }
+    }
+
+    /**
+     * used for fb  AuthService provides Observables with gives the profile pic,
      * this function uses that observable to display the profile pic
      * @param profilePicObservable Observable that provides url for high res profile pic
      */
@@ -140,9 +159,13 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        url -> profileView.displayProfilePic(url),
+                        url -> {
+                            saveProfilePicture(url);
+                            profileView.displayProfilePic(url);
+                        },
                         Throwable::printStackTrace
                 );
+
     }
 
     /**
@@ -152,7 +175,9 @@ class ProfilePresenter implements ProfileContract.Presenter {
     private void displayPic(AuthActivity.AuthMode authMode) {
         String lowResUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
         if (lowResUrl != null) {
-            profileView.displayProfilePic(getHighResUrl(lowResUrl, authMode));
+            String highResUrl = getHighResUrl(lowResUrl, authMode);
+            saveProfilePicture(highResUrl);
+            profileView.displayProfilePic(highResUrl);
         }
     }
 
