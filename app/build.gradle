@@ -83,6 +83,12 @@ dependencies {
         transitive = true;
     }
 
+    //firebase storage for images
+    compile 'com.google.firebase:firebase-storage:9.6.1'
+
+    //cloudinary for images
+    compile 'com.cloudinary:cloudinary-android:1.4.5'
+
     //picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
 

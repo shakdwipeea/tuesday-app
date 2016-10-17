@@ -51,7 +51,7 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/NoActionBarAppTheme"/>
     </application>
 
 </manifest>

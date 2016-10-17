@@ -1,12 +1,17 @@
 package com.shakdwipeea.tuesday.profile;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.api.AuthService;
+import com.shakdwipeea.tuesday.api.ProfilePicService;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
+
+import java.io.InputStream;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -29,16 +34,62 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     @Override
     public void subscribe() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
         getHighResProfilePic();
     }
 
     @Override
-    public void changeProfilePic() {
-        profileView.openImageMenu();
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        profileView.launchAuth();
+    }
+
+    @Override
+    public void updateProfilePic(InputStream imageStream) {
+        // TODO: 16-10-2016 save profile pic to firebase
+        ProfilePicService.saveProfilePic(imageStream)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(ProfilePicService::transformUrl)
+                .subscribe(
+                        url -> {
+                            saveProfilePicture(url);
+                            profileView.displayProfilePic(url);
+                        },
+                        throwable -> {
+                            Log.e(TAG, "updateProfilePic: ", throwable);
+                            profileView.displayError(throwable.getMessage());
+                            getHighResProfilePic();
+                        }
+                );
+//        Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+//        profileView.displayProfilePic(scaledBitmap);
+    }
+
+    private void saveProfilePicture(String url) {
+        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(Uri.parse(url))
+                .build();
+
+        updateProfile(profileChangeRequest);
+    }
+
+    private void updateProfile(UserProfileChangeRequest request) {
+        user.updateProfile(request)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "saveProfilePicture: Profile updated");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "saveProfilePicture: " + e.getMessage());
+                    profileView.displayError("Could not save profile picture");
+                    getHighResProfilePic();
+                });
     }
 
     private void getHighResProfilePic() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && user.getProviders() != null) {
             // display user name
             profileView.displayName(user.getDisplayName());
@@ -100,6 +151,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
      *
      * Omit the underscore and variant to retrieve the original image.
      * NOTE THE IMAGE CAN BE VERY LARGE
+     * todo use cloudinary stuff instead
      *
      * @param lowResUrl the default low res image
      * @return highResUrl
@@ -113,6 +165,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
      *  https://lh5.googleusercontent.com/-GoXxObG2mVE/AAAAAAAAAAI/AAAAAAAABFY/PzVrrZdkQYQ/s96-c/photo.jpg
      *  here 96 is the width and height, to get a full res we can put our required dimensions
      *  and request
+     *  todo use cloudinary stuff instead
      *
      *  @param lowResUrl The default low res url
      */
