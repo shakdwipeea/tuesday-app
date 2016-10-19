@@ -11,11 +11,15 @@ import android.net.Uri;
 public interface ProfileContract {
     interface View {
         void displayError(String error);
+
         void displayProfilePic(String url);
         void displayProfilePic(Bitmap bitmap);
         void displayProfilePicFromPath(String imagePath);
+        void displayDefaultPic();
+
         void displayName(String name);
         void openImageMenu();
+        void setProgressBar(boolean show);
         void launchAuth();
     }
 
@@ -32,5 +36,6 @@ public interface ProfileContract {
         void logout();
         void updateProfilePic(String filePath);
         void updateProfilePic(Context context, Uri imageUri);
+        void deleteProfilePic();
     }
 }

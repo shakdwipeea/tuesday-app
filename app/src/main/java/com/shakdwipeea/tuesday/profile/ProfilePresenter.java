@@ -78,6 +78,32 @@ class ProfilePresenter implements ProfileContract.Presenter {
         }
     }
 
+    /**
+     * click handler to delete the profile picture
+     */
+    @Override
+    public void deleteProfilePic() {
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(null)
+                .build();
+
+        profileView.setProgressBar(true);
+        userService.updateProfile(request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(() -> {
+                    setupProfile();
+                    profileView.setProgressBar(false);
+                })
+                .subscribe(
+                        aVoid -> {},
+                        throwable -> {
+                            profileView.setProgressBar(false);
+                            profileView.displayError(throwable.getMessage());
+                        }
+                );
+    }
+
     @Override
     public void updateProfilePic(String filePath) {
         updateProfilePicFromObject(filePath);
@@ -105,6 +131,8 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .build();
 
         userService.updateProfile(profileChangeRequest)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> userService.setHighResProfilePic(true))
                 .subscribe(
                         aVoid ->  {},
@@ -124,13 +152,23 @@ class ProfilePresenter implements ProfileContract.Presenter {
             provider = user.getProviders().get(0);
             Log.d(TAG, "setupProfile: " + provider);
 
-            // check if user already has a high resolution photo o/w get one
-            userService.hasHighResProfilePic()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .filter(value -> !value)
-                    .doOnNext(aBoolean -> getHighResPicFromProvider())
-                    .subscribe();
+            if (user.getPhotoUrl() == null) {
+                profileView.displayDefaultPic();
+            } else {
+                // check if user already has a high resolution photo o/w get one
+                userService.hasHighResProfilePic()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .filter(value -> !value)
+                        .doOnNext(aBoolean -> getHighResPicFromProvider())
+                        .subscribe(
+                                aBoolean -> {},
+                                throwable -> {
+                                    throwable.printStackTrace();
+                                    profileView.displayError(throwable.getMessage());
+                                }
+                        );
+            }
         } else {
             profileView.displayError("You are not logged in.");
         }

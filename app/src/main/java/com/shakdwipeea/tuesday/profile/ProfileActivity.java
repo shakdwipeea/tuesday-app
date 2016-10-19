@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
@@ -55,9 +55,9 @@ public class ProfileActivity extends AppCompatActivity
     private ProfileContract.Presenter presenter;
     private Drawable thumbnailDrawable;
 
-    private BottomSheetBehavior bottomSheetBehavior;
-
     private String currentPhotoPath;
+
+    MaterialDialog progressBar;
 
     @Override
     protected void onResume() {
@@ -88,9 +88,6 @@ public class ProfileActivity extends AppCompatActivity
         } else {
             getLowResDrawable(profilePic);
         }
-
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.editPicBottomSheet);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         List<String> items = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
@@ -131,13 +128,13 @@ public class ProfileActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         switch (requestCode) {
             case PHOTO_PICKER_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     final Uri imageUri = data.getData();
                     presenter.updateProfilePic(this, imageUri);
                 } else {
+                    // TODO: 19-10-2016 add error handling
                     new File(currentPhotoPath).delete();
                 }
                 break;
@@ -146,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity
                     DeviceStorage.galleryAddPic(this, currentPhotoPath);
                     presenter.updateProfilePic(currentPhotoPath);
                 } else {
-
+                    // TODO: 19-10-2016 add error handling
                 }
         }
     }
@@ -165,7 +162,6 @@ public class ProfileActivity extends AppCompatActivity
                 } else {
                     displayError("Cannot save photo then");
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -225,6 +221,11 @@ public class ProfileActivity extends AppCompatActivity
         Bitmap bitmap = Util.resizeBitmapTo(photoPath,
                 binding.profilePic.getHeight(), binding.profilePic.getWidth());
         binding.profilePic.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void displayDefaultPic() {
+        binding.profilePic.setImageResource(R.drawable.ic_users_11);
     }
 
     @Override
@@ -288,7 +289,43 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void openImageMenu() {
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        new MaterialDialog.Builder(this)
+                .title("Change Profile Picture")
+                .items(R.array.items)
+                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+                    /**
+                     * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
+                     * returning false here won't allow the newly selected radio button to actually be selected.
+                     **/
+                    switch (which) {
+                        case 0:
+                            openCamera();
+                            return true;
+                        case 1:
+                            openPhotoPicker();
+                            return true;
+                        case 2:
+                            presenter.deleteProfilePic();
+                            return true;
+                    }
+
+                    return true;
+                })
+                .positiveText("Select")
+                .show();
+    }
+
+    @Override
+    public void setProgressBar(boolean show) {
+        if (show) {
+            progressBar = new MaterialDialog.Builder(this)
+                    .title("Please Wait")
+                    .content("Updating profile")
+                    .progress(true, 0)
+                    .show();
+        } else {
+            progressBar.dismiss();
+        }
     }
 
 }
