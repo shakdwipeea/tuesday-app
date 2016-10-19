@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
     <style name="NoActionBarAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -16,6 +17,10 @@
         <item name="actionMenuTextColor">@android:color/white</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="NoActionBarAppThemeWithSplash" parent="NoActionBarAppTheme">
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -43,6 +43,7 @@
                     android:scaleType="centerCrop"
                     app:layout_collapseParallaxMultiplier="0.7"
                     android:fitsSystemWindows="true"
+                    android:src="@drawable/ic_users_11"
                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                     app:layout_collapseMode="parallax" />
 
