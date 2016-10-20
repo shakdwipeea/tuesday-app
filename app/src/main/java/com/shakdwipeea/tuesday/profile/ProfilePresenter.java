@@ -158,7 +158,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 // check if user already has a high resolution photo o/w get one
                 userService.hasHighResProfilePic()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.newThread())
                         .filter(value -> !value)
                         .doOnNext(aBoolean -> getHighResPicFromProvider())
                         .subscribe(

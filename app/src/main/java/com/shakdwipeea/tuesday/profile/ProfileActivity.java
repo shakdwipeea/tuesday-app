@@ -14,7 +14,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,13 +25,13 @@ import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 import com.shakdwipeea.tuesday.util.Util;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ProfileActivity extends AppCompatActivity
         implements ProfileContract.View, ProfileContract.IntentActions {
@@ -89,16 +88,11 @@ public class ProfileActivity extends AppCompatActivity
             getLowResDrawable(profilePic);
         }
 
-        List<String> items = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            items.add("I am item " + i);
-        }
+//        arrayAdapter =new ContactAdapter(items, this);
 
-        arrayAdapter =new ContactAdapter(items, this);
-
-        binding.profileToolbarContainer.scrollableview
-                .setLayoutManager(new LinearLayoutManager(this));
-        binding.profileToolbarContainer.scrollableview.setAdapter(arrayAdapter);
+//        binding.profileToolbarContainer.scrollableview
+//                .setLayoutManager(new LinearLayoutManager(this));
+//        binding.profileToolbarContainer.scrollableview.setAdapter(arrayAdapter);
     }
 
     @Override
@@ -186,41 +180,34 @@ public class ProfileActivity extends AppCompatActivity
     private void getLowResDrawable(String profilePic) {
         Picasso.with(this)
                 .load(profilePic)
-                .into(binding.profilePic, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        thumbnailDrawable = binding.profilePic.getDrawable();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Log.e(TAG, "onError: No thumbnail");
-                    }
-                });
+                .into(binding.profilePic);
     }
 
     @Override
     public void displayProfilePic(String url) {
         Picasso.with(this)
                 .load(url)
-                .placeholder(thumbnailDrawable)
-                .resize(500, 0)
+                //.placeholder(thumbnailDrawable)
                 .into(binding.profilePic);
     }
 
     @Override
     public void displayProfilePic(Bitmap image) {
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(image,
-                binding.profilePic.getHeight(), binding.profilePic.getWidth(), false);
-
-        binding.profilePic.setImageBitmap(scaledBitmap);
+        Util.resizeBitmapTo(image, binding.profilePic.getHeight(), binding.profilePic.getWidth())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .subscribe();
     }
 
     @Override
     public void displayProfilePicFromPath(String photoPath) {
-        Bitmap bitmap = Util.resizeBitmapTo(photoPath,
-                binding.profilePic.getHeight(), binding.profilePic.getWidth());
-        binding.profilePic.setImageBitmap(bitmap);
+        Util.resizeBitmapTo(photoPath,
+                binding.profilePic.getHeight(), binding.profilePic.getWidth())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .subscribe();
     }
 
     @Override

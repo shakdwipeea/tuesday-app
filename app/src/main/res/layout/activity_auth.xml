@@ -27,7 +27,8 @@
             android:layout_marginTop="100dp"
             android:textSize="35sp"
             android:textColor="#fff"
-            android:text="@string/sign_in_using" />
+            android:text="@string/sign_in_using"
+            android:fontFamily="sans-serif"/>
 
         <LinearLayout
             android:layout_gravity="center_horizontal"
@@ -77,9 +78,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
             android:textColor="#a7ffffff"
-            android:text="@string/no_post"/>
+            android:text="@string/no_post"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"/>
 
         <TextView
             android:layout_marginTop="19dp"
@@ -88,6 +89,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#a7ffffff"
+            android:visibility="gone"
             android:text="@string/license_agreement"/>
     </LinearLayout>
 </layout>

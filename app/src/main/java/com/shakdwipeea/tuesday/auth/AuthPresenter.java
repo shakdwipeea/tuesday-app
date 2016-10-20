@@ -41,7 +41,6 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
 
     void subscribe() {
         init();
-        auth.addAuthStateListener(authListener);
     }
 
     void unSubscribe() {
@@ -59,12 +58,17 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
                 // User is signed in
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 view.openProfile(user);
+
+                // when profile page is open we don't need this
+                auth.removeAuthStateListener(authListener);
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
             }
 
         };
+
+        auth.addAuthStateListener(authListener);
     }
 
 

@@ -17,10 +17,10 @@
         <item name="actionMenuTextColor">@android:color/white</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
     <style name="NoActionBarAppThemeWithSplash" parent="NoActionBarAppTheme">
+        <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
