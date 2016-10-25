@@ -42,12 +42,13 @@ public class Util {
 
     public static Observable<Bitmap> resizeBitmapTo(String filePath, int height, int width) {
         return Observable.create(subscriber -> {
+            Bitmap image = BitmapFactory.decodeFile(filePath);
+            if (image == null) {
+                subscriber.onError(new NullPointerException("could not find image"));
+            }
+
 		    /* Decode the JPEG file into a Bitmap */
-            subscriber.onNext(
-                    Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeFile(filePath), width, height, false
-                    )
-            );
+            subscriber.onNext(Bitmap.createScaledBitmap(image, width, height, false));
 
             subscriber.onCompleted();
         });
