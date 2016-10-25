@@ -31,14 +31,14 @@ public class UserService {
 
     public void setHighResProfilePic(Boolean value) {
         Log.d(TAG, "setHighResProfilePic: " + value);
-        dbRef.child("users")
+        dbRef.child(User.KEY)
                 .child(user.getUid())
                 .child(User.UserNode.HAS_HIGH_RES_PROFILE_PIC).setValue(value);
     }
 
     public Observable<Boolean> hasHighResProfilePic() {
         return Observable.create(subscriber -> {
-            dbRef.child("users")
+            dbRef.child(User.KEY)
                     .child(user.getUid())
                     .child(User.UserNode.HAS_HIGH_RES_PROFILE_PIC)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -57,6 +57,35 @@ public class UserService {
                             subscriber.onError(databaseError.toException());
                         }
                     });
+        });
+    }
+
+    public void setTuesId(String tuesId) {
+        dbRef.child(User.KEY)
+                .child(user.getUid())
+                .child(User.UserNode.TUES_ID).setValue(tuesId);
+    }
+
+    /**
+     * Get tues_id
+     * @return Observable containing the tues_id
+     */
+    public Observable<String> getTuesId() {
+        return Observable.create(subscriber -> {
+           dbRef.child(User.KEY)
+                   .child(user.getUid())
+                   .child(User.UserNode.TUES_ID)
+                   .addValueEventListener(new ValueEventListener() {
+                       @Override
+                       public void onDataChange(DataSnapshot dataSnapshot) {
+                           subscriber.onNext((String) dataSnapshot.getValue());
+                       }
+
+                       @Override
+                       public void onCancelled(DatabaseError databaseError) {
+                            subscriber.onError(databaseError.toException());
+                       }
+                   });
         });
     }
 

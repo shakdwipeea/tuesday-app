@@ -16,8 +16,10 @@ public interface ProfileContract {
         void displayProfilePic(Bitmap bitmap);
         void displayProfilePicFromPath(String imagePath);
         void displayDefaultPic();
-
         void displayName(String name);
+        void displayTuesId(String tuesId);
+
+
         void openImageMenu();
         void setProgressBar(boolean show);
         void launchAuth();

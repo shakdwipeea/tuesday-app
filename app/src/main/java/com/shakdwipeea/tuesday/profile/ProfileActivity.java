@@ -221,6 +221,11 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     @Override
+    public void displayTuesId(String tuesId) {
+        binding.content.tuesid.setText(tuesId);
+    }
+
+    @Override
     public void openPhotoPicker() {
         profileChangeIntentLaunched = true;
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);

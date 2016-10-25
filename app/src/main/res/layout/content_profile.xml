@@ -27,14 +27,49 @@
 
         </LinearLayout>
 -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/scrollableview"
-        android:visibility="gone"
-        android:scrollbars="vertical"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textAlignment="center"
+        android:shadowColor="#26000000"
+        android:orientation="vertical"
+        android:background="@drawable/rectangle"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
+        android:elevation="4dp"
+        >
+
+        <TextView
+            android:textColor="#000"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:textSize="20sp"
+            android:text="TuesID"
+            android:background="@drawable/rectangle"
+            android:gravity="center_vertical|center_horizontal"/>
+
+        <TextView
+            android:id="@+id/tuesid"
+            android:textColor="#000"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:gravity="center_vertical|center_horizontal"/>
+
+    </LinearLayout>
+
+
+
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/scrollableview"-->
+        <!--android:visibility="gone"-->
+        <!--android:scrollbars="vertical"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!--/>-->
 
     <!--</LinearLayout>-->
 

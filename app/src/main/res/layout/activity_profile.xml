@@ -62,7 +62,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <include
-            android:id="@+id/profile_toolbar_container"
+            android:id="@+id/content"
             layout="@layout/content_profile" />
 
        <!-- <android.support.design.widget.FloatingActionButton
