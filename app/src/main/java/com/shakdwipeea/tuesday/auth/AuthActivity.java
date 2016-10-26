@@ -23,7 +23,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.databinding.ActivityAuthBinding;
-import com.shakdwipeea.tuesday.profile.ProfileActivity;
+import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
@@ -142,13 +142,14 @@ public class AuthActivity extends AppCompatActivity
 
     @Override
     public void openProfile(FirebaseUser user) {
-        // TODO: 15-10-2016 investigate why the authchanged is called twice
+        // TODO: 15-10-2016 investigate why the auth changed is called twice
         if (!profileLaunched) {
             profileLaunched = true;
-            Intent intent = new Intent(this, ProfileActivity.class);
-            if (user.getPhotoUrl() != null)
-                intent.putExtra(ProfileActivity.PROFILE_IMAGE_EXTRA, user.getPhotoUrl().toString());
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            Intent intent = new Intent(this, ProfileActivity.class);
+//            if (user.getPhotoUrl() != null)
+//                intent.putExtra(ProfileActivity.PROFILE_IMAGE_EXTRA, user.getPhotoUrl().toString());
+//            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();
         }

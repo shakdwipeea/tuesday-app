@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -207,6 +208,8 @@ public class ProfileActivity extends AppCompatActivity
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .doOnError(throwable -> displayError(throwable.getMessage()))
+                .onErrorResumeNext(Observable.empty())
                 .subscribe();
     }
 
