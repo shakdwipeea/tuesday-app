@@ -7,7 +7,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:2.2.2'
 
         //google services
         classpath 'com.google.gms:google-services:3.0.0'
@@ -25,6 +25,8 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
+        // text drawable
+        maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     }
 }
 

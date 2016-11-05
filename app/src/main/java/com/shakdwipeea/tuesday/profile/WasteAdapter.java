@@ -16,12 +16,12 @@ import java.util.List;
  * Created by ashak on 09-10-2016.
  */
 
-public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactItemViewHolder> {
+public class WasteAdapter extends RecyclerView.Adapter<WasteAdapter.ContactItemViewHolder> {
     private List<String> dataSet;
 
     private LayoutInflater inflater;
 
-    public ContactAdapter(List<String> dataSet, Context context) {
+    public WasteAdapter(List<String> dataSet, Context context) {
         this.dataSet = dataSet;
         this.inflater = LayoutInflater.from(context);
     }

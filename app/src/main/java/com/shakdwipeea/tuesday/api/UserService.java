@@ -29,6 +29,14 @@ public class UserService {
         user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    public void saveUserDetails() {
+        DatabaseReference userRef = dbRef.child(User.KEY).child(user.getUid());
+        userRef.child(User.UserNode.NAME).setValue(user.getDisplayName());
+
+        if (user.getPhotoUrl() != null)
+            userRef.child(User.UserNode.PROFILE_PIC).setValue(user.getPhotoUrl().toString());
+    }
+
     public void setHighResProfilePic(Boolean value) {
         Log.d(TAG, "setHighResProfilePic: " + value);
         dbRef.child(User.KEY)

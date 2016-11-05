@@ -71,7 +71,6 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
         auth.addAuthStateListener(authListener);
     }
 
-
     void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 

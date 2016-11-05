@@ -48,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity
     // for changing the profile pic as the presenter downloads the high res profile pic
     private boolean profileChangeIntentLaunched;
 
-    private ContactAdapter arrayAdapter;
+    private WasteAdapter arrayAdapter;
 
     ActivityProfileBinding binding;
 
@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity
             getLowResDrawable(profilePic);
         }
 
-//        arrayAdapter =new ContactAdapter(items, this);
+//        arrayAdapter =new WasteAdapter(items, this);
 
 //        binding.profileToolbarContainer.scrollableview
 //                .setLayoutManager(new LinearLayoutManager(this));

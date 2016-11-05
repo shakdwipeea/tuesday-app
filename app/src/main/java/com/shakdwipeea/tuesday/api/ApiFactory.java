@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.api.tuesid;
+package com.shakdwipeea.tuesday.api;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -8,22 +8,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by ashak on 25-10-2016.
  */
 
-public class TuesIDFactory {
+public class ApiFactory {
     public static String BASE_URL = "http://192.168.0.110:9090";
 
-    private static TuesIDService tuesIDService;
+    private static ApiService apiService;
 
-    public static TuesIDService getInstance() {
-        if (tuesIDService == null) {
+    public static ApiService getInstance() {
+        if (apiService == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
 
-            tuesIDService = retrofit.create(TuesIDService.class);
+            apiService = retrofit.create(ApiService.class);
         }
 
-        return tuesIDService;
+        return apiService;
     }
 }

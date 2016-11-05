@@ -14,7 +14,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.api.AuthService;
 import com.shakdwipeea.tuesday.api.ProfilePicService;
 import com.shakdwipeea.tuesday.api.UserService;
-import com.shakdwipeea.tuesday.api.tuesid.TuesIDFactory;
+import com.shakdwipeea.tuesday.api.ApiFactory;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.util.Util;
 
@@ -74,7 +74,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
     private void getNewTuesId() {
         if (!reqNewTuesId) {
             reqNewTuesId = true;
-            TuesIDFactory.getInstance().getTuesID()
+            ApiFactory.getInstance().getTuesID()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .map(tuesIDResponse -> tuesIDResponse.tuesID)

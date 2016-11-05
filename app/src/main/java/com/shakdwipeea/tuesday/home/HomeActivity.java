@@ -5,19 +5,51 @@ import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.databinding.ActivityHomeBinding;
 
-public class HomeActivity extends AppCompatActivity {
+import java.util.concurrent.TimeUnit;
+
+import rx.Subscription;
+
+public class HomeActivity extends AppCompatActivity implements HomeContract.View {
     private static final String TAG = "HomeActivity";
 
     ActivityHomeBinding binding;
-
     Context context;
+
+    HomePresenter presenter;
+
+    Subscription subscription;
+
+    ContactAdapter adapter;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.subscribe(context);
+        setupSearch();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.unsubscribe();
+        subscription.unsubscribe();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +59,31 @@ public class HomeActivity extends AppCompatActivity {
         context = this;
 
         setupTabs();
+
+        adapter = new ContactAdapter();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.contactList.setLayoutManager(layoutManager);
+        binding.contactList.setAdapter(adapter);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,
+                layoutManager.getOrientation());
+        binding.contactList.addItemDecoration(dividerItemDecoration);
+
+        presenter = new HomePresenter(this);
+    }
+
+    private void setupSearch() {
+        subscription = RxTextView.textChanges(binding.search)
+                .filter(charSequence -> charSequence.length() > 2)
+                .debounce(100, TimeUnit.MILLISECONDS)
+                .switchMap(charSequence -> presenter.searchName(charSequence.toString()))
+                .subscribe(
+                        users -> {
+                            adapter.setUsers(users);
+                            adapter.notifyDataSetChanged();
+                        },
+                        Throwable::printStackTrace
+                );
     }
 
     private void setupTabs() {
@@ -72,5 +129,11 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void displayError(String message) {
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT)
+                .show();
     }
 }
