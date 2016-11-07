@@ -11,6 +11,7 @@ public class Preferences {
 
     private static String KEY_NAME_INDEXED = "name_indexed";
 
+    // TODO: 07-11-2016 clear preferences at log out
     public static boolean isNameIndexed(SharedPreferences preferences) {
         return preferences.getBoolean(KEY_NAME_INDEXED, false);
     }

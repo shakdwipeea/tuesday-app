@@ -101,4 +101,5 @@
     <string name="change_picture">Change picture</string>
     <string name="log_out">Log out</string>
     <string name="search">Search People</string>
+    <string name="all_contacts">All contacts</string>
 </resources>

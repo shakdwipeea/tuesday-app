@@ -47,7 +47,7 @@
             <TextView
                 android:id="@+id/phone_number"
                 android:textSize="20sp"
-                android:text="+917676171398"
+                android:text="@{ contact.phoneNumber}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 

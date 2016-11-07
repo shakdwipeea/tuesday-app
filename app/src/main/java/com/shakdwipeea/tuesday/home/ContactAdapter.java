@@ -52,12 +52,14 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
             Picasso.with(context)
                     .load(user.pic)
                     .into(binding.profilePic);
+        } else if (user.photo != null) {
+            binding.profilePic.setImageBitmap(user.photo);
         } else {
             binding.placeholderProfilePic
                     .setImageDrawable(
                             TextDrawable.builder()
                                     .buildRound(
-                                            String.valueOf(user.name.charAt(0)),
+                                            String.valueOf(user.name.toUpperCase().charAt(0)),
                                             ColorGenerator.MATERIAL.getColor(user.name))
                     );
 

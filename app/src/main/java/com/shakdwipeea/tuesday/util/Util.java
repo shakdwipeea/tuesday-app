@@ -40,6 +40,8 @@ public class Util {
 //        });
 //    }
 
+
+
     public static Observable<Bitmap> resizeBitmapTo(String filePath, int height, int width) {
         return Observable.create(subscriber -> {
             Bitmap image = BitmapFactory.decodeFile(filePath);

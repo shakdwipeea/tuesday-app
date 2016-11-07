@@ -1,5 +1,7 @@
 package com.shakdwipeea.tuesday.data.entities;
 
+import android.graphics.Bitmap;
+
 import org.parceler.Parcel;
 
 /**
@@ -13,6 +15,9 @@ public class User {
     public String name;
     public String pic;
     public String uid;
+    public String phoneNumber;
+    public String email;
+    public Bitmap photo;
 
     public Boolean hasHighResProfilePic;
     public String tuesId;

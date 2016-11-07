@@ -15,6 +15,7 @@ import rx.Observable;
 public interface HomeContract {
     interface View {
         void displayError(String message);
+        void displayPhoneContacts(List<User> user);
     }
 
     interface Presenter {
