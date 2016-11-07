@@ -4,14 +4,20 @@
     <data>
         <variable
             name="contact"
-            type="com.shakdwipeea.tuesday.api.entities.User" />
+            type="com.shakdwipeea.tuesday.data.entities.User" />
+        
+        <variable
+            name="actionHandler"
+            type="com.shakdwipeea.tuesday.home.ContactItemActionHandler" />
     </data>
 
     <LinearLayout
         android:layout_margin="10dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{(view) -> actionHandler.openProfile(view, contact)}"
+        >
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_pic"

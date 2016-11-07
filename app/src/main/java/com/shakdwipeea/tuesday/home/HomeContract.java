@@ -2,7 +2,7 @@ package com.shakdwipeea.tuesday.home;
 
 import android.content.Context;
 
-import com.shakdwipeea.tuesday.api.entities.User;
+import com.shakdwipeea.tuesday.data.entities.User;
 
 import java.util.List;
 

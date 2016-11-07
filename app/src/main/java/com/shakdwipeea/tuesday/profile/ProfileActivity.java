@@ -21,11 +21,14 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 import com.shakdwipeea.tuesday.util.Util;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity
     public static String TAG = "ProfileActivity";
 
     public static String PROFILE_IMAGE_EXTRA = "profilePic";
+    public static String USER_EXTRA_KEY = "user";
 
     private static final int PHOTO_PICKER_REQUEST_CODE = 260;
     private static final int REQUEST_IMAGE_CAPTURE = 582;
@@ -62,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (!profileChangeIntentLaunched) presenter.subscribe();
+        //if (!profileChangeIntentLaunched) presenter.subscribe();
     }
 
     @Override
@@ -79,15 +83,31 @@ public class ProfileActivity extends AppCompatActivity
         binding.setHandler(presenter);
         binding.setIntentHandler(this);
 
+        //todo move this functionality somewhere else (maybe in home)
         // display the low res profile pic initially
-        String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
-        Log.d(TAG, "Profile url " + profilePic);
+//        String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
+//        Log.d(TAG, "Profile url " + profilePic);
 
-        if (profilePic == null) {
-            displayError("Profile pic not provided");
-        } else {
-            getLowResDrawable(profilePic);
+        User user = Parcels.unwrap(getIntent().getParcelableExtra(USER_EXTRA_KEY));
+        if (user == null) {
+            displayError("User not provided");
+            Log.e(TAG, "onCreate: user not passed");
+            return;
         }
+
+        Picasso.with(this)
+                .load(user.pic)
+                .into(binding.profilePic);
+
+        displayName(user.name);
+
+        presenter.loadProfile(user);
+
+//        if (profilePic == null) {
+//            displayError("Profile pic not provided");
+//        } else {
+//            getLowResDrawable(profilePic);
+//        }
 
 //        arrayAdapter =new WasteAdapter(items, this);
 
@@ -220,7 +240,7 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void displayName(String name) {
-        binding.toolbar.setTitle(name);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(name);
     }
 
     @Override

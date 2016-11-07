@@ -1,7 +1,7 @@
-package com.shakdwipeea.tuesday.api;
+package com.shakdwipeea.tuesday.data.api;
 
-import com.shakdwipeea.tuesday.api.entities.HttpResponse;
-import com.shakdwipeea.tuesday.api.entities.User;
+import com.shakdwipeea.tuesday.data.entities.HttpResponse;
+import com.shakdwipeea.tuesday.data.entities.User;
 
 import java.util.List;
 

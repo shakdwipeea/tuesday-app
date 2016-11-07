@@ -1,9 +1,11 @@
-package com.shakdwipeea.tuesday.api.entities;
+package com.shakdwipeea.tuesday.data.entities;
+
+import org.parceler.Parcel;
 
 /**
  * Created by ashak on 17-10-2016.
  */
-
+@Parcel
 public class User {
     //Key for firebase storage of users
     public static String KEY = "users";

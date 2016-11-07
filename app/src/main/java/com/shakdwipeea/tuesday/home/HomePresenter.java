@@ -6,11 +6,11 @@ import android.content.SharedPreferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
-import com.shakdwipeea.tuesday.api.ApiFactory;
-import com.shakdwipeea.tuesday.api.Preferences;
-import com.shakdwipeea.tuesday.api.UserService;
-import com.shakdwipeea.tuesday.api.entities.HttpResponse;
-import com.shakdwipeea.tuesday.api.entities.User;
+import com.shakdwipeea.tuesday.data.api.ApiFactory;
+import com.shakdwipeea.tuesday.data.Preferences;
+import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.data.entities.HttpResponse;
+import com.shakdwipeea.tuesday.data.entities.User;
 
 import java.io.IOException;
 import java.util.List;

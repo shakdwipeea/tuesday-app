@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.shakdwipeea.tuesday.data.entities.User;
+
 /**
  * Created by ashak on 15-10-2016.
  */
@@ -35,6 +37,7 @@ public interface ProfileContract {
 
     interface Presenter {
         void subscribe();
+        void loadProfile(User user);
         void logout();
         void updateProfilePic(String filePath);
         void updateProfilePic(Context context, Uri imageUri);

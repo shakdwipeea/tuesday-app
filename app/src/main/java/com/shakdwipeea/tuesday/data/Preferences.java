@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.api;
+package com.shakdwipeea.tuesday.data;
 
 import android.content.SharedPreferences;
 

@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.api;
+package com.shakdwipeea.tuesday.data.api;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

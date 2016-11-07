@@ -1,11 +1,11 @@
-package com.shakdwipeea.tuesday.api;
+package com.shakdwipeea.tuesday.data;
 
 import android.util.Log;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
-import com.shakdwipeea.tuesday.api.entities.CloudinaryUploadResponse;
+import com.shakdwipeea.tuesday.data.entities.CloudinaryUploadResponse;
 
 import java.io.IOException;
 import java.util.Map;

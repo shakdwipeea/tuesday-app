@@ -9,6 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -108,6 +109,9 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
 
+    //parceler
+    compile 'org.parceler:parceler-api:1.1.6'
+    apt 'org.parceler:parceler:1.1.6'
 }
 
 apply plugin: 'com.google.gms.google-services'

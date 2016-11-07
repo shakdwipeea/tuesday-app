@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.api.entities;
+package com.shakdwipeea.tuesday.data.entities;
 
 import com.google.gson.annotations.SerializedName;
 

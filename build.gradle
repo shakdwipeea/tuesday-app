@@ -15,6 +15,9 @@ buildscript {
         //retrolamda
         classpath 'me.tatarka:gradle-retrolambda:3.3.0'
 
+        // the latest version of the android-apt plugin
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

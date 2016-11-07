@@ -11,10 +11,12 @@ import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.shakdwipeea.tuesday.api.AuthService;
-import com.shakdwipeea.tuesday.api.ProfilePicService;
-import com.shakdwipeea.tuesday.api.UserService;
-import com.shakdwipeea.tuesday.api.ApiFactory;
+import com.shakdwipeea.tuesday.data.api.ApiFactory;
+import com.shakdwipeea.tuesday.data.AuthService;
+import com.shakdwipeea.tuesday.data.ProfilePicService;
+import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
+import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.util.Util;
 
@@ -37,20 +39,31 @@ class ProfilePresenter implements ProfileContract.Presenter {
     private String provider;
 
     private UserService userService;
+    private FirebaseService firebaseService;
 
     // control flow in case subscribe is called twice
     private boolean reqNewTuesId;
 
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
+        userService = new UserService();
+        firebaseService = new FirebaseService();
     }
 
     @Override
     public void subscribe() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        userService = new UserService();
         setupProfile();
         getTuesID();
+    }
+
+    /**
+     * Retrieve the profile details from firebase and display it
+     * @param user User whose profile is to be displayed
+     */
+    @Override
+    public void loadProfile(User user) {
+        firebaseService.getProfile(user.uid);
     }
 
     private void getTuesID() {

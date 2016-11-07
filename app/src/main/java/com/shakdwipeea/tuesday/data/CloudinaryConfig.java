@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.api;
+package com.shakdwipeea.tuesday.data;
 
 /**
  * Created by ashak on 16-10-2016.

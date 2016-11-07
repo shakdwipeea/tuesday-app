@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.api.entities.User;
+import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ContactItemBinding;
 import com.squareup.picasso.Picasso;
 
@@ -44,7 +44,9 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
         User user = users.get(position);
 
         ContactItemBinding binding = holder.getBinding();
+        ContactItemActionHandler actionHandler = new ContactItemActionHandler();
         binding.setContact(user);
+        binding.setActionHandler(actionHandler);
 
         if (user.pic != null && !user.pic.equals("")) {
             Picasso.with(context)
@@ -52,11 +54,12 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
                     .into(binding.profilePic);
         } else {
             binding.placeholderProfilePic
-                    .setImageDrawable(TextDrawable
-                            .builder()
-                            .buildRound(
-                                    String.valueOf(user.name.charAt(0)),
-                                    ColorGenerator.MATERIAL.getColor(user.name)));
+                    .setImageDrawable(
+                            TextDrawable.builder()
+                                    .buildRound(
+                                            String.valueOf(user.name.charAt(0)),
+                                            ColorGenerator.MATERIAL.getColor(user.name))
+                    );
 
             binding.placeholderProfilePic.setVisibility(View.VISIBLE);
             binding.profilePic.setVisibility(View.GONE);
