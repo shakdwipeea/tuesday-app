@@ -52,8 +52,6 @@ public class ProfileActivity extends AppCompatActivity
     // for changing the profile pic as the presenter downloads the high res profile pic
     private boolean profileChangeIntentLaunched;
 
-    private WasteAdapter arrayAdapter;
-
     ActivityProfileBinding binding;
 
     private ProfileContract.Presenter presenter;

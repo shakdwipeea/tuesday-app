@@ -43,12 +43,14 @@ public class ContactsProvider {
     }
 
     public Observable<List<Contact>> getContacts() {
+        // TODO: 08-11-2016 need some perf improvements
         return Observable.create(subscriber -> {
             List<Contact> contactList = new ArrayList<Contact>();
             String[] projection = new String[]{
                     CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER, STARRED_CONTACT };
 
-            Cursor cursor = contentResolver.query(QUERY_URI, projection, HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
+            Cursor cursor = contentResolver.query(QUERY_URI, projection,
+                    HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
             if (cursor != null) {
                 while (cursor.moveToNext()) {
                     Contact contact = getContact(cursor);
@@ -117,8 +119,11 @@ public class ContactsProvider {
     }
 
     public void getPhoto(String contactId, Contact contact) {
-        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contact.id);
-        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        Uri contactUri = ContentUris
+                .withAppendedId(ContactsContract.Contacts.CONTENT_URI, contact.id);
+        Uri photoUri = Uri.
+                withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+
         Cursor cursor = contentResolver.query(photoUri,
                 new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
         if (cursor == null) return;
