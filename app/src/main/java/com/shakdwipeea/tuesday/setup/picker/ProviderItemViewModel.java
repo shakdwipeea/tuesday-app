@@ -1,8 +1,4 @@
-package com.shakdwipeea.tuesday.setup;
-
-import android.animation.ObjectAnimator;
-import android.view.View;
-import android.widget.ImageView;
+package com.shakdwipeea.tuesday.setup.picker;
 
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.databinding.ProviderPickerItemBinding;
@@ -21,14 +17,7 @@ public class ProviderItemViewModel {
     }
 
     public void onProviderSelected() {
-        toggleVisibility(binding.selectedIcon);
-    }
-
-    private void toggleVisibility(ImageView imageView) {
-        if (imageView.getVisibility() == View.VISIBLE) {
-            imageView.setVisibility(View.GONE);
-        } else {
-            imageView.setVisibility(View.VISIBLE);
-        }
+        // toggle selection
+        provider.setSelected(!provider.isSelected());
     }
 }

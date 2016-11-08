@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.setup;
+package com.shakdwipeea.tuesday.setup.picker;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -23,6 +23,10 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
 
     public ProviderAdapter(List<Provider> providers) {
         this.providers = providers;
+    }
+
+    public List<Provider> getProviders() {
+        return providers;
     }
 
     @Override

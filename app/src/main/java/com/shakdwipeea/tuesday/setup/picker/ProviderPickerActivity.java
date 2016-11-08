@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.setup;
+package com.shakdwipeea.tuesday.setup.picker;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.databinding.ActivitySetupBinding;
 
-public class SetupActivity extends AppCompatActivity {
+public class ProviderPickerActivity extends AppCompatActivity {
     ActivitySetupBinding binding;
 
     @Override

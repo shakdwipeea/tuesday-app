@@ -100,10 +100,12 @@
     <string name="action_settings">Settings</string>
     <string name="change_picture">Change picture</string>
     <string name="log_out">Log out</string>
-    <string name="search">Search People</string>
+    <string name="search_people">Search People</string>
+    <string name="search">Search</string>
     <string name="all_contacts">All contacts</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_setup">SetupActivity</string>
+    <string name="title_activity_provider_details">ProviderDetailsActivity</string>
 </resources>

@@ -61,8 +61,13 @@
             android:theme="@style/NoActionBarAppTheme">
         </activity>
         <activity
-            android:name=".setup.SetupActivity"
+            android:name=".setup.picker.ProviderPickerActivity"
             android:label="@string/title_activity_setup"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".setup.details.ProviderDetailsActivity"
+            android:label="@string/title_activity_provider_details"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
