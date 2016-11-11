@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 
 import rx.Observable;
@@ -21,12 +22,25 @@ import rx.Observable;
 public class UserService {
     private static final String TAG = "UserService";
 
+    private static UserService userService;
+
     private DatabaseReference dbRef;
+    private DatabaseReference userRef;
     private FirebaseUser user;
 
-    public UserService() {
+    private UserService() {
         dbRef = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        userRef = dbRef
+                .child(User.KEY)
+                .child(user.getUid());
+    }
+
+    public static UserService getInstance() {
+        if (userService == null)
+            userService = new UserService();
+
+        return userService;
     }
 
     public void saveUserDetails() {
@@ -102,6 +116,22 @@ public class UserService {
             user.updateProfile(request)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            subscriber.onCompleted();
+                        } else {
+                            subscriber.onError(task.getException());
+                        }
+                    })
+                    .addOnFailureListener(subscriber::onError);
+        });
+    }
+
+    public Observable<Void> saveProvider(Provider provider) {
+        return Observable.create(subscriber -> {
+            userRef.child(User.UserNode.PROVIDERS)
+                    .child(provider.getName())
+                    .setValue(provider.getProviderDetails())
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.isComplete()) {
                             subscriber.onCompleted();
                         } else {
                             subscriber.onError(task.getException());

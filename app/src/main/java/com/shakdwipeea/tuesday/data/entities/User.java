@@ -30,5 +30,6 @@ public class User {
         public static String TUES_ID = "tues_id";
         public static String NAME = "name";
         public static String PROFILE_PIC = "profile_pic";
+        public static String PROVIDERS = "providers";
     }
 }

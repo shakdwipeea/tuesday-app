@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.setup;
+package com.shakdwipeea.tuesday.data;
 
 import com.shakdwipeea.tuesday.data.entities.Provider;
 

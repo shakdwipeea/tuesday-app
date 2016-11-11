@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.setup.picker;
+package com.shakdwipeea.tuesday.setup;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.databinding.ProviderPickerItemBinding;
+import com.shakdwipeea.tuesday.setup.details.ProviderDetailItemViewModel;
 
 import java.util.List;
 
@@ -18,11 +19,16 @@ import java.util.List;
 
 public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.ProviderViewHolder> {
     private List<Provider> providers;
+    private FragmentChangeListener changeListener;
 
     private Context context;
 
     public ProviderAdapter(List<Provider> providers) {
         this.providers = providers;
+    }
+
+    public void setChangeListener(FragmentChangeListener changeListener) {
+        this.changeListener = changeListener;
     }
 
     public List<Provider> getProviders() {
@@ -45,10 +51,12 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
     @Override
     public void onBindViewHolder(ProviderViewHolder holder, int position) {
         Provider provider = providers.get(position);
-        ProviderItemViewModel viewModel = new ProviderItemViewModel(holder.binding, provider);
+        ProviderItemViewModel providerItemViewModel = new ProviderDetailItemViewModel();
+        providerItemViewModel.setUpSelection(provider);
+        providerItemViewModel.setFragmentChangeListener(changeListener);
 
         holder.binding.setProvider(provider);
-        holder.binding.setVm(viewModel);
+        holder.binding.setVm(providerItemViewModel);
     }
 
     @Override

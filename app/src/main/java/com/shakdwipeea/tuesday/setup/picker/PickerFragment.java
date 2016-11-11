@@ -14,11 +14,11 @@ import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.databinding.FragmentAccountPickerBinding;
-import com.shakdwipeea.tuesday.setup.SelectedProviders;
+import com.shakdwipeea.tuesday.data.SelectedProviders;
+import com.shakdwipeea.tuesday.setup.ProviderAdapter;
 import com.shakdwipeea.tuesday.setup.details.ProviderDetailsActivity;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,8 @@ public class PickerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_account_picker, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_account_picker, container,
+                false);
 
         context = container.getContext();
 
@@ -47,9 +48,7 @@ public class PickerFragment extends Fragment {
         providerAdapter = new ProviderAdapter(getProviders());
         binding.providerList.setAdapter(providerAdapter);
 
-        binding.nextButton.setOnClickListener(view -> {
-            openProviderDetailsActivity();
-        });
+        binding.nextButton.setOnClickListener(view -> openProviderDetailsActivity());
 
         return binding.getRoot();
     }
@@ -76,56 +75,86 @@ public class PickerFragment extends Fragment {
         List<Provider> providers = new ArrayList<>();
 
         Provider provider = new Provider();
+        ProviderDetails providerDetails = new ProviderDetails();
+
         provider.setName("Behance");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.behance_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Blackberry");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.blackberry_color_1));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Blogger");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.blogger_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Codepen");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.codepen_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Dribble");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.dribbble_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Drive");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.drive_color_1));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Dropbox");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.dropbox_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Facebook");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.facebook_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Flickr");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.flickr_color));
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
+        providerDetails = new ProviderDetails();
         provider.setName("Call");
         provider.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_call_black_24dp));
         provider.getIcon().setColorFilter(tintColor, PorterDuff.Mode.SRC_IN);
-        provider.setType(Provider.Type.PHONE_NUMBER_VERIFICATION);
+        providerDetails.setType(Provider.Type.PHONE_NUMBER_VERIFICATION);
         provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         return providers;

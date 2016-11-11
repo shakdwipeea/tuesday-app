@@ -13,8 +13,16 @@ import com.shakdwipeea.tuesday.BR;
 public class Provider extends BaseObservable{
     private String name;
     private Drawable icon;
-    private Type type;
     private boolean selected;
+    private ProviderDetails providerDetails;
+
+    public ProviderDetails getProviderDetails() {
+        return providerDetails;
+    }
+
+    public void setProviderDetails(ProviderDetails providerDetails) {
+        this.providerDetails = providerDetails;
+    }
 
     public String getName() {
         return name;
@@ -32,14 +40,6 @@ public class Provider extends BaseObservable{
         this.icon = icon;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     @Bindable
     public boolean isSelected() {
         return selected;
@@ -55,7 +55,6 @@ public class Provider extends BaseObservable{
         return "Provider{" +
                 "name='" + name + '\'' +
                 ", icon=" + icon +
-                ", type=" + type +
                 ", selected=" + selected +
                 '}';
     }

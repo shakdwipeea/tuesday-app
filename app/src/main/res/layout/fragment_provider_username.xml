@@ -1,0 +1,122 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="provider"
+            type="com.shakdwipeea.tuesday.data.entities.Provider" />
+
+        <variable
+            name="presenter"
+            type="com.shakdwipeea.tuesday.setup.details.ProviderDetailsPresenter" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:elevation="4dp"
+            >
+
+            <LinearLayout
+                android:padding="8dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textColor="#000"
+                    android:gravity="center"
+                    android:textSize="24sp"
+                    android:text="@{provider.name}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginTop="18dp"
+                    android:textColor="#000"
+                    android:textSize="18sp"
+                    android:text="Enter ID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <EditText
+                    android:text="@={provider.providerDetails.username}"
+                    android:textSize="14sp"
+                    android:lines="1"
+                    android:hint="Enter id here"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+                <TextView
+                    android:layout_marginTop="18dp"
+                    android:textColor="#000"
+                    android:textSize="18sp"
+                    android:text="Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:text="@={provider.providerDetails.description}"
+                        android:layout_weight="7"
+                        android:textSize="14sp"
+                        android:hint="Enter description"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Switch
+                        android:checked="@={provider.providerDetails.personal}"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:hint="Private"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            android:text="Add another id"
+            android:backgroundTint="#fff"
+            android:textColor="#000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:onClick="@{() -> presenter.saveProviderDetails()}"
+            android:background="#ff4081"
+            android:tint="#fff"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_arrow_forward_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</layout>
+

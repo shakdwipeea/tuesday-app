@@ -83,8 +83,8 @@ public class ProfileActivity extends AppCompatActivity
 
         //todo move this functionality somewhere else (maybe in home)
         // display the low res profile pic initially
-//        String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
-//        Log.d(TAG, "Profile url " + profilePic);
+        // String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
+        // Log.d(TAG, "Profile url " + profilePic);
 
         User user = Parcels.unwrap(getIntent().getParcelableExtra(USER_EXTRA_KEY));
         if (user == null) {

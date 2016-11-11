@@ -108,4 +108,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_setup">SetupActivity</string>
     <string name="title_activity_provider_details">ProviderDetailsActivity</string>
+    <string name="call_and_text">Call and Text</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="add_another_number">Add another number</string>
 </resources>

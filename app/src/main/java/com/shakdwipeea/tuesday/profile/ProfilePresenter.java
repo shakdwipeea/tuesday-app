@@ -46,7 +46,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
-        userService = new UserService();
+        userService = UserService.getInstance();
         firebaseService = new FirebaseService();
     }
 

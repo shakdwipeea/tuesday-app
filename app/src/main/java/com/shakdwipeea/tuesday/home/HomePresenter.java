@@ -45,7 +45,7 @@ public class HomePresenter implements HomeContract.Presenter {
     @Override
     public void subscribe(Context context) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        userService = new UserService();
+        userService = UserService.getInstance();
         contactsProvider = new ContactsProvider(context);
 
         preferences = context

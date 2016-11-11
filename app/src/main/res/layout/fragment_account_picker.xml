@@ -33,6 +33,7 @@
                 android:layout_height="wrap_content">
 
             <EditText
+                android:focusable="false"
                 android:id="@+id/search_provider"
                 android:hint="@string/search"
                 android:layout_width="match_parent"
