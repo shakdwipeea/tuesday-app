@@ -9,6 +9,10 @@
         <variable
             name="presenter"
             type="com.shakdwipeea.tuesday.setup.details.ProviderDetailsPresenter" />
+
+        <variable
+            name="actionText"
+            type="java.lang.String" />
     </data>
 
     <LinearLayout
@@ -108,14 +112,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageButton
+        <Button
+            android:text="@{actionText}"
             android:onClick="@{() -> presenter.saveProviderDetails()}"
-            android:background="#ff4081"
-            android:tint="#fff"
+            android:layout_marginTop="25dp"
+            android:tint="#ff4081"
             android:layout_gravity="center"
             android:src="@drawable/ic_arrow_forward_black_24dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="56dp"/>
 
     </LinearLayout>
 </layout>

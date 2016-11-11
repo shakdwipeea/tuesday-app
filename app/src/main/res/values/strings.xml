@@ -111,4 +111,6 @@
     <string name="call_and_text">Call and Text</string>
     <string name="phone_number">Phone Number</string>
     <string name="add_another_number">Add another number</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
 </resources>

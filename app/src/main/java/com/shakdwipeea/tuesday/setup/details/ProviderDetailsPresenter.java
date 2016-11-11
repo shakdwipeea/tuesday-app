@@ -1,14 +1,10 @@
 package com.shakdwipeea.tuesday.setup.details;
 
-import android.util.Log;
-
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.twitter.sdk.android.core.TwitterCore.TAG;
 
 /**
  * Created by ashak on 11-11-2016.
@@ -17,7 +13,6 @@ import static com.twitter.sdk.android.core.TwitterCore.TAG;
 public class ProviderDetailsPresenter implements ProviderDetailsContract.Presenter {
     private ProviderDetailsContract.View providerDetailsView;
     private UserService userService;
-
     private Provider provider;
 
     public ProviderDetailsPresenter(ProviderDetailsContract.View providerDetailsView
@@ -29,17 +24,22 @@ public class ProviderDetailsPresenter implements ProviderDetailsContract.Present
 
     @Override
     public void saveProviderDetails() {
+        // TODO: 11-11-2016 from string resource
+        providerDetailsView.changeButtonText("Saving");
         userService.saveProvider(provider)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .doOnCompleted(() -> {
+                    providerDetailsView.changeButtonText("Next");
+                    providerDetailsView.loadNextProvider();
+                })
+                .doOnError(throwable -> {
+                    providerDetailsView.changeButtonText("Save");
+                    providerDetailsView.displayError(throwable.getMessage());
+                })
                 .subscribe(
-                        aVoid -> {
-                            Log.d(TAG, "saveProviderDetails: Profile saved successfully");
-                        },
-                        throwable -> {
-                            providerDetailsView.displayError(throwable.getMessage());
-                            throwable.printStackTrace();
-                        }
+                        aVoid -> {},
+                        Throwable::printStackTrace
                 );
     }
 }

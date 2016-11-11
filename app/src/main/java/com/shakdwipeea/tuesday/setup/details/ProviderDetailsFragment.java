@@ -14,6 +14,7 @@ import com.android.databinding.library.baseAdapters.BR;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.SelectedProviders;
 import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.setup.FragmentChangeListener;
 
 import static com.twitter.sdk.android.core.TwitterCore.TAG;
 
@@ -27,17 +28,22 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
 
     ProviderDetailsPresenter presenter;
 
+    FragmentChangeListener fragChange;
+    int selectedProviderIndex;
+
     public ProviderDetailsFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        int selectedProviderIndex = getArguments().getInt(SELECTED_PROVIDER_INDEX);
+        selectedProviderIndex = getArguments().getInt(SELECTED_PROVIDER_INDEX);
 
         Provider provider = SelectedProviders.getProviderList().get(selectedProviderIndex);
 
         presenter = new ProviderDetailsPresenter(this, provider);
+
+        fragChange = (FragmentChangeListener) getActivity();
 
         // Default value
         int layoutId;
@@ -60,6 +66,7 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
 
         binding.setVariable(BR.provider, provider);
         binding.setVariable(BR.presenter, presenter);
+        binding.setVariable(BR.actionText, "Save");
 
         return binding.getRoot();
     }
@@ -67,5 +74,21 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
     public void displayError(String reason) {
         Snackbar.make(binding.getRoot(), reason, Snackbar.LENGTH_SHORT)
                 .show();
+    }
+
+    @Override
+    public void changeButtonText(String text) {
+        // TODO: 11-11-2016 achieve this by 2 way binding
+        binding.setVariable(BR.actionText, text);
+    }
+
+    @Override
+    public void loadNextProvider() {
+        if (selectedProviderIndex < SelectedProviders.getProviderList().size() - 1)
+            fragChange.loadFragment(SelectedProviders.getProviderList().get(selectedProviderIndex + 1));
+        else {
+            displayError("Setup Complete");
+            Log.d(TAG, "loadNextProvider: Setup complete");
+        }
     }
 }

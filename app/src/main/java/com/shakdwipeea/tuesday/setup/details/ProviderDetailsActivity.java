@@ -47,6 +47,8 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
         ProviderAdapter providerAdapter = new ProviderAdapter(providerList);
         providerAdapter.setChangeListener(this);
         binding.selectedProviderList.setAdapter(providerAdapter);
+
+        loadFragment(providerList.get(0));
     }
 
     private void displayError(String reason) {
