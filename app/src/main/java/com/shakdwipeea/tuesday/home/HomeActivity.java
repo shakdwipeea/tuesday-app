@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 
+import static android.graphics.Typeface.DEFAULT_BOLD;
+
 public class HomeActivity extends AppCompatActivity implements HomeContract.View {
     private static final String TAG = "HomeActivity";
 
@@ -106,8 +108,30 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     @Override
+    public void displayTuesId(String tuesId) {
+        binding.tuesid.setText(tuesId);
+    }
+
+    @Override
     public void addPhoneContact(User user) {
         phoneContactAdapter.addUser(user);
+    }
+
+    @Override
+    public void displayTuesIdProgress(Boolean value) {
+        if (value) {
+            binding.tuesid.setAllCaps(false);
+            binding.tuesid.setText(getString(R.string.tuesid_progress));
+        } else {
+            binding.tuesid.setAllCaps(true);
+            binding.tuesid.setTypeface(DEFAULT_BOLD);
+        }
+    }
+
+    @Override
+    public void displayTuesIdFailure() {
+        // Any boolean is not used because this is not transient
+        binding.tuesid.setText(getString(R.string.tuesid_failure));
     }
 
     private void setupSearch() {

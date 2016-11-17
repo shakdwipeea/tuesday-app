@@ -11,13 +11,12 @@ import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.shakdwipeea.tuesday.data.api.ApiFactory;
+import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.data.AuthService;
 import com.shakdwipeea.tuesday.data.ProfilePicService;
+import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
-import com.shakdwipeea.tuesday.data.entities.User;
-import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.io.FileNotFoundException;
@@ -40,9 +39,6 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     private UserService userService;
     private FirebaseService firebaseService;
-
-    // control flow in case subscribe is called twice
-    private boolean reqNewTuesId;
 
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
@@ -67,14 +63,9 @@ class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     private void getTuesID() {
+        // new tuesid can right now only be requested from HomeActivity
         userService.getTuesId()
-                .doOnNext(tuesId -> {
-                    if (tuesId == null) {
-                        getNewTuesId();
-                    } else {
-                        profileView.displayTuesId(tuesId);
-                    }
-                })
+                .doOnNext(tuesId -> profileView.displayTuesId(tuesId))
                 .subscribe(
                         tuesId -> {},
                         throwable -> {
@@ -82,21 +73,6 @@ class ProfilePresenter implements ProfileContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
-    }
-
-    private void getNewTuesId() {
-        if (!reqNewTuesId) {
-            reqNewTuesId = true;
-            ApiFactory.getInstance().getTuesID()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map(tuesIDResponse -> tuesIDResponse.tuesID)
-                    .doOnNext(tuesId -> userService.setTuesId(tuesId))
-                    .subscribe(
-                            s -> {},
-                            throwable -> profileView.displayError(throwable.getMessage())
-                    );
-        }
     }
 
     @Override

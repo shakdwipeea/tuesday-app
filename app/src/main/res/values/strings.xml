@@ -113,4 +113,7 @@
     <string name="add_another_number">Add another number</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
+    <string name="tuesid_label">Your TUESID</string>
+    <string name="tuesid_progress">Retrieving your TUESID</string>
+    <string name="tuesid_failure">Failed to retrieve your TUESID. Fuck… </string>
 </resources>

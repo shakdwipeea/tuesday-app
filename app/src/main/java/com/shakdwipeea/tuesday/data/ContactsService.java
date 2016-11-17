@@ -43,7 +43,7 @@ public class ContactsService {
     }
 
     public Observable<Contact> getContacts() {
-        // TODO: 08-11-2016 need some perf improvements
+        // TODO: 08-11-2016 prevent flickering of contacts
         return Observable.create(subscriber -> {
             List<Contact> contactList = new ArrayList<Contact>();
             String[] projection = new String[]{

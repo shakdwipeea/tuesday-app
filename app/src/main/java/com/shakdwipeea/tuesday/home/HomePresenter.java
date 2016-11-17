@@ -37,6 +37,9 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private Preferences preferences;
 
+    // control flow in case subscribe is called twice
+    private boolean reqNewTuesId;
+
     HomePresenter(HomeContract.View homeView) {
         this.homeView = homeView;
     }
@@ -55,8 +58,50 @@ public class HomePresenter implements HomeContract.Presenter {
             indexName();
         }
 
+        getTuesID();
         getContacts();
     }
+
+    private void getTuesID() {
+        homeView.displayTuesIdProgress(true);
+        userService.getTuesId()
+                .doOnNext(tuesId -> {
+                    homeView.displayTuesIdProgress(false);
+                    if (tuesId == null) {
+                        getNewTuesId();
+                    } else {
+                        homeView.displayTuesId(tuesId);
+                    }
+                })
+                .subscribe(
+                        tuesId -> {},
+                        throwable -> {
+                            homeView.displayTuesIdFailure();
+                            homeView.displayTuesIdProgress(false);
+                            homeView.displayError(throwable.getMessage());
+                            throwable.printStackTrace();
+                        }
+                );
+    }
+
+    private void getNewTuesId() {
+        if (!reqNewTuesId) {
+            reqNewTuesId = true;
+            ApiFactory.getInstance().getTuesID()
+                    .map(tuesIDResponse -> tuesIDResponse.tuesID)
+                    .doOnNext(tuesId -> userService.setTuesId(tuesId))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            s -> {},
+                            throwable -> {
+                                homeView.displayTuesIdFailure();
+                                homeView.displayError(throwable.getMessage());
+                            }
+                    );
+        }
+    }
+
 
     public void getContacts() {
         contactsService.getContacts()

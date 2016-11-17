@@ -14,7 +14,7 @@ import static com.twitter.sdk.android.core.TwitterCore.TAG;
 /**
  * Created by ashak on 07-11-2016.
  */
-
+// FirebaseService retreives the entire Profulw
 public class FirebaseService {
     private DatabaseReference dbRef;
 
