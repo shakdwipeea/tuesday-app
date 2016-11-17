@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.providers.SelectedProviders;
 import com.shakdwipeea.tuesday.databinding.ActivityProviderDetailsBinding;
@@ -82,6 +83,10 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
 
             selectedProviderIndex++;
         } else {
+            // All provider's details has been entered and setup is now complete
+            Preferences.getInstance(this)
+                    .setSetupComplete(true);
+
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();

@@ -1,7 +1,6 @@
 package com.shakdwipeea.tuesday.home;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,26 +31,25 @@ import static com.twitter.sdk.android.core.TwitterCore.TAG;
 public class HomePresenter implements HomeContract.Presenter {
     private FirebaseUser firebaseUser;
     private UserService userService;
-    private SharedPreferences preferences;
     private ContactsService contactsService;
 
     private HomeContract.View homeView;
+
+    private Preferences preferences;
 
     HomePresenter(HomeContract.View homeView) {
         this.homeView = homeView;
     }
 
-    // not sure if passing the context here is a good idea
+    //todo not sure if passing the context here is a good idea
     @Override
     public void subscribe(Context context) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userService = UserService.getInstance();
         contactsService = new ContactsService(context);
+        preferences = Preferences.getInstance(context);
 
-        preferences = context
-                .getSharedPreferences(Preferences.SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE);
-
-        if (!Preferences.isNameIndexed(preferences)) {
+        if (!preferences.isNameIndexed()) {
             // Save user details in the firebase
             userService.saveUserDetails();
             indexName();
@@ -101,7 +99,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        genResponse -> Preferences.setNameIndexed(preferences, true),
+                        genResponse -> preferences.setNameIndexed(true),
                         throwable -> {
                             if (throwable instanceof HttpException) {
                                 try {

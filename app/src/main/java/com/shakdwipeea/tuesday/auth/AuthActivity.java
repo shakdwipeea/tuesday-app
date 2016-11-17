@@ -22,7 +22,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.databinding.ActivityAuthBinding;
+import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -149,7 +151,14 @@ public class AuthActivity extends AppCompatActivity
 //            if (user.getPhotoUrl() != null)
 //                intent.putExtra(ProfileActivity.PROFILE_IMAGE_EXTRA, user.getPhotoUrl().toString());
 //            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            Intent intent = new Intent(this, ProviderPickerActivity.class);
+
+            Intent intent;
+            if (Preferences.getInstance(this).isSetupComplete()) {
+                intent = new Intent(this, HomeActivity.class);
+            } else {
+                intent = new Intent(this, ProviderPickerActivity.class);
+            }
+
             startActivity(intent);
             finish();
         }
