@@ -5,17 +5,20 @@ import android.databinding.Bindable;
 
 import com.android.databinding.library.baseAdapters.BR;
 
+import org.parceler.Parcel;
+
 /**
  * Created by ashak on 11-11-2016.
  */
 
+@Parcel
 public class ProviderDetails extends BaseObservable{
     // user details
-    private String phoneNumber;
-    private String username;
-    private String description;
-    private boolean isPersonal;
-    private Provider.Type type;
+    public String phoneNumber;
+    public String username;
+    public String description;
+    public boolean isPersonal;
+    public Provider.Type type;
 
     @Bindable
     public String getPhoneNumber() {

@@ -30,7 +30,6 @@ public class ProviderDetailsPresenter implements ProviderDetailsContract.Present
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnCompleted(() -> {
-                    providerDetailsView.changeButtonText("Next");
                     providerDetailsView.loadNextProvider();
                 })
                 .doOnError(throwable -> {

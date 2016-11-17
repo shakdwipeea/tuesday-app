@@ -1,5 +1,8 @@
 package com.shakdwipeea.tuesday.setup.picker;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.shakdwipeea.tuesday.data.entities.Provider;
@@ -12,6 +15,11 @@ import com.shakdwipeea.tuesday.setup.ProviderItemViewModel;
 
 public class SelectProviderViewModel implements ProviderItemViewModel {
     private Provider provider;
+    private Context context;
+
+    public SelectProviderViewModel(Context context) {
+        this.context = context;
+    }
 
     public Provider getProvider() {
         return provider;
@@ -31,5 +39,10 @@ public class SelectProviderViewModel implements ProviderItemViewModel {
             // toggle selection
             provider.setSelected(!provider.isSelected());
         }
+    }
+
+    @Override
+    public Drawable getDrawableFrom(int resId) {
+        return ContextCompat.getDrawable(context, resId);
     }
 }

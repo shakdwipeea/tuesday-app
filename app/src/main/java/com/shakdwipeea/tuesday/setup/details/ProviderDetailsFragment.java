@@ -1,5 +1,6 @@
 package com.shakdwipeea.tuesday.setup.details;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -12,17 +13,15 @@ import android.view.ViewGroup;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.SelectedProviders;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.setup.FragmentChangeListener;
 
+import org.parceler.Parcels;
+
 import static com.twitter.sdk.android.core.TwitterCore.TAG;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class ProviderDetailsFragment extends Fragment implements ProviderDetailsContract.View {
-    public static String SELECTED_PROVIDER_INDEX = "provider_index";
+    public static String SELECTED_PROVIDER_KEY = "provider_index";
 
     ViewDataBinding binding;
 
@@ -31,16 +30,20 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
     FragmentChangeListener fragChange;
     int selectedProviderIndex;
 
+    Context context;
+
     public ProviderDetailsFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        selectedProviderIndex = getArguments().getInt(SELECTED_PROVIDER_INDEX);
+        context = inflater.getContext();
 
-        Provider provider = SelectedProviders.getProviderList().get(selectedProviderIndex);
+        // Get provider specified
+        Provider provider = Parcels.unwrap(getArguments().getParcelable(SELECTED_PROVIDER_KEY));
 
+        // initialize presenter
         presenter = new ProviderDetailsPresenter(this, provider);
 
         fragChange = (FragmentChangeListener) getActivity();
@@ -48,7 +51,9 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
         // Default value
         int layoutId;
 
-        if (provider.getProviderDetails().getType() != null) {
+        if (provider.getProviderDetails() != null &&
+                provider.getProviderDetails().getType() != null) {
+
             switch (provider.getProviderDetails().getType()) {
                 case PHONE_NUMBER_NO_VERIFICATION:
                 case PHONE_NUMBER_VERIFICATION:
@@ -57,6 +62,7 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
                 default:
                     layoutId = R.layout.fragment_provider_username;
             }
+
         } else {
             layoutId = R.layout.fragment_provider_details;
             Log.d(TAG, "onCreateView: Provider type is null for some reason" + provider);
@@ -84,11 +90,6 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
 
     @Override
     public void loadNextProvider() {
-        if (selectedProviderIndex < SelectedProviders.getProviderList().size() - 1)
-            fragChange.loadFragment(SelectedProviders.getProviderList().get(selectedProviderIndex + 1));
-        else {
-            displayError("Setup Complete");
-            Log.d(TAG, "loadNextProvider: Setup complete");
-        }
+        fragChange.loadFragment();
     }
 }

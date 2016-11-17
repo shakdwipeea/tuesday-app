@@ -33,7 +33,7 @@
 
             <ImageView
                 android:id="@+id/provider_icon"
-                android:src="@{provider.icon}"
+                android:src="@{vm.getDrawableFrom(provider.icon)}"
                 tools:src="@drawable/behance_color"
                 android:layout_weight="0.6"
                 android:layout_width="0dp"

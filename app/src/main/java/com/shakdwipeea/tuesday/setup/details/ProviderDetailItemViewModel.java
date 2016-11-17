@@ -1,5 +1,6 @@
 package com.shakdwipeea.tuesday.setup.details;
 
+import android.content.Context;
 import android.view.View;
 
 import com.shakdwipeea.tuesday.data.entities.Provider;
@@ -13,6 +14,10 @@ import com.shakdwipeea.tuesday.setup.picker.SelectProviderViewModel;
 public class ProviderDetailItemViewModel extends SelectProviderViewModel {
     private Provider provider;
     FragmentChangeListener changeListener;
+
+    public ProviderDetailItemViewModel(Context context) {
+        super(context);
+    }
 
     @Override
     public void setUpSelection(Provider provider) {
@@ -28,6 +33,6 @@ public class ProviderDetailItemViewModel extends SelectProviderViewModel {
     @Override
     public void onProviderClick(View view) {
         super.onProviderClick(view);
-        if (changeListener != null) changeListener.loadFragment(provider);
+        if (changeListener != null) changeListener.loadFragment();
     }
 }

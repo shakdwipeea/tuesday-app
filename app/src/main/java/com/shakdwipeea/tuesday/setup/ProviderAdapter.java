@@ -23,6 +23,9 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
 
     private Context context;
 
+    public ProviderAdapter() {
+    }
+
     public ProviderAdapter(List<Provider> providers) {
         this.providers = providers;
     }
@@ -31,12 +34,23 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
         this.changeListener = changeListener;
     }
 
+    public void setProviders(List<Provider> providers) {
+        this.providers = providers;
+        notifyDataSetChanged();
+    }
+
     public List<Provider> getProviders() {
         return providers;
     }
 
+    public Provider getProvider(int index) {
+        return providers.get(index);
+    }
+
     @Override
     public ProviderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
+
         ProviderPickerItemBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
                 R.layout.provider_picker_item,
@@ -44,14 +58,13 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
                 false
         );
 
-        context = parent.getContext();
         return new ProviderViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(ProviderViewHolder holder, int position) {
         Provider provider = providers.get(position);
-        ProviderItemViewModel providerItemViewModel = new ProviderDetailItemViewModel();
+        ProviderItemViewModel providerItemViewModel = new ProviderDetailItemViewModel(context);
         providerItemViewModel.setUpSelection(provider);
         providerItemViewModel.setFragmentChangeListener(changeListener);
 

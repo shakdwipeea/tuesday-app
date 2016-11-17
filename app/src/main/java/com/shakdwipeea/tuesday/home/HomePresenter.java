@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
-import com.shakdwipeea.tuesday.data.ContactsProvider;
+import com.shakdwipeea.tuesday.data.ContactsService;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.entities.HttpResponse;
@@ -33,7 +33,7 @@ public class HomePresenter implements HomeContract.Presenter {
     private FirebaseUser firebaseUser;
     private UserService userService;
     private SharedPreferences preferences;
-    private ContactsProvider contactsProvider;
+    private ContactsService contactsService;
 
     private HomeContract.View homeView;
 
@@ -46,7 +46,7 @@ public class HomePresenter implements HomeContract.Presenter {
     public void subscribe(Context context) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userService = UserService.getInstance();
-        contactsProvider = new ContactsProvider(context);
+        contactsService = new ContactsService(context);
 
         preferences = context
                 .getSharedPreferences(Preferences.SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE);
@@ -61,7 +61,7 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     public void getContacts() {
-        contactsProvider.getContacts()
+        contactsService.getContacts()
                 .flatMap(Observable::from)
                 .map(contact -> {
                     Log.d(TAG, "getContacts: " + contact);

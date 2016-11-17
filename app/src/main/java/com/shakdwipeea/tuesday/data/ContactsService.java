@@ -21,7 +21,7 @@ import rx.Observable;
  * Created by ashak on 07-11-2016.
  */
 
-public class ContactsProvider {
+public class ContactsService {
 
     private Uri QUERY_URI = ContactsContract.Contacts.CONTENT_URI;
     private String CONTACT_ID = ContactsContract.Contacts._ID;
@@ -38,7 +38,7 @@ public class ContactsProvider {
     private ContentResolver contentResolver;
 
     // would make more sense to inject this via DI
-    public ContactsProvider(Context context) {
+    public ContactsService(Context context) {
         contentResolver = context.getContentResolver();
     }
 

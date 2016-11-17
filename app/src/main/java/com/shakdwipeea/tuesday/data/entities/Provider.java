@@ -2,19 +2,21 @@ package com.shakdwipeea.tuesday.data.entities;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.graphics.drawable.Drawable;
 
 import com.shakdwipeea.tuesday.BR;
+
+import org.parceler.Parcel;
 
 /**
  * Created by ashak on 08-11-2016.
  */
 
+@Parcel
 public class Provider extends BaseObservable{
-    private String name;
-    private Drawable icon;
-    private boolean selected;
-    private ProviderDetails providerDetails;
+    public String name;
+    public int icon;
+    public boolean selected;
+    public ProviderDetails providerDetails;
 
     public ProviderDetails getProviderDetails() {
         return providerDetails;
@@ -32,11 +34,11 @@ public class Provider extends BaseObservable{
         this.name = name;
     }
 
-    public Drawable getIcon() {
+    public int getIcon() {
         return icon;
     }
 
-    public void setIcon(Drawable icon) {
+    public void setIcon(int icon) {
         this.icon = icon;
     }
 

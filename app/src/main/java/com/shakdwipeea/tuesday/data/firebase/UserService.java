@@ -11,7 +11,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import rx.Observable;
 
@@ -138,6 +140,62 @@ public class UserService {
                         }
                     })
                     .addOnFailureListener(subscriber::onError);
+        });
+    }
+
+    public Observable<Provider> getProvider() {
+        return Observable.create(subscriber -> {
+           userRef.child(User.UserNode.PROVIDERS)
+                   .addValueEventListener(new ValueEventListener() {
+                       @Override
+                       public void onDataChange(DataSnapshot dataSnapshot) {
+                           Log.d(TAG, "onDataChange: Count" + dataSnapshot.getChildrenCount());
+
+                           for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                               ProviderDetails providerDetails = snapshot
+                                       .getValue(ProviderDetails.class);
+
+                               Provider provider = ProviderService.getInstance()
+                                       .getProviderHashMap()
+                                       .get(snapshot.getKey());
+                               provider.setProviderDetails(providerDetails);
+                               subscriber.onNext(provider);
+                               Log.d(TAG, "onDataChange: provider " + provider);
+                           }
+                           subscriber.onCompleted();
+                       }
+
+                       @Override
+                       public void onCancelled(DatabaseError databaseError) {
+                           subscriber.onError(databaseError.toException());
+                       }
+                   });
+        });
+    }
+
+    public Observable<Provider> getProvider(String name) {
+        return Observable.create(subscriber -> {
+            userRef.child(User.UserNode.PROVIDERS)
+                    .child(name)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ProviderDetails providerDetails = dataSnapshot
+                                    .getValue(ProviderDetails.class);
+
+                            Provider provider = ProviderService.getInstance()
+                                    .getProviderHashMap().get(dataSnapshot.getKey());
+                            provider.setProviderDetails(providerDetails);
+
+                            subscriber.onNext(provider);
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            subscriber.onError(databaseError.toException());
+                        }
+                    });
         });
     }
 }
