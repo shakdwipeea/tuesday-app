@@ -66,6 +66,7 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
         } else if (user.photo != null) {
             binding.profilePic.setImageBitmap(user.photo);
         } else {
+            // TODO: 17-11-2016 generalize text drawable thingy
             binding.placeholderProfilePic
                     .setImageDrawable(
                             TextDrawable.builder()

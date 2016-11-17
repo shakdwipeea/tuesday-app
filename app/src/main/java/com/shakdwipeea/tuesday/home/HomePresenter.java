@@ -22,13 +22,13 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.twitter.sdk.android.core.TwitterCore.TAG;
-
 /**
  * Created by ashak on 05-11-2016.
  */
 
 public class HomePresenter implements HomeContract.Presenter {
+    private static final String TAG = "HomePresenter";
+
     private FirebaseUser firebaseUser;
     private UserService userService;
     private ContactsService contactsService;

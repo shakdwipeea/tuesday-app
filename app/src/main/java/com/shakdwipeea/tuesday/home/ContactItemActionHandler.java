@@ -2,6 +2,8 @@ package com.shakdwipeea.tuesday.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.shakdwipeea.tuesday.data.entities.User;
@@ -25,8 +27,13 @@ public class ContactItemActionHandler {
 //        Bundle bundle = new Bundle();
 //        bundle.putParcelable(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(user));
 
-        Intent intent = new Intent(context, ProfileActivity.class);
-        intent.putExtra(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
-        context.startActivity(intent);
+        if (!TextUtils.isEmpty(user.uid)) {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
+            context.startActivity(intent);
+        } else {
+            Snackbar.make(view, "Not available on tuesday", Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 }

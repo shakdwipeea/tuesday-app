@@ -2,6 +2,8 @@ package com.shakdwipeea.tuesday.data.entities;
 
 import android.graphics.Bitmap;
 
+import com.google.firebase.database.DataSnapshot;
+
 import org.parceler.Parcel;
 
 /**
@@ -27,9 +29,13 @@ public class User {
     // Add these as annotations
     public static class UserNode {
         public static String HAS_HIGH_RES_PROFILE_PIC = "hasHighResProfilePic";
-        public static String TUES_ID = "tues_id";
+        public static String TUES_ID = "tuesId";
         public static String NAME = "name";
-        public static String PROFILE_PIC = "profile_pic";
+        public static String PROFILE_PIC = "pic";
         public static String PROVIDERS = "providers";
+    }
+
+    public static User fromFirebase(DataSnapshot dataSnapshot) {
+        return new User();
     }
 }

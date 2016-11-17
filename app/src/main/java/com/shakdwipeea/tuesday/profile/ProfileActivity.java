@@ -14,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +22,8 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
+import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 import com.shakdwipeea.tuesday.util.Util;
@@ -37,6 +38,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+// todo ProfileActivity should be independent from logged in user, so that the same can be used for
+// viewing of other people profile
 public class ProfileActivity extends AppCompatActivity
         implements ProfileContract.View, ProfileContract.IntentActions {
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 123;
@@ -81,8 +84,8 @@ public class ProfileActivity extends AppCompatActivity
         binding.setHandler(presenter);
         binding.setIntentHandler(this);
 
-        //todo move this functionality somewhere else (maybe in home)
-        // display the low res profile pic initially
+
+        // todo check if this is done -> display the low res profile pic initially
         // String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
         // Log.d(TAG, "Profile url " + profilePic);
 
@@ -93,12 +96,8 @@ public class ProfileActivity extends AppCompatActivity
             return;
         }
 
-        Picasso.with(this)
-                .load(user.pic)
-                .into(binding.profilePic);
-
-        displayName(user.name);
-
+        // Info passed in Intent can be immediately opened and the rest be retrieved
+        displayUser(user);
         presenter.loadProfile(user);
 
 //        if (profilePic == null) {
@@ -189,6 +188,13 @@ public class ProfileActivity extends AppCompatActivity
         finish();
     }
 
+    @Override
+    public void displayUser(User user) {
+        binding.content.tuesid.setText(user.tuesId);
+        displayProfilePic(user.pic);
+        displayName(user.name);
+    }
+
     public void displayError(String error) {
         Snackbar.make(binding.getRoot(), error, Snackbar.LENGTH_SHORT)
                 .show();
@@ -204,10 +210,14 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void displayProfilePic(String url) {
-        Picasso.with(this)
-                .load(url)
-                //.placeholder(thumbnailDrawable)
-                .into(binding.profilePic);
+        if (!TextUtils.isEmpty(url)) {
+            Picasso.with(this)
+                    .load(url)
+                    //.placeholder(thumbnailDrawable)
+                    .into(binding.profilePic);
+        } else {
+            // TODO: 17-11-2016 display text drawable from first letter
+        }
     }
 
     @Override

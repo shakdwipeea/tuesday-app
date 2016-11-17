@@ -59,7 +59,12 @@ class ProfilePresenter implements ProfileContract.Presenter {
      */
     @Override
     public void loadProfile(User user) {
-        firebaseService.getProfile(user.uid);
+        firebaseService.getProfile(user.uid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        user1 -> profileView.displayUser(user1)
+                );
     }
 
     private void getTuesID() {

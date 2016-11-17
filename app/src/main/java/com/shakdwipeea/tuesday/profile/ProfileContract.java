@@ -25,6 +25,8 @@ public interface ProfileContract {
         void openImageMenu();
         void setProgressBar(boolean show);
         void launchAuth();
+
+        void displayUser(User user);
     }
 
     /**
