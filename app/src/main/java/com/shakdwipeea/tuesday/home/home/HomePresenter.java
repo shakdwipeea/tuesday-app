@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.home;
+package com.shakdwipeea.tuesday.home.home;
 
 import android.content.Context;
 import android.util.Log;
@@ -58,8 +58,19 @@ public class HomePresenter implements HomeContract.Presenter {
             indexName();
         }
 
+        if (homeView.hasPermissions()) {
+             getContacts();
+        }
+
+//        FirebaseService firebaseService = new FirebaseService();
+//        firebaseService.getProfile(firebaseUser.getUid())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(
+//                        user -> Log.d(TAG, "subscribe: " + user)
+//                );
+
         getTuesID();
-        getContacts();
     }
 
     private void getTuesID() {

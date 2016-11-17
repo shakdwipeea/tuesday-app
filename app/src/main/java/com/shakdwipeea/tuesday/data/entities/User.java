@@ -2,8 +2,6 @@ package com.shakdwipeea.tuesday.data.entities;
 
 import android.graphics.Bitmap;
 
-import com.google.firebase.database.DataSnapshot;
-
 import org.parceler.Parcel;
 
 /**
@@ -33,9 +31,20 @@ public class User {
         public static String NAME = "name";
         public static String PROFILE_PIC = "pic";
         public static String PROVIDERS = "providers";
+        public static String TUES_CONTACTS = "tues_contacts";
     }
 
-    public static User fromFirebase(DataSnapshot dataSnapshot) {
-        return new User();
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", pic='" + pic + '\'' +
+                ", uid='" + uid + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", photo=" + photo +
+                ", hasHighResProfilePic=" + hasHighResProfilePic +
+                ", tuesId='" + tuesId + '\'' +
+                '}';
     }
 }

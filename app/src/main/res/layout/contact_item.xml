@@ -8,7 +8,7 @@
         
         <variable
             name="actionHandler"
-            type="com.shakdwipeea.tuesday.home.ContactItemActionHandler" />
+            type="com.shakdwipeea.tuesday.home.home.ContactItemActionHandler" />
     </data>
 
     <LinearLayout

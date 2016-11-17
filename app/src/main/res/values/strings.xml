@@ -116,4 +116,5 @@
     <string name="tuesid_label">Your TUESID</string>
     <string name="tuesid_progress">Retrieving your TUESID</string>
     <string name="tuesid_failure">Failed to retrieve your TUESID. Fuck… </string>
+    <string name="not_implemented">Not implemented currently.</string>
 </resources>

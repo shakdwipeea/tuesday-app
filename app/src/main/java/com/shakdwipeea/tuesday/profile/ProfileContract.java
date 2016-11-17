@@ -44,5 +44,6 @@ public interface ProfileContract {
         void updateProfilePic(String filePath);
         void updateProfilePic(Context context, Uri imageUri);
         void deleteProfilePic();
+        void saveContact();
     }
 }

@@ -34,11 +34,14 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     private ProfileContract.View profileView;
 
-    private FirebaseUser user;
+    private FirebaseUser curUser;
     private String provider;
 
     private UserService userService;
     private FirebaseService firebaseService;
+
+    // User whose profile is being displayed
+    private User user;
 
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
@@ -48,20 +51,21 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     @Override
     public void subscribe() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        curUser = FirebaseAuth.getInstance().getCurrentUser();
         setupProfile();
         getTuesID();
     }
 
     /**
      * Retrieve the profile details from firebase and display it
-     * @param user User whose profile is to be displayed
+     * @param providedUser User whose profile is to be displayed
      */
     @Override
-    public void loadProfile(User user) {
-        firebaseService.getProfile(user.uid)
+    public void loadProfile(User providedUser) {
+        firebaseService.getProfile(providedUser.uid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(user1 -> user = user1)
                 .subscribe(
                         user1 -> profileView.displayUser(user1)
                 );
@@ -136,6 +140,12 @@ class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     @Override
+    public void saveContact() {
+        Log.d(TAG, "saveContact: " + user);
+        userService.saveTuesContacts(user.uid);
+    }
+
+    @Override
     public void updateProfilePic(String filePath) {
         updateProfilePicFromObject(filePath);
         profileView.displayProfilePicFromPath(filePath);
@@ -175,18 +185,18 @@ class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     private void setupProfile() {
-        if (user != null && user.getProviders() != null) {
-            // display user name
-            profileView.displayName(user.getDisplayName());
+        if (curUser != null && curUser.getProviders() != null) {
+            // display curUser name
+            profileView.displayName(curUser.getDisplayName());
 
             // get auth provider
-            provider = user.getProviders().get(0);
+            provider = curUser.getProviders().get(0);
             Log.d(TAG, "setupProfile: " + provider);
 
-            if (user.getPhotoUrl() == null) {
+            if (curUser.getPhotoUrl() == null) {
                 profileView.displayDefaultPic();
             } else {
-                // check if user already has a high resolution photo o/w get one
+                // check if curUser already has a high resolution photo o/w get one
                 userService.hasHighResProfilePic()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
@@ -242,7 +252,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
      * transforming existing low res url
      */
     private void displayPic(AuthActivity.AuthMode authMode) {
-        String lowResUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
+        String lowResUrl = curUser.getPhotoUrl() != null ? curUser.getPhotoUrl().toString() : null;
         if (lowResUrl != null) {
             String highResUrl = getHighResUrl(lowResUrl, authMode);
             saveProfilePicture(highResUrl);

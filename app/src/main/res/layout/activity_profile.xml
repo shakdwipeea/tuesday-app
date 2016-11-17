@@ -7,6 +7,7 @@
         <variable
             name="handler"
             type="com.shakdwipeea.tuesday.profile.ProfileContract.Presenter" />
+
         <variable
             name="intentHandler"
             type="com.shakdwipeea.tuesday.profile.ProfileContract.IntentActions" />
@@ -65,15 +66,15 @@
             android:id="@+id/content"
             layout="@layout/content_profile" />
 
-       <!-- <android.support.design.widget.FloatingActionButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             app:layout_anchor="@id/app_bar"
-            app:layout_anchorGravity="top|right"
-            android:onClick="@{() -> handler.changeProfilePic()}"
-            app:srcCompat="@drawable/ic_camera_alt_black_24dp" />-->
+            app:layout_anchorGravity="bottom|end"
+            android:onClick="@{() -> handler.saveContact()}"
+            app:srcCompat="@drawable/ic_person_add_black_24dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

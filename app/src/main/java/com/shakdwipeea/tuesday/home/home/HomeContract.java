@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.home;
+package com.shakdwipeea.tuesday.home.home;
 
 import android.content.Context;
 
@@ -20,11 +20,13 @@ public interface HomeContract {
         void addPhoneContact(User user);
         void displayTuesIdProgress(Boolean value);
         void displayTuesIdFailure();
+        boolean hasPermissions();
     }
 
     interface Presenter {
         void subscribe(Context context);
         Observable<List<User>> searchName(String name);
+        void getContacts();
         void unsubscribe();
     }
 }

@@ -9,11 +9,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -30,6 +33,9 @@ public class UserService {
     private DatabaseReference userRef;
     private FirebaseUser user;
 
+    // TODO: 17-11-2016 dispose all the added event listener
+    // rename this to FirebaseRepository and make it a subscription model so that listeners
+    // can be attached on subscribe() and removed on unsubscribe()
     private UserService() {
         dbRef = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -197,5 +203,38 @@ public class UserService {
                         }
                     });
         });
+    }
+
+    public Observable<String> getTuesContacts() {
+        // TODO: 17-11-2016 investigate what happens here when a new friend is added
+        return Observable.create(subscriber -> {
+            userRef.child(User.UserNode.TUES_CONTACTS)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot contactParentDataSnapshot) {
+                            GenericTypeIndicator<List<String>> t = new
+                                    GenericTypeIndicator<List<String>>() {};
+
+                            Iterable<DataSnapshot> children = contactParentDataSnapshot
+                                    .getChildren();
+
+                            for (DataSnapshot contactUid : children) {
+                                subscriber.onNext(contactUid.getValue(String.class));
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            subscriber.onError(databaseError.toException());
+                        }
+                    });
+
+        });
+    }
+
+    public void saveTuesContacts(String contactUid) {
+        userRef.child(User.UserNode.TUES_CONTACTS)
+                .child(contactUid)
+                .setValue(true);
     }
 }

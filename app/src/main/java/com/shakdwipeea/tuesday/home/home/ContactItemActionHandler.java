@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.home;
+package com.shakdwipeea.tuesday.home.home;
 
 import android.content.Context;
 import android.content.Intent;
