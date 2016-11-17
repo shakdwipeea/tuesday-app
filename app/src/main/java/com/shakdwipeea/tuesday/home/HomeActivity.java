@@ -103,7 +103,11 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     @Override
     public void displayPhoneContacts(List<User> users) {
         phoneContactAdapter.setUsers(users);
-        phoneContactAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void addPhoneContact(User user) {
+        phoneContactAdapter.addUser(user);
     }
 
     private void setupSearch() {

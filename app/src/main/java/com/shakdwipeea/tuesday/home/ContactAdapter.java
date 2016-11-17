@@ -14,6 +14,7 @@ import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ContactItemBinding;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +26,18 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
 
     private Context context;
 
+    public ContactAdapter() {
+        users = new ArrayList<>();
+    }
+
     public void setUsers(List<User> users) {
         this.users = users;
+        notifyDataSetChanged();
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
+        notifyDataSetChanged();
     }
 
     @Override

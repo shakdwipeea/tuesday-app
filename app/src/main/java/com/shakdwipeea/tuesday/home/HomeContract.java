@@ -16,6 +16,7 @@ public interface HomeContract {
     interface View {
         void displayError(String message);
         void displayPhoneContacts(List<User> user);
+        void addPhoneContact(User user);
     }
 
     interface Presenter {

@@ -58,7 +58,8 @@
             android:theme="@style/NoActionBarAppTheme"/>
         <activity
             android:name=".home.HomeActivity"
-            android:theme="@style/NoActionBarAppTheme">
+            android:theme="@style/NoActionBarAppTheme"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".setup.picker.ProviderPickerActivity"

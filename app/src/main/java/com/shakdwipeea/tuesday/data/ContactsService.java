@@ -42,7 +42,7 @@ public class ContactsService {
         contentResolver = context.getContentResolver();
     }
 
-    public Observable<List<Contact>> getContacts() {
+    public Observable<Contact> getContacts() {
         // TODO: 08-11-2016 need some perf improvements
         return Observable.create(subscriber -> {
             List<Contact> contactList = new ArrayList<Contact>();
@@ -55,12 +55,12 @@ public class ContactsService {
                 while (cursor.moveToNext()) {
                     Contact contact = getContact(cursor);
                     contactList.add(contact);
+                    subscriber.onNext(contact);
                 }
 
                 cursor.close();
             }
 
-            subscriber.onNext(contactList);
             subscriber.onCompleted();
         });
     }

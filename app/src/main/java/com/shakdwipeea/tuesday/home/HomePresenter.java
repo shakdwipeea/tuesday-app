@@ -60,7 +60,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
     public void getContacts() {
         contactsService.getContacts()
-                .flatMap(Observable::from)
                 .map(contact -> {
                     Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
@@ -69,11 +68,10 @@ public class HomePresenter implements HomeContract.Presenter {
                     user.photo = contact.thumbNail;
                     return user;
                 })
-                .toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(
-                        contacts -> homeView.displayPhoneContacts(contacts),
+                        contact -> homeView.addPhoneContact(contact),
                         Throwable::printStackTrace
                 );
     }
