@@ -12,16 +12,16 @@ import android.text.TextUtils;
 
 import com.shakdwipeea.tuesday.data.entities.Contact;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
+import rx.schedulers.Schedulers;
+import rx.subjects.ReplaySubject;
 
 /**
  * Created by ashak on 07-11-2016.
  */
 
 public class ContactsService {
+    private static ContactsService contactsService;
 
     private Uri QUERY_URI = ContactsContract.Contacts.CONTENT_URI;
     private String CONTACT_ID = ContactsContract.Contacts._ID;
@@ -37,32 +37,47 @@ public class ContactsService {
 
     private ContentResolver contentResolver;
 
+    private ReplaySubject<Contact> replaySubject;
+
     // would make more sense to inject this via DI
-    public ContactsService(Context context) {
+    private ContactsService(Context context) {
         contentResolver = context.getContentResolver();
+        replaySubject = ReplaySubject.create();
+
+        getContactsObservable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(replaySubject);
+
+    }
+    public static ContactsService getInstance(Context context) {
+        if (contactsService == null) contactsService = new ContactsService(context);
+
+        return contactsService;
     }
 
     public Observable<Contact> getContacts() {
+        return replaySubject;
+    }
+
+    private Observable<Contact> getContactsObservable() {
         // TODO: 08-11-2016 prevent flickering of contacts
-        return Observable.create(subscriber -> {
-            List<Contact> contactList = new ArrayList<Contact>();
-            String[] projection = new String[]{
-                    CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER, STARRED_CONTACT };
+        return Observable
+                .create(subscriber -> {
+                    String[] projection = new String[]{
+                            CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER, STARRED_CONTACT};
 
-            Cursor cursor = contentResolver.query(QUERY_URI, projection,
-                    HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    Contact contact = getContact(cursor);
-                    contactList.add(contact);
-                    subscriber.onNext(contact);
-                }
+                    Cursor cursor = contentResolver.query(QUERY_URI, projection,
+                            HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+                            subscriber.onNext(getContact(cursor));
+                        }
 
-                cursor.close();
-            }
+                        cursor.close();
+                    }
 
-            subscriber.onCompleted();
-        });
+                    subscriber.onCompleted();
+                });
     }
 
     private Contact getContact(Cursor cursor) {

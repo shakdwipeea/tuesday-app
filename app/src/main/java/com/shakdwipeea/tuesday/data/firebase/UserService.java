@@ -32,6 +32,7 @@ public class UserService {
     private DatabaseReference dbRef;
     private DatabaseReference userRef;
     private FirebaseUser user;
+    private boolean indexed;
 
     // TODO: 17-11-2016 dispose all the added event listener
     // rename this to FirebaseRepository and make it a subscription model so that listeners
@@ -236,5 +237,10 @@ public class UserService {
         userRef.child(User.UserNode.TUES_CONTACTS)
                 .child(contactUid)
                 .setValue(true);
+    }
+
+    public void setIndexed(boolean indexed) {
+        userRef.child(User.UserNode.IS_INDEXED)
+                .setValue(indexed);
     }
 }

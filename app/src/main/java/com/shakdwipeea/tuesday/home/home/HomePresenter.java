@@ -11,6 +11,7 @@ import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.entities.HttpResponse;
 import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
 import java.io.IOException;
@@ -49,28 +50,38 @@ public class HomePresenter implements HomeContract.Presenter {
     public void subscribe(Context context) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userService = UserService.getInstance();
-        contactsService = new ContactsService(context);
+        contactsService = ContactsService.getInstance(context);
         preferences = Preferences.getInstance(context);
-
-        if (!preferences.isNameIndexed()) {
-            // Save user details in the firebase
-            userService.saveUserDetails();
-            indexName();
-        }
 
         if (homeView.hasPermissions()) {
              getContacts();
         }
 
-//        FirebaseService firebaseService = new FirebaseService();
-//        firebaseService.getProfile(firebaseUser.getUid())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(
-//                        user -> Log.d(TAG, "subscribe: " + user)
-//                );
+        // Check if name is already indexed if not then index it
+        registerProfile();
 
         getTuesID();
+    }
+
+    private void registerProfile() {
+        FirebaseService firebaseService = new FirebaseService();
+        firebaseService.getProfile(firebaseUser.getUid())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnNext(user -> {
+                    if (user == null) userService.saveUserDetails();
+                })
+                .subscribe(
+                        user -> {
+                            if (user == null || (user.isIndexed != null && !user.isIndexed)) {
+                                indexName();
+                            }
+                        },
+                        throwable -> {
+                            homeView.displayError(throwable.getMessage());
+                        }
+                );
+
     }
 
     private void getTuesID() {
@@ -153,7 +164,10 @@ public class HomePresenter implements HomeContract.Presenter {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        genResponse -> preferences.setNameIndexed(true),
+                        genResponse -> {
+                            preferences.setNameIndexed(true);
+                            userService.setIndexed(true);
+                        },
                         throwable -> {
                             if (throwable instanceof HttpException) {
                                 try {
