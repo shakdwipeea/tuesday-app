@@ -49,6 +49,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     ContactAdapter searchAdapter;
     ContactAdapter phoneContactAdapter;
+    ContactAdapter tuesContactAdapter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -79,9 +80,11 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         searchAdapter = new ContactAdapter();
         phoneContactAdapter = new ContactAdapter();
+        tuesContactAdapter = new ContactAdapter();
 
         LinearLayoutManager searchLayoutManager = new LinearLayoutManager(context);
         LinearLayoutManager phoneContactLayoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager tuesContactLayoutManager = new LinearLayoutManager(context);
 
         // divider between lists
         // assuming both layoutManager have the same orientation
@@ -92,6 +95,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         binding.contactList.setLayoutManager(searchLayoutManager);
         binding.contactList.setAdapter(searchAdapter);
         binding.contactList.addItemDecoration(dividerItemDecoration);
+
+        // Tuesday contact listing
+        binding.tuesContactList.setLayoutManager(tuesContactLayoutManager);
+        binding.tuesContactList.setAdapter(tuesContactAdapter);
+        binding.tuesContactList.addItemDecoration(dividerItemDecoration);
+        binding.tuesContactList.setNestedScrollingEnabled(false);
 
         //Phone Contacts
         binding.phoneContactList.setLayoutManager(phoneContactLayoutManager);
@@ -112,6 +121,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void displayTuesId(String tuesId) {
         binding.tuesid.setText(tuesId);
+    }
+
+    public void addTuesContact(User user) {
+        tuesContactAdapter.addUser(user);
     }
 
     @Override

@@ -60,6 +60,7 @@ public class HomePresenter implements HomeContract.Presenter {
         // Check if name is already indexed if not then index it
         registerProfile();
 
+        getFriendList();
         getTuesID();
     }
 
@@ -70,6 +71,8 @@ public class HomePresenter implements HomeContract.Presenter {
                 .subscribeOn(Schedulers.io())
                 .doOnNext(user -> {
                     if (user == null) userService.saveUserDetails();
+                    else
+                        Log.e(TAG, "registerProfile: OOOH user was not null");
                 })
                 .subscribe(
                         user -> {
@@ -81,7 +84,6 @@ public class HomePresenter implements HomeContract.Presenter {
                             homeView.displayError(throwable.getMessage());
                         }
                 );
-
     }
 
     private void getTuesID() {
@@ -122,6 +124,16 @@ public class HomePresenter implements HomeContract.Presenter {
                             }
                     );
         }
+    }
+
+    public void getFriendList() {
+        userService.getFriends()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        user -> homeView.addTuesContact(user),
+                        throwable -> homeView.displayError(throwable.getMessage())
+                );
     }
 
 

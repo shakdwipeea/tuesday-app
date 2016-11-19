@@ -30,6 +30,7 @@ public class UserService {
     private static UserService userService;
 
     private DatabaseReference dbRef;
+    private DatabaseReference profileRef;
     private DatabaseReference userRef;
     private FirebaseUser user;
     private boolean indexed;
@@ -38,11 +39,13 @@ public class UserService {
     // rename this to FirebaseRepository and make it a subscription model so that listeners
     // can be attached on subscribe() and removed on unsubscribe()
     private UserService() {
-        dbRef = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        dbRef = FirebaseDatabase.getInstance().getReference();
         userRef = dbRef
-                .child(User.KEY)
+                .child(User.KEY);
+        profileRef = userRef
                 .child(user.getUid());
+
     }
 
     public static UserService getInstance() {
@@ -54,7 +57,10 @@ public class UserService {
 
     public void saveUserDetails() {
         DatabaseReference userRef = dbRef.child(User.KEY).child(user.getUid());
-        userRef.child(User.UserNode.NAME).setValue(user.getDisplayName());
+        if (user.getDisplayName() != null)
+            userRef.child(User.UserNode.NAME).setValue(user.getDisplayName());
+        else
+            Log.e(TAG, "saveUserDetails: " + user );
 
         if (user.getPhotoUrl() != null)
             userRef.child(User.UserNode.PROFILE_PIC).setValue(user.getPhotoUrl().toString());
@@ -136,7 +142,7 @@ public class UserService {
 
     public Observable<Void> saveProvider(Provider provider) {
         return Observable.create(subscriber -> {
-            userRef.child(User.UserNode.PROVIDERS)
+            profileRef.child(User.UserNode.PROVIDERS)
                     .child(provider.getName())
                     .setValue(provider.getProviderDetails())
                     .addOnCompleteListener(task -> {
@@ -152,7 +158,7 @@ public class UserService {
 
     public Observable<Provider> getProvider() {
         return Observable.create(subscriber -> {
-           userRef.child(User.UserNode.PROVIDERS)
+           profileRef.child(User.UserNode.PROVIDERS)
                    .addValueEventListener(new ValueEventListener() {
                        @Override
                        public void onDataChange(DataSnapshot dataSnapshot) {
@@ -182,7 +188,7 @@ public class UserService {
 
     public Observable<Provider> getProvider(String name) {
         return Observable.create(subscriber -> {
-            userRef.child(User.UserNode.PROVIDERS)
+            profileRef.child(User.UserNode.PROVIDERS)
                     .child(name)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
@@ -209,7 +215,7 @@ public class UserService {
     public Observable<String> getTuesContacts() {
         // TODO: 17-11-2016 investigate what happens here when a new friend is added
         return Observable.create(subscriber -> {
-            userRef.child(User.UserNode.TUES_CONTACTS)
+            profileRef.child(User.UserNode.TUES_CONTACTS)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot contactParentDataSnapshot) {
@@ -222,6 +228,7 @@ public class UserService {
                             for (DataSnapshot contactUid : children) {
                                 subscriber.onNext(contactUid.getKey());
                             }
+
                         }
 
                         @Override
@@ -234,13 +241,21 @@ public class UserService {
     }
 
     public void saveTuesContacts(String contactUid) {
-        userRef.child(User.UserNode.TUES_CONTACTS)
+        profileRef.child(User.UserNode.TUES_CONTACTS)
                 .child(contactUid)
                 .setValue(true);
     }
 
     public void setIndexed(boolean indexed) {
-        userRef.child(User.UserNode.IS_INDEXED)
+        profileRef.child(User.UserNode.IS_INDEXED)
                 .setValue(indexed);
+    }
+
+    public Observable<User> getFriends() {
+        return getTuesContacts()
+                .flatMap(s -> {
+                    FirebaseService firebaseService = new FirebaseService(s);
+                    return firebaseService.getProfile();
+                });
     }
 }

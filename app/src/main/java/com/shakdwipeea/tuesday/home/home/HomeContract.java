@@ -21,6 +21,7 @@ public interface HomeContract {
         void displayTuesIdProgress(Boolean value);
         void displayTuesIdFailure();
         boolean hasPermissions();
+        void addTuesContact(User user);
     }
 
     interface Presenter {
