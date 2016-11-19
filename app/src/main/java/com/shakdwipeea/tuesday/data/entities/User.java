@@ -34,6 +34,7 @@ public class User {
         public static String PROVIDERS = "providers";
         public static String TUES_CONTACTS = "tues_contacts";
         public static String IS_INDEXED = "isIndexed";
+        public static String ADDED_BY = "addedBy";
     }
 
     @Override

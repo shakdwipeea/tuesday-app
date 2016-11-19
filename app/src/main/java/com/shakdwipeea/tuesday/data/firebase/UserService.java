@@ -220,7 +220,7 @@ public class UserService {
                                     .getChildren();
 
                             for (DataSnapshot contactUid : children) {
-                                subscriber.onNext(contactUid.getValue(String.class));
+                                subscriber.onNext(contactUid.getKey());
                             }
                         }
 

@@ -64,8 +64,8 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     private void registerProfile() {
-        FirebaseService firebaseService = new FirebaseService();
-        firebaseService.getProfile(firebaseUser.getUid())
+        FirebaseService firebaseService = new FirebaseService(firebaseUser.getUid());
+        firebaseService.getProfile()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnNext(user -> {
@@ -73,7 +73,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 })
                 .subscribe(
                         user -> {
-                            if (user == null || (user.isIndexed != null && !user.isIndexed)) {
+                            if (user == null || user.isIndexed == null || !user.isIndexed) {
                                 indexName();
                             }
                         },

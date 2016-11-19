@@ -64,10 +64,13 @@ public class ProfileActivity extends AppCompatActivity
 
     MaterialDialog progressBar;
 
+    User user;
+
     @Override
     protected void onResume() {
         super.onResume();
         //if (!profileChangeIntentLaunched) presenter.subscribe();
+        presenter.subscribe(user);
     }
 
     @Override
@@ -89,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity
         // String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
         // Log.d(TAG, "Profile url " + profilePic);
 
-        User user = Parcels.unwrap(getIntent().getParcelableExtra(USER_EXTRA_KEY));
+        user = Parcels.unwrap(getIntent().getParcelableExtra(USER_EXTRA_KEY));
         if (user == null) {
             displayError("User not provided");
             Log.e(TAG, "onCreate: user not passed");
@@ -98,7 +101,6 @@ public class ProfileActivity extends AppCompatActivity
 
         // Info passed in Intent can be immediately opened and the rest be retrieved
         displayUser(user);
-        presenter.loadProfile(user);
 
 //        if (profilePic == null) {
 //            displayError("Profile pic not provided");
@@ -193,6 +195,12 @@ public class ProfileActivity extends AppCompatActivity
         binding.content.tuesid.setText(user.tuesId);
         displayProfilePic(user.pic);
         displayName(user.name);
+    }
+
+    @Override
+    public void changeFabIcon() {
+        binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
+                R.drawable.ic_people_black_24dp));
     }
 
     public void displayError(String error) {

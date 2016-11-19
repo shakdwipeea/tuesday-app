@@ -34,7 +34,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     private ProfileContract.View profileView;
 
-    private FirebaseUser curUser;
+    private FirebaseUser loggedInUser;
     private String provider;
 
     private UserService userService;
@@ -46,14 +46,16 @@ class ProfilePresenter implements ProfileContract.Presenter {
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
         userService = UserService.getInstance();
-        firebaseService = new FirebaseService();
     }
 
     @Override
-    public void subscribe() {
-        curUser = FirebaseAuth.getInstance().getCurrentUser();
-        setupProfile();
-        getTuesID();
+    public void subscribe(User user) {
+        loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseService = new FirebaseService(user.uid);
+        //setupProfile();
+        //getTuesID();
+        this.user = user;
+        loadProfile(user);
     }
 
     /**
@@ -62,12 +64,22 @@ class ProfilePresenter implements ProfileContract.Presenter {
      */
     @Override
     public void loadProfile(User providedUser) {
-        firebaseService.getProfile(providedUser.uid)
+        firebaseService.getProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(user1 -> user = user1)
                 .subscribe(
                         user1 -> profileView.displayUser(user1)
+                );
+
+        userService.getTuesContacts()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(s -> s.equals(user.uid))
+                .doOnNext(s -> profileView.changeFabIcon())
+                .subscribe(
+                        s -> Log.d(TAG, "loadProfile: Friend uid is " + s),
+                        Throwable::printStackTrace
                 );
     }
 
@@ -142,7 +154,14 @@ class ProfilePresenter implements ProfileContract.Presenter {
     @Override
     public void saveContact() {
         Log.d(TAG, "saveContact: " + user);
+
+        // add to my contacts
         userService.saveTuesContacts(user.uid);
+
+        // add to his added_by
+        firebaseService.addSavedBy(loggedInUser.getUid());
+
+        profileView.changeFabIcon();
     }
 
     @Override
@@ -185,18 +204,18 @@ class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     private void setupProfile() {
-        if (curUser != null && curUser.getProviders() != null) {
-            // display curUser name
-            profileView.displayName(curUser.getDisplayName());
+        if (loggedInUser != null && loggedInUser.getProviders() != null) {
+            // display loggedInUser name
+            profileView.displayName(loggedInUser.getDisplayName());
 
             // get auth provider
-            provider = curUser.getProviders().get(0);
+            provider = loggedInUser.getProviders().get(0);
             Log.d(TAG, "setupProfile: " + provider);
 
-            if (curUser.getPhotoUrl() == null) {
+            if (loggedInUser.getPhotoUrl() == null) {
                 profileView.displayDefaultPic();
             } else {
-                // check if curUser already has a high resolution photo o/w get one
+                // check if loggedInUser already has a high resolution photo o/w get one
                 userService.hasHighResProfilePic()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
@@ -252,7 +271,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
      * transforming existing low res url
      */
     private void displayPic(AuthActivity.AuthMode authMode) {
-        String lowResUrl = curUser.getPhotoUrl() != null ? curUser.getPhotoUrl().toString() : null;
+        String lowResUrl = loggedInUser.getPhotoUrl() != null ? loggedInUser.getPhotoUrl().toString() : null;
         if (lowResUrl != null) {
             String highResUrl = getHighResUrl(lowResUrl, authMode);
             saveProfilePicture(highResUrl);

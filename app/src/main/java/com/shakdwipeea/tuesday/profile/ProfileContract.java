@@ -27,6 +27,7 @@ public interface ProfileContract {
         void launchAuth();
 
         void displayUser(User user);
+        void changeFabIcon();
     }
 
     /**
@@ -38,7 +39,7 @@ public interface ProfileContract {
     }
 
     interface Presenter {
-        void subscribe();
+        void subscribe(User user);
         void loadProfile(User user);
         void logout();
         void updateProfilePic(String filePath);
