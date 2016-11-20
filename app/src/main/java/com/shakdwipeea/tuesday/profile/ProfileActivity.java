@@ -198,9 +198,12 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     @Override
-    public void changeFabIcon() {
-        binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
-                R.drawable.ic_people_black_24dp));
+    public void setAddFriendFabIcon(Boolean addFriendFabIcon) {
+        if (addFriendFabIcon) binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
+                R.drawable.ic_person_add_black_24dp));
+        else
+            binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
+                    R.drawable.ic_people_black_24dp));
     }
 
     public void displayError(String error) {

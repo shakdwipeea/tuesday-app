@@ -86,6 +86,11 @@ public class FirebaseService {
                 .setValue(true);
     }
 
+    public void removeSavedBy(String friendUid) {
+        userRef.child(User.UserNode.ADDED_BY)
+                .child(friendUid).removeValue();
+    }
+
     public Observable<String> getSavedBy() {
         return Observable.create(subscriber -> {
             userRef.child(User.UserNode.ADDED_BY)

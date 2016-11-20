@@ -37,7 +37,7 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
 
     public void addUser(User user) {
         this.users.add(user);
-        notifyDataSetChanged();
+        notifyItemInserted(users.size() - 1);
     }
 
     @Override
@@ -65,7 +65,7 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
                     .into(binding.profilePic);
         } else if (user.photo != null) {
             binding.profilePic.setImageBitmap(user.photo);
-        } else {
+        } else if (user.name != null){
             // TODO: 17-11-2016 generalize text drawable thingy
             binding.placeholderProfilePic
                     .setImageDrawable(

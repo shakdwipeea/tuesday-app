@@ -246,6 +246,12 @@ public class UserService {
                 .setValue(true);
     }
 
+    public void removeTuesContact(String contactUid) {
+        profileRef.child(User.UserNode.TUES_CONTACTS)
+                .child(contactUid)
+                .removeValue();
+    }
+
     public void setIndexed(boolean indexed) {
         profileRef.child(User.UserNode.IS_INDEXED)
                 .setValue(indexed);

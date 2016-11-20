@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="42dp"
+    android:viewportWidth="48"
+    android:viewportHeight="42">
+
+    <group
+            android:name="Color-"
+            android:translateX="-601.000000"
+            android:translateY="-955.000000">
+        <group
+                android:name="drive"
+                android:translateX="601.000000"
+                android:translateY="955.000000">
+            <path
+                android:name="Shape"
+                android:fillColor="#3777E3"
+                android:fillType="evenOdd"
+                android:strokeWidth="1"
+                android:pathData="M 8.00048064 42 L 15.9998798 28 L 48 28 L 39.9998798 42 Z" />
+            <path
+                android:name="Shape"
+                android:fillColor="#FFCF63"
+                android:fillType="evenOdd"
+                android:strokeWidth="1"
+                android:pathData="M 32.0004806 28 L 48 28 L 32.0004806 0 L 15.9998798 0 Z" />
+            <path
+                android:name="Shape"
+                android:fillColor="#11A861"
+                android:fillType="evenOdd"
+                android:strokeWidth="1"
+                android:pathData="M 0 28 L 8.00048064 42 L 24 14 L 15.9998798 0 Z" />
+        </group>
+    </group>
+</vector>

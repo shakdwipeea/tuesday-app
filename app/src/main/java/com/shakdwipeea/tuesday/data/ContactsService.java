@@ -45,7 +45,7 @@ public class ContactsService {
         replaySubject = ReplaySubject.create();
 
         getContactsObservable()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(replaySubject);
 
     }
@@ -70,7 +70,8 @@ public class ContactsService {
                             HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
-                            subscriber.onNext(getContact(cursor));
+                            Contact contact = getContact(cursor);
+                            subscriber.onNext(contact);
                         }
 
                         cursor.close();

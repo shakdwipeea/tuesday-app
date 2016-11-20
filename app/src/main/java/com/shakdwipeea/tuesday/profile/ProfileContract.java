@@ -27,7 +27,7 @@ public interface ProfileContract {
         void launchAuth();
 
         void displayUser(User user);
-        void changeFabIcon();
+        void setAddFriendFabIcon(Boolean value);
     }
 
     /**
@@ -45,6 +45,6 @@ public interface ProfileContract {
         void updateProfilePic(String filePath);
         void updateProfilePic(Context context, Uri imageUri);
         void deleteProfilePic();
-        void saveContact();
+        void toggleContact();
     }
 }

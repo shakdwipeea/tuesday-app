@@ -107,6 +107,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         binding.phoneContactList.setAdapter(phoneContactAdapter);
         binding.phoneContactList.addItemDecoration(dividerItemDecoration);
         binding.phoneContactList.setNestedScrollingEnabled(false);
+        //binding.phoneContactList.setItemAnimator(new SlideIn);
 
         presenter = new HomePresenter(this);
 

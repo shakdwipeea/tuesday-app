@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="27dp"
+    android:height="48dp"
+    android:viewportWidth="27"
+    android:viewportHeight="48">
+
+    <group
+            android:name="Color-"
+            android:translateX="-511.000000"
+            android:translateY="-260.000000">
+        <path
+            android:name="Tumblr"
+            android:fillColor="#34455D"
+            android:fillType="evenOdd"
+            android:strokeWidth="1"
+            android:pathData="M535.740658,298.340738 C534.867109,298.766425 533.196509,299.136797
+531.950767,299.168664 C528.189709,299.271478 527.45974,296.469336
+527.429435,294.438001 L527.429435,279.495346 L536.863709,279.495346
+L536.863709,272.227393 L527.462094,272.227393 L527.462094,260 L520.582268,260
+C520.468992,260 520.271274,260.101311 520.243323,260.358347
+C519.840825,264.100549 518.127268,270.668643 511,273.294919 L511,279.495046
+L515.75465,279.495046 L515.75465,295.177843 C515.75465,300.54794
+519.631338,308.176945 529.865311,307.99687 C533.318317,307.936444
+537.153225,306.459765 538,305.184807 L535.740658,298.340738" />
+    </group>
+</vector>

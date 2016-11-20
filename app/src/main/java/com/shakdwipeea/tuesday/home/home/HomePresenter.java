@@ -15,6 +15,7 @@ import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -48,6 +49,7 @@ public class HomePresenter implements HomeContract.Presenter {
     //todo not sure if passing the context here is a good idea
     @Override
     public void subscribe(Context context) {
+        Log.d(TAG, "subscribe: Subscribing start" + new Date());
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         userService = UserService.getInstance();
         contactsService = ContactsService.getInstance(context);
@@ -62,18 +64,19 @@ public class HomePresenter implements HomeContract.Presenter {
 
         getFriendList();
         getTuesID();
+        Log.d(TAG, "subscribe: Subscribing complete" + new Date());
     }
 
     private void registerProfile() {
         FirebaseService firebaseService = new FirebaseService(firebaseUser.getUid());
         firebaseService.getProfile()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .doOnNext(user -> {
                     if (user == null) userService.saveUserDetails();
                     else
                         Log.e(TAG, "registerProfile: OOOH user was not null");
                 })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(
                         user -> {
                             if (user == null || user.isIndexed == null || !user.isIndexed) {
@@ -97,6 +100,8 @@ public class HomePresenter implements HomeContract.Presenter {
                         homeView.displayTuesId(tuesId);
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(
                         tuesId -> {},
                         throwable -> {
@@ -139,6 +144,8 @@ public class HomePresenter implements HomeContract.Presenter {
 
     public void getContacts() {
         contactsService.getContacts()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .map(contact -> {
                     Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
@@ -147,8 +154,6 @@ public class HomePresenter implements HomeContract.Presenter {
                     user.photo = contact.thumbNail;
                     return user;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .subscribe(
                         contact -> homeView.addPhoneContact(contact),
                         Throwable::printStackTrace

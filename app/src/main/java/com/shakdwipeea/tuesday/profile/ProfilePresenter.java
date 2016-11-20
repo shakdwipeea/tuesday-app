@@ -43,6 +43,8 @@ class ProfilePresenter implements ProfileContract.Presenter {
     // User whose profile is being displayed
     private User user;
 
+    private Boolean isFriend;
+
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
         userService = UserService.getInstance();
@@ -56,6 +58,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
         //getTuesID();
         this.user = user;
         loadProfile(user);
+        isFriend = false;
     }
 
     /**
@@ -76,7 +79,10 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(s -> s.equals(user.uid))
-                .doOnNext(s -> profileView.changeFabIcon())
+                .doOnNext(s -> {
+                    isFriend = true;
+                    profileView.setAddFriendFabIcon(false);
+                })
                 .subscribe(
                         s -> Log.d(TAG, "loadProfile: Friend uid is " + s),
                         Throwable::printStackTrace
@@ -152,7 +158,15 @@ class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     @Override
-    public void saveContact() {
+    public void toggleContact() {
+        if (isFriend) {
+            deleteContact();
+        } else {
+            saveContact();
+        }
+    }
+
+    private void saveContact() {
         Log.d(TAG, "saveContact: " + user);
 
         // add to my contacts
@@ -161,7 +175,17 @@ class ProfilePresenter implements ProfileContract.Presenter {
         // add to his added_by
         firebaseService.addSavedBy(loggedInUser.getUid());
 
-        profileView.changeFabIcon();
+        profileView.setAddFriendFabIcon(false);
+    }
+
+    private void deleteContact() {
+        // remove from my contacts
+        userService.removeTuesContact(user.uid);
+
+        // firebase remove saved by
+        firebaseService.removeSavedBy(loggedInUser.getUid());
+
+        profileView.setAddFriendFabIcon(true);
     }
 
     @Override
