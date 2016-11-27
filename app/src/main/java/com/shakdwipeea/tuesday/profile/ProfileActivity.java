@@ -22,7 +22,6 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
@@ -129,10 +128,6 @@ public class ProfileActivity extends AppCompatActivity
                 openImageMenu();
                 return true;
 
-            case R.id.action_logout:
-                presenter.logout();
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -181,13 +176,6 @@ public class ProfileActivity extends AppCompatActivity
             // other 'case' lines to check for other
             // permissions this app might request
         }
-    }
-
-    @Override
-    public void launchAuth() {
-        Intent intent = new Intent(this, AuthActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override

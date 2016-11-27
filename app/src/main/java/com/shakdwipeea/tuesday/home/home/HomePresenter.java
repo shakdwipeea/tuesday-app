@@ -71,7 +71,7 @@ public class HomePresenter implements HomeContract.Presenter {
         FirebaseService firebaseService = new FirebaseService(firebaseUser.getUid());
         firebaseService.getProfile()
                 .doOnNext(user -> {
-                    if (user == null) userService.saveUserDetails();
+                    if (user == null || user.name == null) userService.saveUserDetails();
                     else
                         Log.e(TAG, "registerProfile: OOOH user was not null");
                 })

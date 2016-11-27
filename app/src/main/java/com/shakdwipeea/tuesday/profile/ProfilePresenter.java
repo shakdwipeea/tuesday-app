@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -100,17 +99,6 @@ class ProfilePresenter implements ProfileContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
-    }
-
-    @Override
-    public void logout() {
-        FirebaseAuth.getInstance().signOut();
-
-        // explicit sign out from facebook
-        if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER))
-            LoginManager.getInstance().logOut();
-
-        profileView.launchAuth();
     }
 
     @Override

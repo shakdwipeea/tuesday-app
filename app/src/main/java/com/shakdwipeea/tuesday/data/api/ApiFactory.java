@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class ApiFactory {
-    public static String BASE_URL = "http://192.168.0.110:9090";
+    public static String BASE_URL = "http://torpedo.servegame.com:9090";
 
     private static ApiService apiService;
 

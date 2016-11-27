@@ -4,6 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.view.View;
+
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.databinding.ContactItemBinding;
+import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -69,4 +76,26 @@ public class Util {
         return context.getContentResolver().openInputStream(uri);
     }
 
+    public static void displayProfilePic(Context context, ContactItemBinding binding,
+                                         User user) {
+        if (user.pic != null && !user.pic.equals("")) {
+            Picasso.with(context)
+                    .load(user.pic)
+                    .into(binding.profilePic);
+        } else if (user.photo != null) {
+            binding.profilePic.setImageBitmap(user.photo);
+        } else if (user.name != null){
+            // TODO: 17-11-2016 generalize text drawable thingy
+            binding.placeholderProfilePic
+                    .setImageDrawable(
+                            TextDrawable.builder()
+                                    .buildRound(
+                                            String.valueOf(user.name.toUpperCase().charAt(0)),
+                                            ColorGenerator.MATERIAL.getColor(user.name))
+                    );
+
+            binding.placeholderProfilePic.setVisibility(View.VISIBLE);
+            binding.profilePic.setVisibility(View.GONE);
+        }
+    }
 }

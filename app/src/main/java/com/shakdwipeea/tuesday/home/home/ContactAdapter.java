@@ -4,15 +4,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ContactItemBinding;
-import com.squareup.picasso.Picasso;
+import com.shakdwipeea.tuesday.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,25 +56,7 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
         binding.setContact(user);
         binding.setActionHandler(actionHandler);
 
-        if (user.pic != null && !user.pic.equals("")) {
-            Picasso.with(context)
-                    .load(user.pic)
-                    .into(binding.profilePic);
-        } else if (user.photo != null) {
-            binding.profilePic.setImageBitmap(user.photo);
-        } else if (user.name != null){
-            // TODO: 17-11-2016 generalize text drawable thingy
-            binding.placeholderProfilePic
-                    .setImageDrawable(
-                            TextDrawable.builder()
-                                    .buildRound(
-                                            String.valueOf(user.name.toUpperCase().charAt(0)),
-                                            ColorGenerator.MATERIAL.getColor(user.name))
-                    );
-
-            binding.placeholderProfilePic.setVisibility(View.VISIBLE);
-            binding.profilePic.setVisibility(View.GONE);
-        }
+        Util.displayProfilePic(context, binding, user);
     }
 
     @Override

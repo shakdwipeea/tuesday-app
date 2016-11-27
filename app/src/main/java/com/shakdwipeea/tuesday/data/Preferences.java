@@ -48,4 +48,9 @@ public class Preferences {
                 .putBoolean(KEY_SETUP_DONE, value)
                 .apply();
     }
+
+    public void clear() {
+        setNameIndexed(false);
+        setSetupComplete(false);
+    }
 }

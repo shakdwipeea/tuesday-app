@@ -24,7 +24,6 @@ public interface ProfileContract {
 
         void openImageMenu();
         void setProgressBar(boolean show);
-        void launchAuth();
 
         void displayUser(User user);
         void setAddFriendFabIcon(Boolean value);
@@ -41,7 +40,6 @@ public interface ProfileContract {
     interface Presenter {
         void subscribe(User user);
         void loadProfile(User user);
-        void logout();
         void updateProfilePic(String filePath);
         void updateProfilePic(Context context, Uri imageUri);
         void deleteProfilePic();

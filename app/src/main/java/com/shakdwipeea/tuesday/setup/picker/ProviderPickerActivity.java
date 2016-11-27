@@ -36,8 +36,6 @@ public class ProviderPickerActivity extends AppCompatActivity implements PickerC
         openPickerFragment();
     }
 
-
-
     public void openPickerFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.setup_fragment_container, new PickerFragment());

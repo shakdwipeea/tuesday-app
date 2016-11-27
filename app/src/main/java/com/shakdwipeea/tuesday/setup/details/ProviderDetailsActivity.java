@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.Preferences;
@@ -58,7 +59,10 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
                     // Load the first provider initially
                     loadFragment();
                 })
-                .subscribe();
+                .subscribe(
+                        providers -> Log.d(TAG, "setupProviders: providers" + providers),
+                        Throwable::printStackTrace
+                );
     }
 
     private void displayError(String reason) {

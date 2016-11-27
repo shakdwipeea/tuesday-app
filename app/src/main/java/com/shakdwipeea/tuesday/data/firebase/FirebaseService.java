@@ -41,7 +41,7 @@ public class FirebaseService {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
-                            user.uid = dataSnapshot.getKey();
+                            user.uid = uid;
 
                             subscriber.onNext(user);
                             subscriber.onCompleted();

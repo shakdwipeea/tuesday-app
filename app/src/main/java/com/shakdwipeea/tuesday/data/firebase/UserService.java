@@ -55,6 +55,26 @@ public class UserService {
         return userService;
     }
 
+    public Observable<User> getUserDetails() {
+        return Observable.create(subscriber -> {
+           profileRef.addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot dataSnapshot) {
+                   User user = dataSnapshot.getValue(User.class);
+                   user.uid = dataSnapshot.getKey();
+
+                   subscriber.onNext(user);
+                   subscriber.onCompleted();
+               }
+
+               @Override
+               public void onCancelled(DatabaseError databaseError) {
+                    subscriber.onError(databaseError.toException());
+               }
+           });
+        });
+    }
+
     public void saveUserDetails() {
         DatabaseReference userRef = dbRef.child(User.KEY).child(user.getUid());
         if (user.getDisplayName() != null)
@@ -112,7 +132,7 @@ public class UserService {
            dbRef.child(User.KEY)
                    .child(user.getUid())
                    .child(User.UserNode.TUES_ID)
-                   .addValueEventListener(new ValueEventListener() {
+                   .addListenerForSingleValueEvent(new ValueEventListener() {
                        @Override
                        public void onDataChange(DataSnapshot dataSnapshot) {
                            subscriber.onNext((String) dataSnapshot.getValue());
@@ -159,7 +179,7 @@ public class UserService {
     public Observable<Provider> getProvider() {
         return Observable.create(subscriber -> {
            profileRef.child(User.UserNode.PROVIDERS)
-                   .addValueEventListener(new ValueEventListener() {
+                   .addListenerForSingleValueEvent(new ValueEventListener() {
                        @Override
                        public void onDataChange(DataSnapshot dataSnapshot) {
                            Log.d(TAG, "onDataChange: Count" + dataSnapshot.getChildrenCount());
@@ -190,7 +210,7 @@ public class UserService {
         return Observable.create(subscriber -> {
             profileRef.child(User.UserNode.PROVIDERS)
                     .child(name)
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             ProviderDetails providerDetails = dataSnapshot
@@ -216,7 +236,7 @@ public class UserService {
         // TODO: 17-11-2016 investigate what happens here when a new friend is added
         return Observable.create(subscriber -> {
             profileRef.child(User.UserNode.TUES_CONTACTS)
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot contactParentDataSnapshot) {
                             GenericTypeIndicator<List<String>> t = new

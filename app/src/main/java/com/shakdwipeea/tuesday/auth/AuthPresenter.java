@@ -54,9 +54,10 @@ public class AuthPresenter extends Callback<TwitterSession> implements FacebookC
         //listen to firebase auth changes
         authListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
+            Log.d(TAG, "init: User is " + user);
             if (user != null) {
                 // User is signed in
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 view.openProfile(user);
 
                 // when profile page is open we don't need this
