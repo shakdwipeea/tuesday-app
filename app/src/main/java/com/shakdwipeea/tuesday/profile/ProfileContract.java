@@ -21,6 +21,7 @@ public interface ProfileContract {
         void displayName(String name);
         void displayTuesId(String tuesId);
 
+        void loggedInUser(boolean show);
 
         void openImageMenu();
         void setProgressBar(boolean show);

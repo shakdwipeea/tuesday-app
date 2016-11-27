@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
@@ -253,6 +254,16 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     public void displayTuesId(String tuesId) {
         binding.content.tuesid.setText(tuesId);
+    }
+
+    @Override
+    public void loggedInUser(boolean show) {
+        if (show) {
+            binding.fab.setVisibility(View.GONE);
+        } else {
+            binding.fab.setVisibility(View.VISIBLE);
+            binding.toolbar.getMenu().clear();
+        }
     }
 
     @Override

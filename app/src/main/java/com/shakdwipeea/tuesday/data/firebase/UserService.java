@@ -151,6 +151,9 @@ public class UserService {
             user.updateProfile(request)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            if (request.getPhotoUri() != null)
+                                updateProfilePicDatabase(request.getPhotoUri().toString());
+
                             subscriber.onCompleted();
                         } else {
                             subscriber.onError(task.getException());
@@ -158,6 +161,11 @@ public class UserService {
                     })
                     .addOnFailureListener(subscriber::onError);
         });
+    }
+
+    public void updateProfilePicDatabase(String url) {
+        profileRef.child(User.UserNode.PROFILE_PIC)
+                .setValue(url);
     }
 
     public Observable<Void> saveProvider(Provider provider) {

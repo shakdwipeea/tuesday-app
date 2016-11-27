@@ -56,6 +56,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
         //setupProfile();
         //getTuesID();
         this.user = user;
+        profileView.loggedInUser(true);
         loadProfile(user);
         isFriend = false;
     }
@@ -70,6 +71,11 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(user1 -> user = user1)
+                .doOnNext(user1 -> {
+                    if (!user1.uid.equals(loggedInUser.getUid())) {
+                        profileView.loggedInUser(false);
+                    }
+                })
                 .subscribe(
                         user1 -> profileView.displayUser(user1)
                 );
@@ -205,7 +211,10 @@ class ProfilePresenter implements ProfileContract.Presenter {
         userService.updateProfile(profileChangeRequest)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> userService.setHighResProfilePic(true))
+                .doOnCompleted(() -> {
+                    profileView.displayProfilePic(url);
+                    userService.setHighResProfilePic(true);
+                })
                 .subscribe(
                         aVoid ->  {},
                         throwable -> {

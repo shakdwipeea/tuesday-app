@@ -15,6 +15,7 @@ import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.FragmentSettingsBinding;
+import com.shakdwipeea.tuesday.home.home.ContactItemActionHandler;
 import com.shakdwipeea.tuesday.util.Util;
 
 /**
@@ -39,6 +40,7 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
 
         presenter = new SettingsPresenter(this, getContext());
         binding.setPresenter(presenter);
+        binding.contactItem.setActionHandler(new ContactItemActionHandler());
 
         presenter.getUser();
 
