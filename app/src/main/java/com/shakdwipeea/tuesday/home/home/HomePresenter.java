@@ -90,10 +90,10 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     private void getTuesID() {
-        //homeView.displayTuesIdProgress(true);
+        homeView.displayTuesIdProgress(true);
         userService.getTuesId()
                 .doOnNext(tuesId -> {
-                    //homeView.displayTuesIdProgress(false);
+                    homeView.displayTuesIdProgress(false);
                     if (tuesId == null) {
                         getNewTuesId();
                     } else {
