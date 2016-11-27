@@ -61,6 +61,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         setupSearch();
     }
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();

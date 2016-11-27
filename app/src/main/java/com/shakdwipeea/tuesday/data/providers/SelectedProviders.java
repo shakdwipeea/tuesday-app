@@ -5,7 +5,6 @@ import com.shakdwipeea.tuesday.data.entities.Provider;
 import java.util.List;
 
 import rx.Observable;
-import rx.subjects.ReplaySubject;
 
 /**
  * Created by ashak on 08-11-2016.
@@ -14,11 +13,7 @@ import rx.subjects.ReplaySubject;
 public class SelectedProviders {
     private static SelectedProviders selectedProviders;
 
-    private ReplaySubject<List<Provider>> replaySubject;
-
-    private SelectedProviders() {
-        replaySubject = ReplaySubject.create();
-    }
+    private Observable<List<Provider>> providerObservable;
 
     public static SelectedProviders getInstance() {
         if (selectedProviders == null) selectedProviders = new SelectedProviders();
@@ -27,12 +22,11 @@ public class SelectedProviders {
     }
 
     public Observable<List<Provider>> getProviderList() {
-        return replaySubject;
+        return providerObservable;
     }
 
     public void setProviderList(Observable<List<Provider>> providerObservable) {
-        providerObservable
-                .subscribe(replaySubject);
+        this.providerObservable = providerObservable;
     }
 
     public Observable<Provider> getProvider(String name) {

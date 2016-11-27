@@ -35,6 +35,12 @@ public class PickerFragment extends Fragment {
     ProviderAdapter providerAdapter;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getProviderList();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_account_picker, container,
@@ -45,8 +51,6 @@ public class PickerFragment extends Fragment {
         //set up providers list
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4);
         binding.providerList.setLayoutManager(gridLayoutManager);
-
-        getProviderList();
 
         providerAdapter = new ProviderAdapter();
         binding.providerList.setAdapter(providerAdapter);

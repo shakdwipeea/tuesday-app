@@ -90,10 +90,10 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     private void getTuesID() {
-        homeView.displayTuesIdProgress(true);
+        //homeView.displayTuesIdProgress(true);
         userService.getTuesId()
                 .doOnNext(tuesId -> {
-                    homeView.displayTuesIdProgress(false);
+                    //homeView.displayTuesIdProgress(false);
                     if (tuesId == null) {
                         getNewTuesId();
                     } else {
@@ -144,8 +144,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
     public void getContacts() {
         contactsService.getContacts()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .map(contact -> {
                     Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
@@ -154,8 +152,11 @@ public class HomePresenter implements HomeContract.Presenter {
                     user.photo = contact.thumbNail;
                     return user;
                 })
+                .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(
-                        contact -> homeView.addPhoneContact(contact),
+                        contactList -> homeView.displayPhoneContacts(contactList),
                         Throwable::printStackTrace
                 );
     }
