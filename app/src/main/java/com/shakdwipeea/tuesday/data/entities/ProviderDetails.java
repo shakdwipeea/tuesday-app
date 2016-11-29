@@ -7,6 +7,8 @@ import com.android.databinding.library.baseAdapters.BR;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 /**
  * Created by ashak on 11-11-2016.
  */
@@ -19,6 +21,14 @@ public class ProviderDetails extends BaseObservable{
     public String description;
     public boolean isPersonal;
     public Provider.Type type;
+
+    public List<String> accessibleBy;
+    public List<String> requestedBY;
+
+    public static class ProviderDetailNode {
+        public static String ACCESSIBLE_BY_KEY = "accessibleBy";
+        public static String REQUESTED_BY_KEY = "requested_by";
+    }
 
     @Bindable
     public String getPhoneNumber() {

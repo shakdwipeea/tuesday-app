@@ -86,7 +86,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
                         user1 -> profileView.displayUser(user1)
                 );
 
-        firebaseService.getProvider  ()
+        firebaseService.getProvider()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> profileView.clearProvider())
