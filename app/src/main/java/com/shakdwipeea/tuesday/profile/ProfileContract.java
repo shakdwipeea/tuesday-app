@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 
 /**
@@ -19,7 +20,6 @@ public interface ProfileContract {
         void displayProfilePicFromPath(String imagePath);
         void displayDefaultPic();
         void displayName(String name);
-        void displayTuesId(String tuesId);
 
         void loggedInUser(boolean show);
 
@@ -28,6 +28,10 @@ public interface ProfileContract {
 
         void displayUser(User user);
         void setAddFriendFabIcon(Boolean value);
+
+        void addProvider(Provider provider);
+
+        void clearProvider();
     }
 
     /**

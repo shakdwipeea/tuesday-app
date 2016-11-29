@@ -14,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -23,8 +24,10 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
+import com.shakdwipeea.tuesday.setup.ProviderAdapter;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 import com.shakdwipeea.tuesday.util.Util;
 import com.squareup.picasso.Picasso;
@@ -33,6 +36,7 @@ import org.parceler.Parcels;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -65,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity
     MaterialDialog progressBar;
 
     User user;
+
+    ProviderAdapter providerAdapter;
 
     @Override
     protected void onResume() {
@@ -101,6 +107,14 @@ public class ProfileActivity extends AppCompatActivity
 
         // Info passed in Intent can be immediately opened and the rest be retrieved
         displayUser(user);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        providerAdapter = new ProviderAdapter();
+        providerAdapter.setChangeListener(this::displayProviderDetails);
+
+        binding.content.providerList.setLayoutManager(linearLayoutManager);
+        binding.content.providerList.setAdapter(providerAdapter);
 
 //        if (profilePic == null) {
 //            displayError("Profile pic not provided");
@@ -179,9 +193,22 @@ public class ProfileActivity extends AppCompatActivity
         }
     }
 
+    public void displayProviderDetails(Provider provider) {
+        binding.content.providerName.setText(provider.name);
+        switch (provider.getProviderDetails().getType()) {
+            case PHONE_NUMBER_NO_VERIFICATION:
+            case PHONE_NUMBER_VERIFICATION:
+                binding.content.detailProvider.setText(provider.getProviderDetails().phoneNumber);
+                break;
+            case USERNAME_NO_VERIFICATION:
+                binding.content.detailProvider.setText(provider.getProviderDetails().username);
+                break;
+        }
+    }
+
     @Override
     public void displayUser(User user) {
-        binding.content.tuesid.setText(user.tuesId);
+        displayTuesId(user.tuesId);
         displayProfilePic(user.pic);
         displayName(user.name);
     }
@@ -193,6 +220,16 @@ public class ProfileActivity extends AppCompatActivity
         else
             binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
                     R.drawable.ic_people_black_24dp));
+    }
+
+    @Override
+    public void addProvider(Provider provider) {
+        providerAdapter.addProvider(provider);
+    }
+
+    @Override
+    public void clearProvider() {
+        providerAdapter.setProviders(new ArrayList<>());
     }
 
     public void displayError(String error) {
@@ -251,9 +288,10 @@ public class ProfileActivity extends AppCompatActivity
         if (getSupportActionBar() != null) getSupportActionBar().setTitle(name);
     }
 
-    @Override
-    public void displayTuesId(String tuesId) {
-        binding.content.tuesid.setText(tuesId);
+
+    private void displayTuesId(String tuesId) {
+        binding.content.providerName.setText(R.string.tues_id_label);
+        binding.content.detailProvider.setText(tuesId.toUpperCase());
     }
 
     @Override

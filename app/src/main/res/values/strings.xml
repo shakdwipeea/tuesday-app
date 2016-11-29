@@ -118,4 +118,5 @@
     <string name="tuesid_failure">Failed to retrieve your TUESID. Fuck… </string>
     <string name="not_implemented">Not implemented currently.</string>
     <string name="added_contacts">Added Contacts</string>
+    <string name="tues_id_label">TUESID</string>
 </resources>

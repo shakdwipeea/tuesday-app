@@ -32,6 +32,8 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
 
     Context context;
 
+    Provider provider;
+
     public ProviderDetailsFragment() {
     }
 
@@ -41,7 +43,7 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
         context = inflater.getContext();
 
         // Get provider specified
-        Provider provider = Parcels.unwrap(getArguments().getParcelable(SELECTED_PROVIDER_KEY));
+        provider = Parcels.unwrap(getArguments().getParcelable(SELECTED_PROVIDER_KEY));
 
         // initialize presenter
         presenter = new ProviderDetailsPresenter(this, provider);
@@ -90,6 +92,6 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
 
     @Override
     public void loadNextProvider() {
-        fragChange.loadFragment();
+        fragChange.loadFragment(provider);
     }
 }

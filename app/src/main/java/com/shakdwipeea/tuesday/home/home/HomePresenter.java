@@ -152,11 +152,11 @@ public class HomePresenter implements HomeContract.Presenter {
                     user.photo = contact.thumbNail;
                     return user;
                 })
-                .toList()
+                .cache()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(
-                        contactList -> homeView.displayPhoneContacts(contactList),
+                        contact -> homeView.addPhoneContact(contact),
                         Throwable::printStackTrace
                 );
     }

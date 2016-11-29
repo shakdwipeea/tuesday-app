@@ -15,6 +15,7 @@ import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 import com.shakdwipeea.tuesday.data.providers.SelectedProviders;
 import com.shakdwipeea.tuesday.databinding.FragmentAccountPickerBinding;
+import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.setup.ProviderAdapter;
 import com.shakdwipeea.tuesday.setup.details.ProviderDetailsActivity;
 
@@ -56,6 +57,7 @@ public class PickerFragment extends Fragment {
         binding.providerList.setAdapter(providerAdapter);
 
         binding.nextButton.setOnClickListener(view -> openProviderDetailsActivity());
+        binding.skipButton.setOnClickListener(view ->  openHome());
 
         return binding.getRoot();
     }
@@ -93,4 +95,10 @@ public class PickerFragment extends Fragment {
 
         Intent intent = new Intent(context, ProviderDetailsActivity.class);
         startActivity(intent);
-    }}
+    }
+
+    private void openHome() {
+        Intent intent = new Intent(getContext(), HomeActivity.class);
+        startActivity(intent);
+    }
+}

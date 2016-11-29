@@ -1,11 +1,16 @@
 package com.shakdwipeea.tuesday.data.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import java.util.List;
 
@@ -103,6 +108,40 @@ public class FirebaseService {
                                 subscriber.onNext(child.getKey());
                             }
 
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            subscriber.onError(databaseError.toException());
+                        }
+                    });
+        });
+    }
+
+    public Observable<Provider> getProvider() {
+        return getProviderInfo(userRef);
+    }
+
+    public static Observable<Provider> getProviderInfo(DatabaseReference profileRef) {
+        return Observable.create(subscriber -> {
+            profileRef.child(User.UserNode.PROVIDERS)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "onDataChange: Count" + dataSnapshot.getChildrenCount());
+
+                            for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                ProviderDetails providerDetails = snapshot
+                                        .getValue(ProviderDetails.class);
+
+                                Provider provider = ProviderService.getInstance()
+                                        .getProviderHashMap()
+                                        .get(snapshot.getKey());
+                                provider.setProviderDetails(providerDetails);
+                                subscriber.onNext(provider);
+                                Log.d(TAG, "onDataChange: provider " + provider);
+                            }
                             subscriber.onCompleted();
                         }
 

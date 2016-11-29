@@ -57,7 +57,7 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
                     providerAdapter.setProviders(providers);
 
                     // Load the first provider initially
-                    loadFragment();
+                    loadFragment(providers.get(0));
                 })
                 .subscribe(
                         providers -> Log.d(TAG, "setupProviders: providers" + providers),
@@ -71,7 +71,7 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
     }
 
     @Override
-    public void loadFragment() {
+    public void loadFragment(Provider curProvider) {
 
         if (selectedProviderIndex < providerAdapter.getProviders().size()) {
             ProviderDetailsFragment fragment = new ProviderDetailsFragment();

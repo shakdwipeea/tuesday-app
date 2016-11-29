@@ -33,6 +33,6 @@ public class ProviderDetailItemViewModel extends SelectProviderViewModel {
     @Override
     public void onProviderClick(View view) {
         super.onProviderClick(view);
-        if (changeListener != null) changeListener.loadFragment();
+        if (changeListener != null) changeListener.loadFragment(provider);
     }
 }

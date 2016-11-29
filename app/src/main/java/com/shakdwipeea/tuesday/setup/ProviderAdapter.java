@@ -11,6 +11,7 @@ import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.databinding.ProviderPickerItemBinding;
 import com.shakdwipeea.tuesday.setup.details.ProviderDetailItemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
     private Context context;
 
     public ProviderAdapter() {
+        this.providers = new ArrayList<>();
     }
 
     public ProviderAdapter(List<Provider> providers) {
@@ -36,6 +38,11 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
 
     public void setProviders(List<Provider> providers) {
         this.providers = providers;
+        notifyDataSetChanged();
+    }
+
+    public void addProvider(Provider provider) {
+        this.providers.add(provider);
         notifyDataSetChanged();
     }
 

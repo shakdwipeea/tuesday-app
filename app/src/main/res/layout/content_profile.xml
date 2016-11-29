@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <!--<LinearLayout
         android:layout_width="match_parent"
@@ -35,27 +35,34 @@
         android:textAlignment="center"
         android:shadowColor="#26000000"
         android:orientation="vertical"
-        android:background="@drawable/rectangle"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:elevation="4dp"
         >
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="15dp"
+            android:id="@+id/provider_list"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <TextView
+            android:id="@+id/provider_name"
+            android:layout_marginTop="26dp"
             android:textColor="#000"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:textSize="20sp"
-            android:text="TuesID"
             android:background="@drawable/rectangle"
             android:gravity="center_vertical|center_horizontal"/>
 
         <TextView
-            android:id="@+id/tuesid"
+            android:id="@+id/detail_provider"
             android:textColor="#000"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:textSize="20sp"
-            android:textAllCaps="true"
+            android:background="@drawable/rectangle"
             android:gravity="center_vertical|center_horizontal"/>
 
     </LinearLayout>

@@ -80,6 +80,15 @@ class ProfilePresenter implements ProfileContract.Presenter {
                         user1 -> profileView.displayUser(user1)
                 );
 
+        firebaseService.getProvider  ()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> profileView.clearProvider())
+                .subscribe(
+                        provider1 -> profileView.addProvider(provider1),
+                        Throwable::printStackTrace
+                );
+
         userService.getTuesContacts()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -91,19 +100,6 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .subscribe(
                         s -> Log.d(TAG, "loadProfile: Friend uid is " + s),
                         Throwable::printStackTrace
-                );
-    }
-
-    private void getTuesID() {
-        // new tuesid can right now only be requested from HomeActivity
-        userService.getTuesId()
-                .doOnNext(tuesId -> profileView.displayTuesId(tuesId))
-                .subscribe(
-                        tuesId -> {},
-                        throwable -> {
-                            profileView.displayError(throwable.getMessage());
-                            throwable.printStackTrace();
-                        }
                 );
     }
 
@@ -216,7 +212,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
                     userService.setHighResProfilePic(true);
                 })
                 .subscribe(
-                        aVoid ->  {},
+                         aVoid ->  {},
                         throwable -> {
                             profileView.displayError(throwable.getMessage());
                             setupProfile();

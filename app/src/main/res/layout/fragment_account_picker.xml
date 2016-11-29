@@ -16,7 +16,6 @@
         tools:showIn="@layout/activity_setup">
 
         <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/grid_container_card_view"
             android:layout_gravity="center"
             android:layout_width="match_parent"
@@ -69,6 +68,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+        <Button
+            android:id="@+id/skip_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            android:text="Skip"
+            android:backgroundTint="#fff"
+            android:textColor="#000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </layout>

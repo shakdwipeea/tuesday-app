@@ -185,33 +185,7 @@ public class UserService {
     }
 
     public Observable<Provider> getProvider() {
-        return Observable.create(subscriber -> {
-           profileRef.child(User.UserNode.PROVIDERS)
-                   .addListenerForSingleValueEvent(new ValueEventListener() {
-                       @Override
-                       public void onDataChange(DataSnapshot dataSnapshot) {
-                           Log.d(TAG, "onDataChange: Count" + dataSnapshot.getChildrenCount());
-
-                           for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                               ProviderDetails providerDetails = snapshot
-                                       .getValue(ProviderDetails.class);
-
-                               Provider provider = ProviderService.getInstance()
-                                       .getProviderHashMap()
-                                       .get(snapshot.getKey());
-                               provider.setProviderDetails(providerDetails);
-                               subscriber.onNext(provider);
-                               Log.d(TAG, "onDataChange: provider " + provider);
-                           }
-                           subscriber.onCompleted();
-                       }
-
-                       @Override
-                       public void onCancelled(DatabaseError databaseError) {
-                           subscriber.onError(databaseError.toException());
-                       }
-                   });
-        });
+        return FirebaseService.getProviderInfo(profileRef);
     }
 
     public Observable<Provider> getProvider(String name) {
