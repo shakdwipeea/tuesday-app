@@ -7,6 +7,8 @@ import android.net.Uri;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 
+import java.util.List;
+
 /**
  * Created by ashak on 15-10-2016.
  */
@@ -29,10 +31,12 @@ public interface ProfileContract {
         void displayUser(User user);
         void setAddFriendFabIcon(Boolean value);
 
-        void addProvider(Provider provider);
+        void addProvider(List<Provider> provider);
 
         void clearProvider();
         void launchSetup();
+        void displayProviderInfo(String providerName, String providerDetails);
+        void showAccessButton(boolean enable);
     }
 
     /**
@@ -50,5 +54,6 @@ public interface ProfileContract {
         void updateProfilePic(Context context, Uri imageUri);
         void deleteProfilePic();
         void handleFab();
+        void displayProviderDetails(Provider provider);
     }
 }

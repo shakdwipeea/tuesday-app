@@ -1,5 +1,7 @@
 package com.shakdwipeea.tuesday.data.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,6 +15,7 @@ import rx.subscriptions.Subscriptions;
  */
 
 public class RxFirebase {
+    private static final String TAG = "RxFirebase";
 
     static Observable<DataSnapshot> getData(DatabaseReference databaseReference) {
         return Observable.create(subscriber -> {
@@ -38,7 +41,20 @@ public class RxFirebase {
 
     static Observable<String> getChildKeys(DatabaseReference databaseReference) {
         return getData(databaseReference)
-                .flatMap(dataSnapshot -> Observable.from(dataSnapshot.getChildren()))
-                .map(DataSnapshot::getKey);
+                .flatMap(dataSnapshot -> {
+                    if (dataSnapshot.exists()) {
+                        Log.e(TAG, "getChildKeys: It fucking exists");
+                        return Observable.just(dataSnapshot.getChildren());
+                    }
+                    else {
+                        Log.e(TAG, "getChildKeys: Oh it was empty" + databaseReference);
+                        return Observable.empty();
+                    }
+                })
+                .flatMapIterable(dataSnapshots -> dataSnapshots)
+                .map(dataSnapshot -> {
+                    Log.e(TAG, "getChildKeys: Datasnap key get bad " + dataSnapshot.toString());
+                    return dataSnapshot.getKey();
+                });
     }
 }

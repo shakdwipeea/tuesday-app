@@ -12,6 +12,8 @@ import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -145,7 +147,7 @@ public class UserService {
         });
     }
 
-    public Observable<Provider> getProvider() {
+    public Observable<List<Provider>> getProvider() {
         return FirebaseService.getProviderInfo(profileRef);
     }
 
@@ -198,18 +200,10 @@ public class UserService {
                 });
     }
 
-    public void addAccessedBy(String providerName, String uid) {
-        profileRef.child(User.UserNode.PROVIDERS)
+    public void addAccessedBy(String providerName, String friendUid) {
+        userRef.child(User.UserNode.PROVIDERS)
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
-                .child(uid).setValue(true);
-    }
-
-    public Observable<String> getAccessedBy(String providerName) {
-        DatabaseReference reference = profileRef.child(User.UserNode.PROVIDERS)
-                .child(providerName)
-                .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY);
-
-        return RxFirebase.getChildKeys(reference);
+                .child(friendUid).setValue(true);
     }
 }

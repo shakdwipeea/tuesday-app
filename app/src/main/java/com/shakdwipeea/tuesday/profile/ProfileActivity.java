@@ -38,6 +38,7 @@ import org.parceler.Parcels;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -112,7 +113,8 @@ public class ProfileActivity extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false);
         providerAdapter = new ProviderAdapter();
-        providerAdapter.setChangeListener(this::displayProviderDetails);
+        providerAdapter.setChangeListener(curProvider ->
+                presenter.displayProviderDetails(curProvider));
 
         binding.content.providerList.setLayoutManager(linearLayoutManager);
         binding.content.providerList.setAdapter(providerAdapter);
@@ -194,16 +196,19 @@ public class ProfileActivity extends AppCompatActivity
         }
     }
 
-    public void displayProviderDetails(Provider provider) {
-        binding.content.providerName.setText(provider.name);
-        switch (provider.getProviderDetails().getType()) {
-            case PHONE_NUMBER_NO_VERIFICATION:
-            case PHONE_NUMBER_VERIFICATION:
-                binding.content.detailProvider.setText(provider.getProviderDetails().phoneNumber);
-                break;
-            case USERNAME_NO_VERIFICATION:
-                binding.content.detailProvider.setText(provider.getProviderDetails().username);
-                break;
+    public void displayProviderInfo(String providerName, String providerDetail) {
+        binding.content.providerName.setText(providerName);
+        binding.content.detailProvider.setText(providerDetail);
+    }
+
+    @Override
+    public void showAccessButton(boolean enable) {
+        if (enable) {
+            binding.content.detailProvider.setVisibility(View.GONE);
+            binding.content.requestAccess.setVisibility(View.VISIBLE);
+        } else {
+            binding.content.detailProvider.setVisibility(View.VISIBLE);
+            binding.content.requestAccess.setVisibility(View.GONE);
         }
     }
 
@@ -224,8 +229,8 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     @Override
-    public void addProvider(Provider provider) {
-        providerAdapter.addProvider(provider);
+    public void addProvider(List<Provider> providerList) {
+        providerAdapter.setProviders(providerList);
     }
 
     @Override

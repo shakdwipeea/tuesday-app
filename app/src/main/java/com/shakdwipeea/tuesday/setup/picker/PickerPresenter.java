@@ -17,6 +17,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class PickerPresenter implements PickerContract.Presenter {
+    private static final String TAG = "PickerPresenter";
+
     private PickerContract.View pickerView;
     private Subscription subscription;
 
@@ -48,8 +50,7 @@ public class PickerPresenter implements PickerContract.Presenter {
         Observable<List<Provider>> providerObservable = UserService.getInstance()
                 .getProvider()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .toList();
+                .observeOn(AndroidSchedulers.mainThread());
 
         SelectedProviders.getInstance()
                 .setProviderList(providerObservable);

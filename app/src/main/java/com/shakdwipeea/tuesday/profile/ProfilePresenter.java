@@ -13,6 +13,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.data.AuthService;
 import com.shakdwipeea.tuesday.data.ProfilePicService;
+import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
@@ -89,10 +90,10 @@ class ProfilePresenter implements ProfileContract.Presenter {
         firebaseService.getProvider()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> profileView.clearProvider())
                 .subscribe(
-                        provider1 -> profileView.addProvider(provider1),
-                        Throwable::printStackTrace
+                        providerList -> profileView.addProvider(providerList),
+                        Throwable::printStackTrace,
+                        () -> Log.e(TAG, "loadProfile: Complete called")
                 );
 
         userService.getTuesContacts()
@@ -263,6 +264,28 @@ class ProfilePresenter implements ProfileContract.Presenter {
         } else {
             profileView.displayError("You are not logged in.");
         }
+    }
+
+    public void displayProviderDetails(Provider provider) {
+        String providerDetail = "Not available";
+
+        if (provider.getProviderDetails().isPersonal) {
+            providerDetail = "Private Info";
+            profileView.showAccessButton(true);
+        } else {
+            profileView.showAccessButton(false);
+            switch (provider.getProviderDetails().getType()) {
+                case PHONE_NUMBER_NO_VERIFICATION:
+                case PHONE_NUMBER_VERIFICATION:
+                    providerDetail = provider.getProviderDetails().phoneNumber;
+                    break;
+                case USERNAME_NO_VERIFICATION:
+                    providerDetail = provider.getProviderDetails().username;
+                    break;
+            }
+        }
+
+        profileView.displayProviderInfo(provider.name, providerDetail);
     }
 
     /**

@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import rx.Observable;
  * Fragment for selecting 3rd party account providers
  */
 public class PickerFragment extends Fragment {
+    private static final String TAG = "PickerFragment";
 
     FragmentAccountPickerBinding binding;
     Context context;
@@ -78,7 +80,11 @@ public class PickerFragment extends Fragment {
 
                     providerAdapter.setProviders(providerService.getProviderList());
                 })
-                .subscribe();
+                .subscribe(
+                        providers -> Log.e(TAG, "getProviderList: Jj " + providers),
+                        Throwable::printStackTrace,
+                        () -> Log.e(TAG, "getProviderList: Subscribeption complete")
+                );
     }
 
     private void openProviderDetailsActivity() {

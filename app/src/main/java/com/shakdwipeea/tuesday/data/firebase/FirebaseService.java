@@ -12,6 +12,7 @@ import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -45,11 +46,18 @@ public class FirebaseService {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            user.uid = uid;
+                            if (dataSnapshot.exists()) {
+                                User user = dataSnapshot.getValue(User.class);
+                                user.uid = uid;
 
-                            subscriber.onNext(user);
-                            subscriber.onCompleted();
+                                subscriber.onNext(user);
+                                subscriber.onCompleted();
+                            } else {
+                                subscriber.onError(new Throwable("Datasnapshot does not exist  " +
+                                        dataSnapshot.getKey()));
+                                Log.e(TAG, "onDataChange: Data snapshot was null" +
+                                        dataSnapshot.getKey());
+                            }
                         }
 
                         @Override
@@ -119,37 +127,47 @@ public class FirebaseService {
         });
     }
 
-    public Observable<Provider> getProvider() {
+    public Observable<List<Provider>> getProvider() {
         return getProviderInfo(userRef);
     }
 
-    public static Observable<Provider> getProviderInfo(DatabaseReference profileRef) {
-        return Observable.create(subscriber -> {
-            profileRef.child(User.UserNode.PROVIDERS)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "onDataChange: Count" + dataSnapshot.getChildrenCount());
+//    public Observable<Provider> populateProviderList(List<Provider> providerList) {
+//        return Observable.create(subscriber -> {
+//           for (Provider p: providerList) {
+//               getAccessedBy(p.name)
+//
+//           }
+//        });
+//    }
 
-                            for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                                ProviderDetails providerDetails = snapshot
-                                        .getValue(ProviderDetails.class);
+    public static Observable<List<Provider>> getProviderInfo(DatabaseReference profileRef) {
+        return RxFirebase
+                .getData(profileRef.child(User.UserNode.PROVIDERS))
+                .map(dataSnapshot -> {
+                    Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                    List<Provider> providerList = new ArrayList<>();
 
-                                Provider provider = ProviderService.getInstance()
-                                        .getProviderHashMap()
-                                        .get(snapshot.getKey());
-                                provider.setProviderDetails(providerDetails);
-                                subscriber.onNext(provider);
-                                Log.d(TAG, "onDataChange: provider " + provider);
-                            }
-                            subscriber.onCompleted();
-                        }
+                    for (DataSnapshot snap : dataSnapshots) {
+                        ProviderDetails providerDetails = snap.getValue(ProviderDetails.class);
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            subscriber.onError(databaseError.toException());
-                        }
-                    });
-        });
+                        Provider provider = ProviderService.getInstance()
+                                .getProviderHashMap()
+                                .get(snap.getKey());
+                        provider.setProviderDetails(providerDetails);
+
+                        Log.d(TAG, "onDataChange: provider " + provider);
+                        providerList.add(provider);
+                    }
+
+                    return providerList;
+                });
+    }
+
+    public Observable<String> getAccessedBy(String providerName) {
+        DatabaseReference reference = userRef.child(User.UserNode.PROVIDERS)
+                .child(providerName)
+                .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY);
+
+        return RxFirebase.getChildKeys(reference);
     }
 }
