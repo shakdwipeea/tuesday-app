@@ -44,6 +44,9 @@ class ProfilePresenter implements ProfileContract.Presenter {
 
     private Boolean isFriend;
 
+    // The profile being viewed is of the logged in person
+    private Boolean isSelf;
+
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
         userService = UserService.getInstance();
@@ -56,7 +59,6 @@ class ProfilePresenter implements ProfileContract.Presenter {
         //setupProfile();
         //getTuesID();
         this.user = user;
-        profileView.loggedInUser(true);
         loadProfile(user);
         isFriend = false;
     }
@@ -74,6 +76,10 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 .doOnNext(user1 -> {
                     if (!user1.uid.equals(loggedInUser.getUid())) {
                         profileView.loggedInUser(false);
+                        isSelf = false;
+                    } else {
+                        profileView.loggedInUser(true);
+                        isSelf = true;
                     }
                 })
                 .subscribe(
@@ -147,12 +153,20 @@ class ProfilePresenter implements ProfileContract.Presenter {
                 );
     }
 
-    @Override
     public void toggleContact() {
         if (isFriend) {
             deleteContact();
         } else {
             saveContact();
+        }
+    }
+
+    @Override
+    public void handleFab() {
+        if (isSelf) {
+            profileView.launchSetup();
+        } else {
+            toggleContact();
         }
     }
 

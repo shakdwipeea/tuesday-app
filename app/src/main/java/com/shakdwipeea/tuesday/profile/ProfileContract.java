@@ -32,6 +32,7 @@ public interface ProfileContract {
         void addProvider(Provider provider);
 
         void clearProvider();
+        void launchSetup();
     }
 
     /**
@@ -48,6 +49,6 @@ public interface ProfileContract {
         void updateProfilePic(String filePath);
         void updateProfilePic(Context context, Uri imageUri);
         void deleteProfilePic();
-        void toggleContact();
+        void handleFab();
     }
 }

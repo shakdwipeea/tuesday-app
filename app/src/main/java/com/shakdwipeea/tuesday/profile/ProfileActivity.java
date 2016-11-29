@@ -28,6 +28,7 @@ import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.setup.ProviderAdapter;
+import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 import com.shakdwipeea.tuesday.util.Util;
 import com.squareup.picasso.Picasso;
@@ -232,6 +233,12 @@ public class ProfileActivity extends AppCompatActivity
         providerAdapter.setProviders(new ArrayList<>());
     }
 
+    @Override
+    public void launchSetup() {
+        Intent intent = new Intent(this, ProviderPickerActivity.class);
+        startActivity(intent);
+    }
+
     public void displayError(String error) {
         Snackbar.make(binding.getRoot(), error, Snackbar.LENGTH_SHORT)
                 .show();
@@ -291,13 +298,15 @@ public class ProfileActivity extends AppCompatActivity
 
     private void displayTuesId(String tuesId) {
         binding.content.providerName.setText(R.string.tues_id_label);
-        binding.content.detailProvider.setText(tuesId.toUpperCase());
+        if (tuesId != null)
+            binding.content.detailProvider.setText(tuesId.toUpperCase());
     }
 
     @Override
     public void loggedInUser(boolean show) {
         if (show) {
-            binding.fab.setVisibility(View.GONE);
+            binding.fab.setImageDrawable(ContextCompat
+                    .getDrawable(this, R.drawable.ic_edit_black_24dp));
         } else {
             binding.fab.setVisibility(View.VISIBLE);
             binding.toolbar.getMenu().clear();
