@@ -69,9 +69,10 @@
         <activity
             android:name=".setup.details.ProviderDetailsActivity"
             android:label="@string/title_activity_provider_details"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
         </activity>
+
     </application>
 
 </manifest>

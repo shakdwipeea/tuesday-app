@@ -96,7 +96,7 @@ public class HomePresenter implements HomeContract.Presenter {
                     homeView.displayTuesIdProgress(false);
                     if (tuesId == null) {
                         getNewTuesId();
-                    } else {
+                     } else {
                         homeView.displayTuesId(tuesId);
                     }
                 })

@@ -58,7 +58,8 @@
                 <EditText
                     android:text="@={provider.providerDetails.username}"
                     android:textSize="14sp"
-                    android:singleLine="true"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:hint="Enter id here"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

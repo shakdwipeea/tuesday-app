@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity
 
     ActivityProfileBinding binding;
 
-    private ProfileContract.Presenter presenter;
+    private ProfilePresenter presenter;
     private Drawable thumbnailDrawable;
 
     private String currentPhotoPath;
@@ -118,6 +118,8 @@ public class ProfileActivity extends AppCompatActivity
 
         binding.content.providerList.setLayoutManager(linearLayoutManager);
         binding.content.providerList.setAdapter(providerAdapter);
+
+        binding.content.setHandler(presenter);
 
 //        if (profilePic == null) {
 //            displayError("Profile pic not provided");
@@ -196,8 +198,10 @@ public class ProfileActivity extends AppCompatActivity
         }
     }
 
-    public void displayProviderInfo(String providerName, String providerDetail) {
-        binding.content.providerName.setText(providerName);
+    @Override
+    public void displayProviderInfo(Provider provider, String providerDetail) {
+        binding.content.setProvider(provider);
+        binding.content.providerName.setText(provider.name);
         binding.content.detailProvider.setText(providerDetail);
     }
 
@@ -380,7 +384,8 @@ public class ProfileActivity extends AppCompatActivity
                 .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     /**
                      * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                     * returning false here won't allow the newly selected radio button to actually be selected.
+                     * returning false here won't allow the newly selected radio button
+                     * to actually be selected.
                      **/
                     switch (which) {
                         case 0:

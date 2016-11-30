@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.databinding.ActivityHomeBinding;
 import com.shakdwipeea.tuesday.home.home.HomeFragment;
+import com.shakdwipeea.tuesday.home.notification.NotificationFragment;
 import com.shakdwipeea.tuesday.home.settings.SettingsFragment;
 
 public class HomeActivity extends AppCompatActivity {
@@ -74,7 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                         loadFragment(new HomeFragment());
                         break;
                     case 1:
-                        displayError(getString(R.string.not_implemented));
+                        loadFragment(new NotificationFragment());
                         break;
                     case 2:
                         loadFragment(new SettingsFragment());

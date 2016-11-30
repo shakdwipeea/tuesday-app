@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
@@ -66,6 +67,14 @@ public class FirebaseService {
                         }
                     });
         });
+    }
+
+    public Observable<NotificationDetail> inflateNotificationUser(NotificationDetail notificationDetail) {
+        return getProfile()
+                .map(user -> {
+                    notificationDetail.user = user;
+                    return notificationDetail;
+                });
     }
 
     public Observable<String> getFriendUid() {
@@ -150,6 +159,10 @@ public class FirebaseService {
                     for (DataSnapshot snap : dataSnapshots) {
                         ProviderDetails providerDetails = snap.getValue(ProviderDetails.class);
 
+                        DataSnapshot requestedByData = snap
+                                .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY);
+                        providerDetails.requestedBy = RxFirebase.getKeys(requestedByData);
+
                         Provider provider = ProviderService.getInstance()
                                 .getProviderHashMap()
                                 .get(snap.getKey());
@@ -169,5 +182,12 @@ public class FirebaseService {
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY);
 
         return RxFirebase.getChildKeys(reference);
+    }
+
+    public void addRequestedBy(String providerName, String requestedByUid) {
+        userRef.child(User.UserNode.PROVIDERS)
+                .child(providerName)
+                .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY)
+                .child(requestedByUid).setValue(true);
     }
 }

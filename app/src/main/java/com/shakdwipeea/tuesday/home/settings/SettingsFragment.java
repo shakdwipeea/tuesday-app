@@ -56,7 +56,8 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
     @Override
     public void displayUserDetails(User user) {
         binding.contactItem.setContact(user);
-        Util.displayProfilePic(getContext(), binding.contactItem, user);
+        Util.displayProfilePic(getContext(), binding.contactItem.profilePic,
+                binding.contactItem.placeholderProfilePic, user);
     }
 
     @Override

@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
  * Created by ashak on 15-10-2016.
  */
 
-class ProfilePresenter implements ProfileContract.Presenter {
+public class ProfilePresenter implements ProfileContract.Presenter {
     private static final String TAG = "ProfilePresenter";
 
     private ProfileContract.View profileView;
@@ -99,7 +99,7 @@ class ProfilePresenter implements ProfileContract.Presenter {
         userService.getTuesContacts()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(s -> s.equals(user.uid))
+                .filter( s -> s.equals(user.uid))
                 .doOnNext(s -> {
                     isFriend = true;
                     profileView.setAddFriendFabIcon(false);
@@ -269,9 +269,19 @@ class ProfilePresenter implements ProfileContract.Presenter {
     public void displayProviderDetails(Provider provider) {
         String providerDetail = "Not available";
 
-        if (provider.getProviderDetails().isPersonal) {
+        if (provider.getProviderDetails().isPersonal && !isSelf) {
             providerDetail = "Private Info";
             profileView.showAccessButton(true);
+
+            firebaseService.getAccessedBy(provider.name)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(s -> {
+                        if (s.equals(loggedInUser.getUid())) {
+                            profileView.showAccessButton(false);
+                        }
+                    });
+
         } else {
             profileView.showAccessButton(false);
             switch (provider.getProviderDetails().getType()) {
@@ -285,7 +295,12 @@ class ProfilePresenter implements ProfileContract.Presenter {
             }
         }
 
-        profileView.displayProviderInfo(provider.name, providerDetail);
+        profileView.displayProviderInfo(provider, providerDetail);
+    }
+
+    public void requestAccess(Provider provider) {
+        Log.d(TAG, "requestAccess: " + provider);
+        firebaseService.addRequestedBy(provider.name, loggedInUser.getUid());
     }
 
     /**

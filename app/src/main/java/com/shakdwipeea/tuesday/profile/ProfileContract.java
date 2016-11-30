@@ -35,7 +35,7 @@ public interface ProfileContract {
 
         void clearProvider();
         void launchSetup();
-        void displayProviderInfo(String providerName, String providerDetails);
+        void displayProviderInfo(Provider provider, String providerDetails);
         void showAccessButton(boolean enable);
     }
 

@@ -56,7 +56,7 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
         binding.setContact(user);
         binding.setActionHandler(actionHandler);
 
-        Util.displayProfilePic(context, binding, user);
+        Util.displayProfilePic(context, binding.profilePic, binding.placeholderProfilePic, user);
     }
 
     @Override

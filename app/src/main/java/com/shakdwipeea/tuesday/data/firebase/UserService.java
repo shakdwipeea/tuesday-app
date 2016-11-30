@@ -5,8 +5,10 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
@@ -15,6 +17,7 @@ import com.shakdwipeea.tuesday.data.providers.ProviderService;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by ashak on 17-10-2016.
@@ -160,6 +163,10 @@ public class UserService {
                     ProviderDetails providerDetails = dataSnapshot
                             .getValue(ProviderDetails.class);
 
+                    DataSnapshot requestedByData = dataSnapshot
+                            .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY);
+                    providerDetails.requestedBy = RxFirebase.getKeys(requestedByData);
+
                     Provider provider = ProviderService.getInstance()
                             .getProviderHashMap().get(dataSnapshot.getKey());
                     provider.setProviderDetails(providerDetails);
@@ -197,6 +204,50 @@ public class UserService {
                 .flatMap(s -> {
                     FirebaseService firebaseService = new FirebaseService(s);
                     return firebaseService.getProfile();
+                });
+    }
+
+    public Observable<NotificationDetail> getRequestedBy() {
+        return getProvider()
+                .flatMap(Observable::from)
+                .filter(provider ->
+                        provider.providerDetails.requestedBy != null
+                                && provider.providerDetails.requestedBy.size() > 0)
+                .lift(new Observable.Operator<NotificationDetail, Provider>() {
+                    @Override
+                    public Subscriber<? super Provider> call(Subscriber<? super NotificationDetail> subscriber) {
+                        return new Subscriber<Provider>() {
+                            @Override
+                            public void onCompleted() {
+                                if (!subscriber.isUnsubscribed()) {
+                                    subscriber.onCompleted();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (!subscriber.isUnsubscribed()) {
+                                    subscriber.onError(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(Provider provider) {
+                                if (!subscriber.isUnsubscribed()) {
+                                    for (String uid : provider.getProviderDetails().requestedBy) {
+                                        NotificationDetail detail = new NotificationDetail();
+                                        detail.user.uid = uid;
+                                        detail.provider = provider;
+                                        subscriber.onNext(detail);
+                                    }
+                                }
+                            }
+                        };
+                    }
+                })
+                .flatMap(notificationDetail -> {
+                    FirebaseService firebaseService = new FirebaseService(notificationDetail.user.uid);
+                    return firebaseService.inflateNotificationUser(notificationDetail);
                 });
     }
 

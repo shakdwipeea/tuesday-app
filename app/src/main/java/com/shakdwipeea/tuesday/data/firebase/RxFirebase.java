@@ -7,6 +7,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import rx.Observable;
 import rx.subscriptions.Subscriptions;
 
@@ -52,9 +54,16 @@ public class RxFirebase {
                     }
                 })
                 .flatMapIterable(dataSnapshots -> dataSnapshots)
-                .map(dataSnapshot -> {
-                    Log.e(TAG, "getChildKeys: Datasnap key get bad " + dataSnapshot.toString());
-                    return dataSnapshot.getKey();
-                });
+                .map(DataSnapshot::getKey);
+    }
+
+    static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
+        ArrayList<String> keys = new ArrayList<>();
+
+        for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+            keys.add(snapshot.getKey());
+        }
+
+        return keys;
     }
 }

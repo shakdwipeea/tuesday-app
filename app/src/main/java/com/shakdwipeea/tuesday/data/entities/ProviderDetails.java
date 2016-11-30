@@ -23,7 +23,7 @@ public class ProviderDetails extends BaseObservable{
     public Provider.Type type;
 
     public List<String> accessibleBy;
-    public List<String> requestedBY;
+    public List<String> requestedBy;
 
     public static class ProviderDetailNode {
         public static String ACCESSIBLE_BY_KEY = "accessibleBy";

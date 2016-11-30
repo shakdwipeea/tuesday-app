@@ -5,16 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.shakdwipeea.tuesday.data.entities.User;
-import com.shakdwipeea.tuesday.databinding.ContactItemBinding;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Observable;
 
 /**
@@ -76,17 +77,17 @@ public class Util {
         return context.getContentResolver().openInputStream(uri);
     }
 
-    public static void displayProfilePic(Context context, ContactItemBinding binding,
-                                         User user) {
+    public static void displayProfilePic(Context context, CircleImageView profilePicView,
+                                         ImageView placeholderView, User user) {
         if (user.pic != null && !user.pic.equals("")) {
             Picasso.with(context)
                     .load(user.pic)
-                    .into(binding.profilePic);
+                    .into(profilePicView);
         } else if (user.photo != null) {
-            binding.profilePic.setImageBitmap(user.photo);
+            profilePicView.setImageBitmap(user.photo);
         } else if (user.name != null){
             // TODO: 17-11-2016 generalize text drawable thingy
-            binding.placeholderProfilePic
+            placeholderView
                     .setImageDrawable(
                             TextDrawable.builder()
                                     .buildRound(
@@ -94,8 +95,8 @@ public class Util {
                                             ColorGenerator.MATERIAL.getColor(user.name))
                     );
 
-            binding.placeholderProfilePic.setVisibility(View.VISIBLE);
-            binding.profilePic.setVisibility(View.GONE);
+            placeholderView.setVisibility(View.VISIBLE);
+            profilePicView.setVisibility(View.GONE);
         }
     }
 }
