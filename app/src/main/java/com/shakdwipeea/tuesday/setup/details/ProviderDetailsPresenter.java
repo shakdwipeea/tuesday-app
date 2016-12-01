@@ -3,9 +3,6 @@ package com.shakdwipeea.tuesday.setup.details;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
 /**
  * Created by ashak on 11-11-2016.
  */
@@ -26,19 +23,8 @@ public class ProviderDetailsPresenter implements ProviderDetailsContract.Present
     public void saveProviderDetails() {
         // TODO: 11-11-2016 from string resource
         providerDetailsView.changeButtonText("Saving");
-        userService.saveProvider(provider)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doOnCompleted(() -> {
-                    providerDetailsView.loadNextProvider();
-                })
-                .doOnError(throwable -> {
-                    providerDetailsView.changeButtonText("Save");
-                    providerDetailsView.displayError(throwable.getMessage());
-                })
-                .subscribe(
-                        aVoid -> {},
-                        Throwable::printStackTrace
-                );
+        userService.saveProvider(provider);
+        providerDetailsView.changeButtonText("Save");
+        providerDetailsView.loadNextProvider();
     }
 }

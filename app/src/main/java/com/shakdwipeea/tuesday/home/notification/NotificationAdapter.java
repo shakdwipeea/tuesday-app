@@ -40,6 +40,7 @@ public class NotificationAdapter extends
 
     public void clearNotification() {
         notificationDetails.clear();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -62,6 +63,7 @@ public class NotificationAdapter extends
         holder.binding.setProvider(notificationDetail.provider);
         holder.binding.setContact(notificationDetail.user);
         holder.binding.setActionHandler(new ContactItemActionHandler());
+        holder.binding.setItemViewModel(new NotificationItemViewModel());
         Util.displayProfilePic(context, holder.binding.profilePic,
                 holder.binding.placeholderProfilePic, notificationDetail.user);
     }

@@ -8,7 +8,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
@@ -17,7 +16,6 @@ import com.shakdwipeea.tuesday.data.providers.ProviderService;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by ashak on 17-10-2016.
@@ -134,20 +132,11 @@ public class UserService {
                 .setValue(url);
     }
 
-    public Observable<Void> saveProvider(Provider provider) {
-        return Observable.create(subscriber -> {
-            profileRef.child(User.UserNode.PROVIDERS)
-                    .child(provider.getName())
-                    .setValue(provider.getProviderDetails())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.isComplete()) {
-                            subscriber.onCompleted();
-                        } else {
-                            subscriber.onError(task.getException());
-                        }
-                    })
-                    .addOnFailureListener(subscriber::onError);
-        });
+    public void saveProvider(Provider provider) {
+            DatabaseReference providerRef = profileRef.child(User.UserNode.PROVIDERS)
+                    .child(provider.getName());
+
+            provider.getProviderDetails().saveProviderDetails(providerRef);
     }
 
     public Observable<List<Provider>> getProvider() {
@@ -207,52 +196,32 @@ public class UserService {
                 });
     }
 
-    public Observable<NotificationDetail> getRequestedBy() {
-        return getProvider()
-                .flatMap(Observable::from)
-                .filter(provider ->
-                        provider.providerDetails.requestedBy != null
-                                && provider.providerDetails.requestedBy.size() > 0)
-                .lift(new Observable.Operator<NotificationDetail, Provider>() {
-                    @Override
-                    public Subscriber<? super Provider> call(Subscriber<? super NotificationDetail> subscriber) {
-                        return new Subscriber<Provider>() {
-                            @Override
-                            public void onCompleted() {
-                                if (!subscriber.isUnsubscribed()) {
-                                    subscriber.onCompleted();
-                                }
-                            }
+    public void approveRequest(Provider provider, String uid) {
+        removeRequestedBy(provider.name, uid);
+        addAccessedBy(provider.name, uid);
+    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                if (!subscriber.isUnsubscribed()) {
-                                    subscriber.onError(e);
-                                }
-                            }
+    public void rejectRequest(Provider provider, String uid) {
+        removeRequestedBy(provider.name, uid);
+        removeAccessedBy(provider.name, uid);
+    }
 
-                            @Override
-                            public void onNext(Provider provider) {
-                                if (!subscriber.isUnsubscribed()) {
-                                    for (String uid : provider.getProviderDetails().requestedBy) {
-                                        NotificationDetail detail = new NotificationDetail();
-                                        detail.user.uid = uid;
-                                        detail.provider = provider;
-                                        subscriber.onNext(detail);
-                                    }
-                                }
-                            }
-                        };
-                    }
-                })
-                .flatMap(notificationDetail -> {
-                    FirebaseService firebaseService = new FirebaseService(notificationDetail.user.uid);
-                    return firebaseService.inflateNotificationUser(notificationDetail);
-                });
+    public void removeAccessedBy(String providerName, String friendUid) {
+        profileRef.child(User.UserNode.PROVIDERS)
+                .child(providerName)
+                .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
+                .child(friendUid).removeValue();
+    }
+
+    public void removeRequestedBy(String providerName, String uid) {
+        profileRef.child(User.UserNode.PROVIDERS)
+                .child(providerName)
+                .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY)
+                .child(uid).removeValue();
     }
 
     public void addAccessedBy(String providerName, String friendUid) {
-        userRef.child(User.UserNode.PROVIDERS)
+        profileRef.child(User.UserNode.PROVIDERS)
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
                 .child(friendUid).setValue(true);

@@ -17,6 +17,8 @@ import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ashak on 17-10-2016.
@@ -98,5 +100,10 @@ public class Util {
             placeholderView.setVisibility(View.VISIBLE);
             profilePicView.setVisibility(View.GONE);
         }
+    }
+
+    public static <T> Observable.Transformer<T, T> applySchedulers() {
+        return observable -> observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

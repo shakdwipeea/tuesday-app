@@ -4,10 +4,17 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
 import com.android.databinding.library.baseAdapters.BR;
+import com.google.firebase.database.DatabaseReference;
 
 import org.parceler.Parcel;
 
 import java.util.List;
+
+import static com.shakdwipeea.tuesday.data.entities.ProviderDetails.ProviderDetailNode.DESCRIPTION_KEY;
+import static com.shakdwipeea.tuesday.data.entities.ProviderDetails.ProviderDetailNode.IS_PERSONAL_KEY;
+import static com.shakdwipeea.tuesday.data.entities.ProviderDetails.ProviderDetailNode.PHONE_NUMBER_KEY;
+import static com.shakdwipeea.tuesday.data.entities.ProviderDetails.ProviderDetailNode.PROVIDER_TYPE_KEY;
+import static com.shakdwipeea.tuesday.data.entities.ProviderDetails.ProviderDetailNode.USERNAME_KEY;
 
 /**
  * Created by ashak on 11-11-2016.
@@ -26,8 +33,26 @@ public class ProviderDetails extends BaseObservable{
     public List<String> requestedBy;
 
     public static class ProviderDetailNode {
-        public static String ACCESSIBLE_BY_KEY = "accessibleBy";
+        public static String ACCESSIBLE_BY_KEY = "accessible_by";
         public static String REQUESTED_BY_KEY = "requested_by";
+
+        public static String PHONE_NUMBER_KEY = "phoneNumber";
+        public static String USERNAME_KEY = "username";
+        public static String DESCRIPTION_KEY = "description";
+        public static String IS_PERSONAL_KEY = "isPersonal";
+        public static String PROVIDER_TYPE_KEY = "type";
+    }
+
+    /**
+     * Save provider details
+     * @param reference Reference to the correct provider name
+     */
+    public void saveProviderDetails(DatabaseReference reference) {
+        reference.child(PHONE_NUMBER_KEY).setValue(phoneNumber);
+        reference.child(USERNAME_KEY).setValue(username);
+        reference.child(DESCRIPTION_KEY).setValue(description);
+        reference.child(IS_PERSONAL_KEY).setValue(isPersonal);
+        reference.child(PROVIDER_TYPE_KEY).setValue(type);
     }
 
     @Bindable
