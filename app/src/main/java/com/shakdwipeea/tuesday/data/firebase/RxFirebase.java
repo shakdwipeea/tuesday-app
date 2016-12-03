@@ -57,6 +57,11 @@ public class RxFirebase {
                 .map(DataSnapshot::getKey);
     }
 
+    static Observable<ArrayList<String>> getChildKeysAsList(DatabaseReference reference) {
+        return getData(reference)
+                .map(RxFirebase::getKeys);
+    }
+
     static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<>();
 

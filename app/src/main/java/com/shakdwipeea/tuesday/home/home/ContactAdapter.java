@@ -18,7 +18,7 @@ import java.util.List;
  * Created by ashak on 05-11-2016.
  */
 
-class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
     private List<User> users;
 
     private Context context;
@@ -35,6 +35,11 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHold
     public void addUser(User user) {
         this.users.add(user);
         notifyItemInserted(users.size() - 1);
+    }
+
+    public void clearUsers() {
+        users.clear();
+        notifyDataSetChanged();
     }
 
     @Override

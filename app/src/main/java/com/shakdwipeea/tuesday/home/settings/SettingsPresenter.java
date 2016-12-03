@@ -1,12 +1,14 @@
 package com.shakdwipeea.tuesday.home.settings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.people.PeopleListActivity;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -52,5 +54,10 @@ public class SettingsPresenter implements SettingsContract.Presenter {
         preferences.clear();
 
         settingsView.launchAuth();
+    }
+
+    public void viewPeopleHavingContact(View view) {
+        Intent intent = new Intent(view.getContext(), PeopleListActivity.class);
+        view.getContext().startActivity(intent);
     }
 }

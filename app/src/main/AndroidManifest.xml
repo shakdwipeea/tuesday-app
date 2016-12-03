@@ -72,7 +72,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
         </activity>
-
+        <activity
+            android:name=".people.PeopleListActivity"
+            android:label="@string/title_activity_people_list"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

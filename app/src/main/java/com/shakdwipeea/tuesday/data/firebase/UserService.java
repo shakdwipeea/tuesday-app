@@ -13,6 +13,7 @@ import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -225,5 +226,10 @@ public class UserService {
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
                 .child(friendUid).setValue(true);
+    }
+
+    public Observable<ArrayList<String>> getAddedBy() {
+        return RxFirebase
+                .getChildKeysAsList(profileRef.child(User.UserNode.ADDED_BY));
     }
 }
