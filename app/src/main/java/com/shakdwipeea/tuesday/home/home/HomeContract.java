@@ -22,12 +22,19 @@ public interface HomeContract {
         void displayTuesIdFailure();
         boolean hasPermissions();
         void addTuesContact(User user);
+        void clearTuesContact();
+
+        void showTuesidInput(boolean enable);
+        void openTuesContact(User user);
+
+        void showProgress(boolean enable);
     }
 
     interface Presenter {
         void subscribe(Context context);
         Observable<List<User>> searchName(String name);
-        void getContacts();
+        void getContacts(Context context);
         void unsubscribe();
+        void getTuesContact(String tuesId);
     }
 }

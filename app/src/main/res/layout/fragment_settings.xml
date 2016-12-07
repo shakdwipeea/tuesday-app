@@ -1,4 +1,4 @@
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -10,8 +10,10 @@
                  xmlns:tools="http://schemas.android.com/tools"
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"
+                  android:layout_marginTop="@dimen/app_bar_height"
                   android:orientation="vertical"
-                 tools:context="com.shakdwipeea.tuesday.home.settings.SettingsFragment">
+                  app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                  tools:context="com.shakdwipeea.tuesday.home.settings.SettingsFragment">
 
         <include
             android:id="@+id/contact_item"

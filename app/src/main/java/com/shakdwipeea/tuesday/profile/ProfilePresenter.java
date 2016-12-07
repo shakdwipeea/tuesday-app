@@ -13,6 +13,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.data.AuthService;
 import com.shakdwipeea.tuesday.data.ProfilePicService;
+import com.shakdwipeea.tuesday.data.contacts.AddContactService;
 import com.shakdwipeea.tuesday.data.entities.Provider;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
@@ -40,6 +41,8 @@ public class ProfilePresenter implements ProfileContract.Presenter {
     private UserService userService;
     private FirebaseService firebaseService;
 
+    private AddContactService addContactService;
+
     // User whose profile is being displayed
     private User user;
 
@@ -51,6 +54,8 @@ public class ProfilePresenter implements ProfileContract.Presenter {
     ProfilePresenter(ProfileContract.View profileView) {
         this.profileView = profileView;
         userService = UserService.getInstance();
+
+        addContactService = new AddContactService(profileView.getContext());
     }
 
     @Override
@@ -99,6 +104,7 @@ public class ProfilePresenter implements ProfileContract.Presenter {
         userService.getTuesContacts()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMapIterable(strings -> strings)
                 .filter( s -> s.equals(user.uid))
                 .doOnNext(s -> {
                     isFriend = true;
@@ -155,10 +161,21 @@ public class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     public void toggleContact() {
-        if (isFriend) {
-            deleteContact();
-        } else {
-            saveContact();
+//        if (!profileView.hasContactPermission()) {
+//            return;
+//        }
+
+        try {
+            if (isFriend) {
+                deleteContact();
+                //addContactService.deleteContact(user);
+            } else {
+                saveContact();
+                //addContactService.addContact(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            profileView.displayError(e.getMessage());
         }
     }
 
@@ -272,30 +289,37 @@ public class ProfilePresenter implements ProfileContract.Presenter {
         if (provider.getProviderDetails().isPersonal && !isSelf) {
             providerDetail = "Private Info";
             profileView.showAccessButton(true);
-
-            firebaseService.getAccessedBy(provider.name)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(s -> {
-                        if (s.equals(loggedInUser.getUid())) {
-                            profileView.showAccessButton(false);
-                        }
-                    });
-
         } else {
             profileView.showAccessButton(false);
-            switch (provider.getProviderDetails().getType()) {
-                case PHONE_NUMBER_NO_VERIFICATION:
-                case PHONE_NUMBER_VERIFICATION:
-                    providerDetail = provider.getProviderDetails().phoneNumber;
-                    break;
-                case USERNAME_NO_VERIFICATION:
-                    providerDetail = provider.getProviderDetails().username;
-                    break;
-            }
+            providerDetail = getProviderDetails(provider);
+            profileView.displayProviderInfo(provider, providerDetail);
         }
 
-        profileView.displayProviderInfo(provider, providerDetail);
+        firebaseService.getAccessedBy(provider.name)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(s -> {
+                    if (s.equals(loggedInUser.getUid())) {
+                        profileView.showAccessButton(false);
+                        profileView.displayProviderInfo(provider, getProviderDetails(provider ));
+                    }
+                });
+
+    }
+
+    private String getProviderDetails(Provider provider) {
+        String providerDetail = "Default value";
+
+        switch (provider.getProviderDetails().getType()) {
+            case PHONE_NUMBER_NO_VERIFICATION:
+            case PHONE_NUMBER_VERIFICATION:
+                providerDetail = provider.getProviderDetails().phoneNumber;
+                break;
+            case USERNAME_NO_VERIFICATION:
+                providerDetail = provider.getProviderDetails().username;
+                break;
+        }
+        return providerDetail;
     }
 
     public void requestAccess(Provider provider) {

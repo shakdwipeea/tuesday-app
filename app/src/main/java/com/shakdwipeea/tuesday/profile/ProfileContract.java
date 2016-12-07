@@ -37,6 +37,9 @@ public interface ProfileContract {
         void launchSetup();
         void displayProviderInfo(Provider provider, String providerDetails);
         void showAccessButton(boolean enable);
+
+        Context getContext();
+        boolean hasContactPermission();
     }
 
     /**

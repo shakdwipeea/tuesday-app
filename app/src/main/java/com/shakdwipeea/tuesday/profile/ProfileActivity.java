@@ -1,6 +1,7 @@
 package com.shakdwipeea.tuesday.profile;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -49,6 +50,7 @@ import rx.schedulers.Schedulers;
 public class ProfileActivity extends AppCompatActivity
         implements ProfileContract.View, ProfileContract.IntentActions {
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 123;
+    private static final int REQUEST_WRITE_CONTACTS = 432;
     public static String TAG = "ProfileActivity";
 
     public static String PROFILE_IMAGE_EXTRA = "profilePic";
@@ -193,6 +195,17 @@ public class ProfileActivity extends AppCompatActivity
                 }
             }
 
+            case REQUEST_WRITE_CONTACTS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    presenter.toggleContact();
+
+                } else {
+                    displayError("Cannot save photo then");
+                }
+            }
+
             // other 'case' lines to check for other
             // permissions this app might request
         }
@@ -214,6 +227,11 @@ public class ProfileActivity extends AppCompatActivity
             binding.content.detailProvider.setVisibility(View.VISIBLE);
             binding.content.requestAccess.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     @Override
@@ -367,8 +385,28 @@ public class ProfileActivity extends AppCompatActivity
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
+                    },
                     REQUEST_WRITE_EXTERNAL_STORAGE);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean hasContactPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.WRITE_CONTACTS
+                    },
+                    REQUEST_WRITE_CONTACTS);
 
             return false;
         }

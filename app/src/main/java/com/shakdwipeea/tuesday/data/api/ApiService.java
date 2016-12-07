@@ -24,4 +24,7 @@ public interface ApiService {
 
     @GET("/search")
     Observable<List<User>> searchName(@Query("key") String prefix);
+
+    @GET("/get")
+    Observable<User> getContact(@Query("tuesid") String tuesId);
 }

@@ -5,6 +5,7 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:orientation="vertical"
+         android:layout_marginTop="@dimen/app_bar_height"
          tools:context="com.shakdwipeea.tuesday.home.notification.NotificationFragment">
 
         <android.support.design.widget.TabLayout

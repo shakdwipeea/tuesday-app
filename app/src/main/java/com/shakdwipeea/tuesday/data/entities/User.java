@@ -25,6 +25,8 @@ public class User {
 
     public User() {}
 
+
+
     // Add these as annotations
     public static class UserNode {
         public static String HAS_HIGH_RES_PROFILE_PIC = "hasHighResProfilePic";
@@ -49,5 +51,77 @@ public class User {
                 ", hasHighResProfilePic=" + hasHighResProfilePic +
                 ", tuesId='" + tuesId + '\'' +
                 '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
+
+    public Boolean getHasHighResProfilePic() {
+        return hasHighResProfilePic;
+    }
+
+    public void setHasHighResProfilePic(Boolean hasHighResProfilePic) {
+        this.hasHighResProfilePic = hasHighResProfilePic;
+    }
+
+    public Boolean getIndexed() {
+        return isIndexed;
+    }
+
+    public void setIndexed(Boolean indexed) {
+        isIndexed = indexed;
+    }
+
+    public String getTuesId() {
+        return tuesId;
+    }
+
+    public void setTuesId(String tuesId) {
+        this.tuesId = tuesId;
     }
 }

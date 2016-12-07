@@ -3,6 +3,7 @@ package com.shakdwipeea.tuesday.home.home;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -17,11 +18,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.FragmentHomeBinding;
+import com.shakdwipeea.tuesday.profile.ProfileActivity;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +55,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     ContactAdapter searchAdapter;
     ContactAdapter phoneContactAdapter;
     ContactAdapter tuesContactAdapter;
+
+    MaterialDialog builder;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -111,6 +119,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         //binding.phoneContactList.setItemAnimator(new SlideIn);
 
         presenter = new HomePresenter(this);
+        binding.setHandler(presenter);
+
+        binding.tuesidEdit.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                presenter.getTuesContact(textView.getText().toString());
+                return true;
+            }
+
+            return false;
+        });
 
         return binding.getRoot();
     }
@@ -122,11 +140,51 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     @Override
     public void displayTuesId(String tuesId) {
-        binding.tuesid.setText(tuesId);
+        binding.tuesidView.setText(tuesId);
     }
 
     public void addTuesContact(User user) {
         tuesContactAdapter.addUser(user);
+    }
+
+    @Override
+    public void clearTuesContact() {
+        tuesContactAdapter.clearUsers();
+    }
+
+    @Override
+    public void showTuesidInput(boolean enable) {
+        if (enable) {
+            binding.tuesidView.setVisibility(View.GONE);
+            binding.tuesidEdit.setVisibility(View.VISIBLE);
+            binding.fab.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp));
+        } else {
+            binding.tuesidEdit.setVisibility(View.GONE);
+            binding.tuesidView.setVisibility(View.VISIBLE);
+            binding.fab.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.ic_add_black_24dp));
+        }
+    }
+
+    @Override
+    public void openTuesContact(User user) {
+        Intent intent = new Intent(context, ProfileActivity.class);
+        intent.putExtra(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
+        startActivity(intent);
+    }
+
+    @Override
+    public void showProgress(boolean enable) {
+        if (enable) {
+            builder = new MaterialDialog.Builder(context)
+                    .title("Please wait")
+                    .content("Loading....")
+                    .progress(true, 0)
+                    .show();
+        } else {
+            builder.dismiss();
+        }
     }
 
     @Override
@@ -137,18 +195,18 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void displayTuesIdProgress(Boolean value) {
         if (value) {
-            binding.tuesid.setAllCaps(false);
-            binding.tuesid.setText(getString(R.string.tuesid_progress));
+            binding.tuesidView.setAllCaps(false);
+            binding.tuesidView.setText(getString(R.string.tuesid_progress));
         } else {
-            binding.tuesid.setAllCaps(true);
-            binding.tuesid.setTypeface(DEFAULT_BOLD);
+            binding.tuesidView.setAllCaps(true);
+            binding.tuesidView.setTypeface(DEFAULT_BOLD);
         }
     }
 
     @Override
     public void displayTuesIdFailure() {
         // Any boolean is not used because this is not transient
-        binding.tuesid.setText(getString(R.string.tuesid_failure));
+        binding.tuesidView.setText(getString(R.string.tuesid_failure));
     }
 
 
@@ -181,7 +239,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.getContacts();
+                    presenter.getContacts(context);
                 } else {
                     displayError("Cannot read contacts now. Fuck you");
                 }
@@ -199,7 +257,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 != PackageManager.PERMISSION_GRANTED) {
 
             requestPermissions(new String[]{
-                    Manifest.permission.READ_CONTACTS
+                    Manifest.permission.READ_CONTACTS,
+                    Manifest.permission.WRITE_CONTACTS
             }, REQUEST_WRITE_CONTACTS);
 
             return false;

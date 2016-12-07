@@ -29,12 +29,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     public void setUsers(List<User> users) {
         this.users = users;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, users.size());
     }
 
     public void addUser(User user) {
         this.users.add(user);
-        notifyItemInserted(users.size() - 1);
+        notifyItemInserted(users.size());
     }
 
     public void clearUsers() {

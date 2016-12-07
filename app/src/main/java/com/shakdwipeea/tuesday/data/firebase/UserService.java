@@ -37,6 +37,8 @@ public class UserService {
     // rename this to FirebaseRepository and make it a subscription model so that listeners
     // can be attached on subscribe() and removed on unsubscribe()
     private UserService() {
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         dbRef = FirebaseDatabase.getInstance().getReference();
         userRef = dbRef
@@ -165,11 +167,11 @@ public class UserService {
                 });
     }
 
-    public Observable<String> getTuesContacts() {
+    public Observable<ArrayList<String>> getTuesContacts() {
         // TODO: 17-11-2016 investigate what happens here when a new friend is added
         // a new friend will be emitted
         return RxFirebase
-                .getChildKeys(profileRef.child(User.UserNode.TUES_CONTACTS));
+                .getChildKeysAsList(profileRef.child(User.UserNode.TUES_CONTACTS));
     }
 
     public void saveTuesContacts(String contactUid) {
@@ -187,14 +189,6 @@ public class UserService {
     public void setIndexed(boolean indexed) {
         profileRef.child(User.UserNode.IS_INDEXED)
                 .setValue(indexed);
-    }
-
-    public Observable<User> getFriends() {
-        return getTuesContacts()
-                .flatMap(s -> {
-                    FirebaseService firebaseService = new FirebaseService(s);
-                    return firebaseService.getProfile();
-                });
     }
 
     public void approveRequest(Provider provider, String uid) {

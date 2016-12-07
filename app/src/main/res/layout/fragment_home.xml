@@ -1,149 +1,195 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <data>
+        <variable
+            name="handler"
+            type="com.shakdwipeea.tuesday.home.home.HomePresenter"/>
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/app_bar_height"
         >
 
-        <EditText
-            android:id="@+id/search"
-            android:hint="@string/search_people"
-            android:layout_width="match_parent"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/home_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:drawableRight="@drawable/ic_search_black_24dp"
-            android:elevation="4dp"
-            android:background="@drawable/search_background"
-            android:padding="8dp"
-            android:fadingEdge="horizontal"
-            android:selectAllOnFocus="true"/>
+            android:layout_width="match_parent"
+            >
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/tuesid_card"
-            android:layout_gravity="center"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:paddingTop="15dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:elevation="4dp"
-            card_view:cardCornerRadius="4dp">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
-            <LinearLayout
+            <EditText
+                android:id="@+id/search"
+                android:hint="@string/search_people"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:drawableRight="@drawable/ic_search_black_24dp"
+                android:elevation="4dp"
+                android:background="@drawable/search_background"
+                android:padding="8dp"
+                android:fadingEdge="horizontal"
+                android:selectAllOnFocus="true"/>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/tuesid_card"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="30dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:elevation="4dp"
+                card_view:cardCornerRadius="4dp">
 
-                <TextView
-                    android:gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
+                <LinearLayout
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tuesid_label"/>
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tuesid"
-                    tools:text="ab24d1"
-                    android:textAllCaps="true"
-                    android:gravity="center_horizontal"
+                    <TextView
+                        android:gravity="center_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tuesid_label"/>
+
+                    <TextView
+                        android:id="@+id/tuesid_view"
+                        tools:text="ab24d1"
+                        android:textAllCaps="true"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <EditText
+                        android:id="@+id/tuesid_edit"
+                        tools:text="ab24d1"
+                        android:textAllCaps="true"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionSearch"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:elevation="4dp"
+                card_view:cardCornerRadius="4dp">
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/contact_list"
+                    android:scrollbars="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:textSize="18sp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/added_contacts"/>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/tues_contact_Card"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:elevation="4dp"
+                card_view:cardCornerRadius="4dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tues_contact_list"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </android.support.v7.widget.CardView>
+
+
+
+            <TextView
+                android:textSize="18sp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/all_contacts"/>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/phone_contact_card_view"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:elevation="4dp"
+                card_view:cardCornerRadius="4dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/phone_contact_list"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </android.support.v7.widget.CardView>
+
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </android.support.v4.widget.NestedScrollView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:elevation="4dp"
-            card_view:cardCornerRadius="4dp">
+            android:layout_margin="@dimen/fab_margin"
+            app:layout_anchorGravity="bottom|right|end"
+            android:onClick="@{() -> handler.addTuesContact()}"
+            app:srcCompat="@drawable/ic_add_black_24dp"
+            app:layout_anchor="@id/home_content"/>
 
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/contact_list"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </android.support.v7.widget.CardView>
-
-        <TextView
-            android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/added_contacts"/>
-
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/tues_contact_Card"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:elevation="4dp"
-            card_view:cardCornerRadius="4dp">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/tues_contact_list"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </android.support.v7.widget.CardView>
-
-
-
-        <TextView
-            android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/all_contacts"/>
-
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/phone_contact_card_view"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:elevation="4dp"
-            card_view:cardCornerRadius="4dp">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/phone_contact_list"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-
-        </android.support.v7.widget.CardView>
-
-    </LinearLayout>
-
+    </android.support.design.widget.CoordinatorLayout>
 </layout>
 
