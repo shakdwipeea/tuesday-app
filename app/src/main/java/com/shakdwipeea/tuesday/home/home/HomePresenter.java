@@ -80,7 +80,7 @@ public class HomePresenter implements HomeContract.Presenter {
         Log.d(TAG, "subscribe: Subscribing complete 5 " + (System.currentTimeMillis() - t));
         t = System.currentTimeMillis();
 
-        getFriendList();
+        //getFriendList();
         Log.d(TAG, "subscribe: Subscribing complete 6 " + (System.currentTimeMillis() - t));
         t = System.currentTimeMillis();
 
@@ -153,6 +153,35 @@ public class HomePresenter implements HomeContract.Presenter {
         }
     }
 
+    public void searchFriends(String pattern) {
+        userService.getTuesContacts()
+                .doOnNext((uidList) -> filterFriends(uidList, pattern))
+                .compose(Util.applySchedulers())
+                .subscribe();
+    }
+
+    private void filterFriends(ArrayList<String> uidList, String pattern) {
+        fetchProfile(uidList)
+                .filter(user -> user.name.toLowerCase().contains(pattern.toLowerCase()))
+                .doOnSubscribe(() -> homeView.clearTuesContact())
+                .subscribe(
+                        user -> homeView.addTuesContact(user),
+                        throwable -> {
+                            homeView.displayError(throwable.getMessage());
+                            throwable.printStackTrace();
+                        }
+                );
+    }
+
+    private Observable<User> fetchProfile(ArrayList<String> uidList) {
+        return Observable.from(uidList)
+                .flatMap(s -> {
+                    FirebaseService firebaseService = new FirebaseService(s);
+                    return firebaseService.getProfile();
+                })
+                .compose(Util.applySchedulers());
+    }
+
     public void getFriendList() {
         // TODO: 03-12-2016 add subscription
         userService.getTuesContacts()
@@ -162,12 +191,7 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     public void getProfile(ArrayList<String> uidList) {
-        Observable.from(uidList)
-                .flatMap(s -> {
-                    FirebaseService firebaseService = new FirebaseService(s);
-                    return firebaseService.getProfile();
-                })
-                .compose(Util.applySchedulers())
+        fetchProfile(uidList)
                 .doOnSubscribe(() -> homeView.clearTuesContact())
                 .subscribe(
                         user -> homeView.addTuesContact(user),

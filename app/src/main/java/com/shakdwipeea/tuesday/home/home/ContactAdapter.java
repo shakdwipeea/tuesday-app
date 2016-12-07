@@ -14,6 +14,9 @@ import com.shakdwipeea.tuesday.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+
 /**
  * Created by ashak on 05-11-2016.
  */
@@ -40,6 +43,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public void clearUsers() {
         users.clear();
         notifyDataSetChanged();
+    }
+
+    public void filterUser(String pattern) {
+        Observable.from(users)
+                .filter(user -> user.name.toLowerCase().contains(pattern.toLowerCase()))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .toList()
+                .subscribe(
+                        filteredUsers -> {
+                             users = filteredUsers;
+                            notifyDataSetChanged();
+                        }
+                );
     }
 
     @Override

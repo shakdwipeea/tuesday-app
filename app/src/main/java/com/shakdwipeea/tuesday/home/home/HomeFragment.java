@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -212,17 +211,9 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     private void setupSearch() {
         subscription = RxTextView.textChanges(binding.search)
-                .filter(charSequence -> charSequence.length() > 2)
                 .debounce(100, TimeUnit.MILLISECONDS)
-                .switchMap(charSequence -> presenter.searchName(charSequence.toString()))
-                .subscribe(
-                        users -> {
-                            Log.d(TAG, "setupSearch: Inflating search listing");
-                            searchAdapter.setUsers(users);
-                            searchAdapter.notifyDataSetChanged();
-                        },
-                        Throwable::printStackTrace
-                );
+                .doOnNext(charSequence -> presenter.searchFriends(charSequence.toString()))
+                .subscribe();
     }
 
     @Override

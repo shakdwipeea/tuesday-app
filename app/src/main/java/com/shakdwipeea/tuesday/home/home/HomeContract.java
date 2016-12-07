@@ -36,5 +36,6 @@ public interface HomeContract {
         void getContacts(Context context);
         void unsubscribe();
         void getTuesContact(String tuesId);
+        void searchFriends(String pattern);
     }
 }
