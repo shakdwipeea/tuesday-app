@@ -23,7 +23,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingTop="15dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
@@ -109,6 +109,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/contact_list"
                     android:scrollbars="vertical"
+                    android:animateLayoutChanges="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -138,6 +139,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/tues_contact_list"
                     android:scrollbars="vertical"
+                    android:animateLayoutChanges="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -186,7 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             app:layout_anchorGravity="bottom|right|end"
-            android:onClick="@{() -> handler.addTuesContact()}"
+            android:onClick="@{() -> handler.toggleTuesContactView()}"
             app:srcCompat="@drawable/ic_add_black_24dp"
             app:layout_anchor="@id/home_content"/>
 

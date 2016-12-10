@@ -25,6 +25,14 @@ public class HomeActivity extends AppCompatActivity {
 
     Context context;
 
+    private HomeFragment homeFragment;
+    private NotificationFragment notificationFragment;
+    private SettingsFragment settingsFragment;
+
+    private HomePagerAdapter pagerAdapter;
+
+    private OnBackPressedListener backPressedListener;
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -37,8 +45,18 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
 
+        pagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        binding.homeTab.setupWithViewPager(binding.homeFragmentContainer);
+
+        binding.homeFragmentContainer.setAdapter(pagerAdapter);
+        binding.homeFragmentContainer.setOffscreenPageLimit(3);
+
         setupTabs();
-        loadFragment(new HomeFragment());
+        //loadFragment(homeFragment);
+    }
+
+    public void setBackPressedListener(OnBackPressedListener backPressedListener) {
+        this.backPressedListener = backPressedListener;
     }
 
     private void setupTabs() {
@@ -52,12 +70,32 @@ public class HomeActivity extends AppCompatActivity {
 
             if (tab != null) {
                 Drawable tabIcon = tab.getIcon();
-                if (tabIcon != null) {
-                    if (tab.isSelected())
-                        tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
-                    else
-                        tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
+                if (tabIcon == null) {
+
+                    switch (i) {
+                        case 0:
+                            tabIcon = ContextCompat.getDrawable(this,
+                                            R.drawable.ic_home_black_24dp);
+                            break;
+                        case 1:
+                            tabIcon = ContextCompat.getDrawable(this,
+                                            R.drawable.ic_notifications_black_24dp);
+                            break;
+                        case 2:
+                            tabIcon = ContextCompat.getDrawable(this,
+                                    R.drawable.ic_tune_black_24dp);
+                            break;
+                        default:
+                            tabIcon = ContextCompat.getDrawable(this,
+                                    R.drawable.ic_person_add_black_24dp);
+                    }
+                    tab.setIcon(tabIcon);
                 }
+
+                if (tab.isSelected())
+                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
+                else
+                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
             }
         }
 
@@ -68,18 +106,6 @@ public class HomeActivity extends AppCompatActivity {
                 Drawable tabIcon = tab.getIcon();
                 if (tabIcon != null) {
                     tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
-                }
-
-                switch (tab.getPosition()) {
-                    case 0:
-                        loadFragment(new HomeFragment());
-                        break;
-                    case 1:
-                        loadFragment(new NotificationFragment());
-                        break;
-                    case 2:
-                        loadFragment(new SettingsFragment());
-                        break;
                 }
             }
 
@@ -95,7 +121,15 @@ public class HomeActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedListener == null || backPressedListener.doBack()) {
+            super.onBackPressed();
+        }
     }
 
     private void displayError(String reason) {

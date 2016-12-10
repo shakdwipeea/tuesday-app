@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.databinding.FragmentHomeBinding;
+import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
 
 import org.parceler.Parcels;
@@ -42,6 +44,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private static final String TAG = "HomeFragment";
 
     private static final int REQUEST_WRITE_CONTACTS = 120;
+    private static final String KEY_RECYCLER_STATE = "recycler_state";
 
     FragmentHomeBinding binding;
 
@@ -57,6 +60,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     MaterialDialog builder;
 
+    static Bundle recyclerViewState;
+
+    boolean editingTuesId = false;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -66,6 +73,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         super.onViewCreated(view, savedInstanceState);
         presenter.subscribe(context);
         setupSearch();
+        setRetainInstance(true);
     }
 
 
@@ -99,6 +107,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,
                 searchLayoutManager.getOrientation());
 
+
         // Search listing
         binding.contactList.setLayoutManager(searchLayoutManager);
         binding.contactList.setAdapter(searchAdapter);
@@ -120,6 +129,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         presenter = new HomePresenter(this);
         binding.setHandler(presenter);
 
+        setUpBackBehaviour();
+
         binding.tuesidEdit.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 presenter.getTuesContact(textView.getText().toString());
@@ -130,6 +141,31 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         });
 
         return binding.getRoot();
+    }
+
+    private void setUpBackBehaviour() {
+        HomeActivity activity = (HomeActivity) getActivity();
+        activity.setBackPressedListener(presenter.getBackPressedListener());
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        recyclerViewState = new Bundle();
+        Parcelable listState = binding.phoneContactList.getLayoutManager().onSaveInstanceState();
+        recyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // restore RecyclerView state
+        if (recyclerViewState != null) {
+            Parcelable listState = recyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+            binding.phoneContactList.getLayoutManager().onRestoreInstanceState(listState);
+        }
     }
 
     @Override
@@ -154,11 +190,13 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void showTuesidInput(boolean enable) {
         if (enable) {
+            editingTuesId = true;
             binding.tuesidView.setVisibility(View.GONE);
             binding.tuesidEdit.setVisibility(View.VISIBLE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp));
         } else {
+            editingTuesId = false;
             binding.tuesidEdit.setVisibility(View.GONE);
             binding.tuesidView.setVisibility(View.VISIBLE);
             binding.fab.setImageDrawable(

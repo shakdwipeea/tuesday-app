@@ -13,6 +13,7 @@ import com.shakdwipeea.tuesday.data.entities.HttpResponse;
 import com.shakdwipeea.tuesday.data.entities.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.home.OnBackPressedListener;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class HomePresenter implements HomeContract.Presenter {
     private boolean reqNewTuesId;
 
     private boolean showTuesId = true;
+
 
     HomePresenter(HomeContract.View homeView) {
         this.homeView = homeView;
@@ -207,15 +209,15 @@ public class HomePresenter implements HomeContract.Presenter {
         contactsService = ContactsService.getInstance(context);
         contactsService.getContacts()
                 .map(contact -> {
-                    Log.d(TAG, "getContacts: " + contact);
+                    //Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
                     user.name = contact.name;
                     user.phoneNumber = contact.phone;
                     user.photo = contact.thumbNail;
                     return user;
                 })
-                .cache()
                 .toList()
+                .cache()
                 .compose(Util.applySchedulers())
                 .subscribe(
                         contactList -> {
@@ -271,7 +273,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 );
     }
 
-    public void addTuesContact() {
+    public void toggleTuesContactView() {
         if (showTuesId) {
             homeView.showTuesidInput(true);
             showTuesId = false;
@@ -280,6 +282,17 @@ public class HomePresenter implements HomeContract.Presenter {
             homeView.showTuesidInput(false);
             showTuesId = true;
         }
+    }
+
+    public OnBackPressedListener getBackPressedListener() {
+        return () -> {
+            if (!showTuesId) {
+                toggleTuesContactView();
+                return false;
+            }
+
+            return true;
+        };
     }
 
     @Override
