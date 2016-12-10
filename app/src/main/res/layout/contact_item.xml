@@ -4,7 +4,7 @@
     <data>
         <variable
             name="contact"
-            type="com.shakdwipeea.tuesday.data.entities.User" />
+            type="com.shakdwipeea.tuesday.data.entities.user.User" />
         
         <variable
             name="actionHandler"

@@ -1,6 +1,6 @@
 package com.shakdwipeea.tuesday.people;
 
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 
 import rx.Subscription;
 

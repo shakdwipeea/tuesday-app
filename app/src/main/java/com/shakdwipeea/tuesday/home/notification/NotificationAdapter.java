@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
@@ -22,10 +23,17 @@ public class NotificationAdapter extends
         RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
     private ArrayList<NotificationDetail> notificationDetails;
 
+    private boolean actionRequired;
+
     private Context context;
 
     public NotificationAdapter() {
         this.notificationDetails = new ArrayList<>();
+        actionRequired = false;
+    }
+
+    public void setActionRequired(boolean actionRequired) {
+        this.actionRequired = actionRequired;
     }
 
     public void setNotificationDetails(ArrayList<NotificationDetail> notificationDetails) {
@@ -60,12 +68,20 @@ public class NotificationAdapter extends
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
         NotificationDetail notificationDetail = notificationDetails.get(position);
+
         holder.binding.setProvider(notificationDetail.provider);
         holder.binding.setContact(notificationDetail.user);
         holder.binding.setActionHandler(new ContactItemActionHandler());
-        holder.binding.setItemViewModel(new NotificationItemViewModel());
         Util.displayProfilePic(context, holder.binding.profilePic,
                 holder.binding.placeholderProfilePic, notificationDetail.user);
+
+        if (actionRequired) {
+            holder.binding.setItemViewModel(new NotificationItemViewModel());
+            holder.binding.actionButtonHolder.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.actionButtonHolder.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

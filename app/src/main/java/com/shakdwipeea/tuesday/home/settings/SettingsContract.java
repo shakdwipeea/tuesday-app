@@ -1,6 +1,6 @@
 package com.shakdwipeea.tuesday.home.settings;
 
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 
 /**
  * Created by ashak on 27-11-2016.

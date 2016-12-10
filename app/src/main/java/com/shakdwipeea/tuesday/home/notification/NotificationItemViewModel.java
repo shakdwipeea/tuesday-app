@@ -1,7 +1,7 @@
 package com.shakdwipeea.tuesday.home.notification;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
 /**

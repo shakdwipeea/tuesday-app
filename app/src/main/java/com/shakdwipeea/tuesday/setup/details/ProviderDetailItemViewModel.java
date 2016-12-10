@@ -3,7 +3,7 @@ package com.shakdwipeea.tuesday.setup.details;
 import android.content.Context;
 import android.view.View;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.setup.FragmentChangeListener;
 import com.shakdwipeea.tuesday.setup.picker.SelectProviderViewModel;
 

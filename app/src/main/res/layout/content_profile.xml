@@ -6,7 +6,7 @@
     <data>
         <variable
             name="provider"
-            type="com.shakdwipeea.tuesday.data.entities.Provider" />
+            type="com.shakdwipeea.tuesday.data.entities.user.Provider" />
 
         <variable
             name="handler"

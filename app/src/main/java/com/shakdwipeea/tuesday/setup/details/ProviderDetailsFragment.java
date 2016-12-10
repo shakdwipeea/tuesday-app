@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.setup.FragmentChangeListener;
 
 import org.parceler.Parcels;

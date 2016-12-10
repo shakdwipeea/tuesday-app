@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 import com.shakdwipeea.tuesday.data.providers.SelectedProviders;
 import com.shakdwipeea.tuesday.databinding.FragmentAccountPickerBinding;

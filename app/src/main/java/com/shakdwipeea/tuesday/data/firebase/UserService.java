@@ -8,9 +8,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import java.util.ArrayList;
@@ -191,9 +192,17 @@ public class UserService {
                 .setValue(indexed);
     }
 
-    public void approveRequest(Provider provider, String uid) {
-        removeRequestedBy(provider.name, uid);
-        addAccessedBy(provider.name, uid);
+    public void approveRequest(Provider provider, String friendUid) {
+        removeRequestedBy(provider.name, friendUid);
+        addAccessedBy(provider.name, friendUid);
+
+        // Add access granted info
+        GrantedToDetails details = new GrantedToDetails();
+        details.providerName = provider.name;
+        details.grantedByuid = user.getUid();
+
+        FirebaseService firebaseService = new FirebaseService(friendUid);
+        firebaseService.addAccessGranted(details);
     }
 
     public void rejectRequest(Provider provider, String uid) {
@@ -220,6 +229,19 @@ public class UserService {
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
                 .child(friendUid).setValue(true);
+    }
+
+    public Observable<ArrayList<GrantedToDetails>> getGrantedDetails() {
+        return RxFirebase
+                .getDataList(
+                        profileRef.child(User.UserNode.GRANTED_BY),
+                        dataSnapshot -> {
+                            GrantedToDetails grantedToDetails = new GrantedToDetails();
+                            grantedToDetails.grantedByuid = dataSnapshot.getKey();
+                            grantedToDetails.providerName = (String) dataSnapshot.getValue();
+                            return grantedToDetails;
+                        }
+                );
     }
 
     public Observable<ArrayList<String>> getAddedBy() {

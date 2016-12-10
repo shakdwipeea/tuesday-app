@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentSettingsBinding;
 import com.shakdwipeea.tuesday.home.home.ContactItemActionHandler;
 import com.shakdwipeea.tuesday.util.Util;

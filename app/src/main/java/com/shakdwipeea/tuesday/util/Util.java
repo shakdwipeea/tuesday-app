@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;

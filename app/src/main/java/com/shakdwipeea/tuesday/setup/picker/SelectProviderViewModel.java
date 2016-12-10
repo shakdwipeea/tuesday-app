@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.setup.FragmentChangeListener;
 import com.shakdwipeea.tuesday.setup.ProviderItemViewModel;
 

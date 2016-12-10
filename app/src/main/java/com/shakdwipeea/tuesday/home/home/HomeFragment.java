@@ -23,7 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentHomeBinding;
 import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;

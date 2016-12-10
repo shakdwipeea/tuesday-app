@@ -1,8 +1,8 @@
 package com.shakdwipeea.tuesday.data.providers;
 
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 
 import java.util.ArrayList;
 import java.util.HashMap;

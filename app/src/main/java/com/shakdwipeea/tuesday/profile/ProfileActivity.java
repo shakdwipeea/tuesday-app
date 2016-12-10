@@ -25,8 +25,8 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.setup.ProviderAdapter;
 import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;

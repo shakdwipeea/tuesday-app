@@ -22,7 +22,9 @@ import com.shakdwipeea.tuesday.databinding.FragmentNotificationBinding;
 public class NotificationFragment extends Fragment implements NotificationContract.View {
 
     FragmentNotificationBinding binding;
-    NotificationAdapter adapter;
+
+    NotificationAdapter requestAdapter;
+    NotificationAdapter grantedAdapter;
 
     NotificationPresenter presenter;
 
@@ -53,9 +55,13 @@ public class NotificationFragment extends Fragment implements NotificationContra
 
         setupTabs();
 
-        adapter = new NotificationAdapter();
+        requestAdapter = new NotificationAdapter();
+        requestAdapter.setActionRequired(true);
+
+        grantedAdapter = new NotificationAdapter();
+
         binding.notificationList.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.notificationList.setAdapter(adapter);
+        binding.notificationList.setAdapter(requestAdapter);
 
         return binding.getRoot();
     }
@@ -67,10 +73,12 @@ public class NotificationFragment extends Fragment implements NotificationContra
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        displayError("Position 0 selected");
+                        binding.notificationList.setAdapter(requestAdapter);
+                       // requestAdapter.notifyDataSetChanged();
                         break;
                     case 1:
-                        displayError("Position 1 selected");
+                        binding.notificationList.setAdapter(grantedAdapter);
+                        //grantedAdapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -93,18 +101,28 @@ public class NotificationFragment extends Fragment implements NotificationContra
     }
 
     @Override
-    public void addNotification(NotificationDetail notificationDetail) {
-        adapter.addNotification(notificationDetail);
-    }
-
-    @Override
-    public void clearNotification() {
-        adapter.clearNotification();
-    }
-
-    @Override
     public void displayProgressBar(boolean enable) {
 
+    }
+
+    @Override
+    public void addRequestNotification(NotificationDetail notificationDetail) {
+        requestAdapter.addNotification(notificationDetail);
+    }
+
+    @Override
+    public void clearRequestNotification() {
+        requestAdapter.clearNotification();
+    }
+
+    @Override
+    public void addGrantedNotification(NotificationDetail notificationDetail) {
+        grantedAdapter.addNotification(notificationDetail);
+    }
+
+    @Override
+    public void clearGrantedNotification() {
+        grantedAdapter.clearNotification();
     }
 
 }

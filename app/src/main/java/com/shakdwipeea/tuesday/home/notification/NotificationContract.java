@@ -9,9 +9,13 @@ import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
 public class NotificationContract {
     interface View {
         void displayError(String reason);
-        void addNotification(NotificationDetail notificationDetail);
-        void clearNotification();
         void displayProgressBar(boolean enable);
+
+        void addRequestNotification(NotificationDetail notificationDetail);
+        void clearRequestNotification();
+
+        void addGrantedNotification(NotificationDetail notificationDetail);
+        void clearGrantedNotification();
     }
 
     interface Presenter {

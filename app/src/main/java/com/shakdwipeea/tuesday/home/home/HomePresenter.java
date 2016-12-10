@@ -10,7 +10,7 @@ import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.contacts.ContactsService;
 import com.shakdwipeea.tuesday.data.entities.HttpResponse;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 import com.shakdwipeea.tuesday.home.OnBackPressedListener;

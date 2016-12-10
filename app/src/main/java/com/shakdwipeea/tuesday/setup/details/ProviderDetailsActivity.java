@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.Preferences;
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.providers.SelectedProviders;
 import com.shakdwipeea.tuesday.databinding.ActivityProviderDetailsBinding;
 import com.shakdwipeea.tuesday.home.HomeActivity;

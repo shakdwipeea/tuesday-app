@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.databinding.ProviderPickerItemBinding;
 import com.shakdwipeea.tuesday.setup.details.ProviderDetailItemViewModel;
 

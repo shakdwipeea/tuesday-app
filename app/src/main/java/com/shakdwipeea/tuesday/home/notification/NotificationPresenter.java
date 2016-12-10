@@ -1,11 +1,13 @@
 package com.shakdwipeea.tuesday.home.notification;
 
 import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 import com.shakdwipeea.tuesday.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -35,19 +37,20 @@ public class NotificationPresenter implements NotificationContract.Presenter {
         // TODO: 30-11-2016 Check if using getInstance here is wise 🤔
         userService = UserService.getInstance();
 
-        subscribeNotifications();
+        subscribeRequestNotifications();
+        getGrantedDetails();
     }
 
-    private void subscribeNotifications() {
+    private void subscribeRequestNotifications() {
         Subscription subscribe = userService.getProvider()
-                .doOnNext(this::getNotifications)
+                .doOnNext(this::getRequestNotifications)
                 .compose(Util.applySchedulers())
                 .subscribe();
 
         compositeSubscription.add(subscribe);
     }
 
-    private void getNotifications(List<Provider> providerList) {
+    private void getRequestNotifications(List<Provider> providerList) {
         Observable.from(providerList)
                 .filter(provider ->
                         provider.providerDetails.requestedBy != null
@@ -59,9 +62,9 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                     return firebaseService.inflateNotificationUser(notificationDetail);
                 })
                 .doOnNext(notificationDetail ->
-                        notificationView.addNotification(notificationDetail))
+                        notificationView.addRequestNotification(notificationDetail))
                 .compose(Util.applySchedulers())
-                .doOnSubscribe(() -> notificationView.clearNotification())
+                .doOnSubscribe(() -> notificationView.clearRequestNotification())
                 .subscribe();
     }
 
@@ -97,6 +100,34 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                 }
             }
         };
+    }
+
+    private void getGrantedDetails() {
+        userService.getGrantedDetails()
+                .doOnNext(this::inflateNotificationDetailForGranted)
+                .compose(Util.applySchedulers())
+                .subscribe();
+    }
+
+    private void inflateNotificationDetailForGranted(ArrayList<GrantedToDetails>
+                                                             grantedToDetailsList) {
+        Observable.from(grantedToDetailsList)
+                .flatMap(details -> {
+                    FirebaseService firebaseService = new FirebaseService(details.grantedByuid);
+                    NotificationDetail notificationDetail = new NotificationDetail();
+                    notificationDetail.provider.name = details.providerName;
+                    return firebaseService.inflateNotificationUser(notificationDetail);
+                })
+                .compose(Util.applySchedulers())
+                .doOnSubscribe(() -> notificationView.clearGrantedNotification())
+                .subscribe(
+                        notificationDetail ->
+                                notificationView.addGrantedNotification(notificationDetail),
+                        throwable -> {
+                            notificationView.displayError(throwable.getMessage());
+                            throwable.printStackTrace();
+                        }
+                );
     }
 
     @Override

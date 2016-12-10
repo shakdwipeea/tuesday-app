@@ -4,11 +4,11 @@
     <data>
         <variable
             name="contact"
-            type="com.shakdwipeea.tuesday.data.entities.User" />
+            type="com.shakdwipeea.tuesday.data.entities.user.User" />
 
         <variable
             name="provider"
-            type="com.shakdwipeea.tuesday.data.entities.Provider" />
+            type="com.shakdwipeea.tuesday.data.entities.user.Provider" />
 
         <variable
             name="actionHandler"
@@ -60,19 +60,27 @@
 
         </LinearLayout>
 
-        <ImageButton
-            android:src="@drawable/ic_check_black_24dp"
+        <LinearLayout
+            android:id="@+id/action_button_holder"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> itemViewModel.handleApproval(true, provider, contact)}"
-            />
+            android:layout_height="match_parent">
 
-        <ImageButton
-            android:src="@drawable/ic_clear_black_24dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> itemViewModel.handleApproval(false, provider, contact)}"
-            />
+            <ImageButton
+                android:src="@drawable/ic_check_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> itemViewModel.handleApproval(true, provider, contact)}"
+                />
+
+            <ImageButton
+                android:src="@drawable/ic_clear_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> itemViewModel.handleApproval(false, provider, contact)}"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 

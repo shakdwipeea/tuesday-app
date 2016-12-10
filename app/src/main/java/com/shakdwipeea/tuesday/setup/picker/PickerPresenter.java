@@ -1,6 +1,6 @@
 package com.shakdwipeea.tuesday.setup.picker;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 import com.shakdwipeea.tuesday.data.providers.SelectedProviders;
 

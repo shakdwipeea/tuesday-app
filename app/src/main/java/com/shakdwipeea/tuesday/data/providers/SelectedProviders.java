@@ -1,6 +1,6 @@
 package com.shakdwipeea.tuesday.data.providers;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 
 import java.util.List;
 

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 
 import java.util.List;
 

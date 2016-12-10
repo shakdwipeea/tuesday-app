@@ -14,8 +14,8 @@ import com.shakdwipeea.tuesday.auth.AuthActivity;
 import com.shakdwipeea.tuesday.data.AuthService;
 import com.shakdwipeea.tuesday.data.ProfilePicService;
 import com.shakdwipeea.tuesday.data.contacts.AddContactService;
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 import com.shakdwipeea.tuesday.util.Util;
@@ -287,13 +287,12 @@ public class ProfilePresenter implements ProfileContract.Presenter {
         String providerDetail = "Not available";
 
         if (provider.getProviderDetails().isPersonal && !isSelf) {
-            providerDetail = "Private Info";
             profileView.showAccessButton(true);
         } else {
             profileView.showAccessButton(false);
             providerDetail = getProviderDetails(provider);
-            profileView.displayProviderInfo(provider, providerDetail);
         }
+        profileView.displayProviderInfo(provider, providerDetail);
 
         firebaseService.getAccessedBy(provider.name)
                 .observeOn(AndroidSchedulers.mainThread())

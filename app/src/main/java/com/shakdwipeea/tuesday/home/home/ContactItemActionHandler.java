@@ -6,7 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
 
 import org.parceler.Parcels;

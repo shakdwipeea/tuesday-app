@@ -1,6 +1,6 @@
 package com.shakdwipeea.tuesday.setup;
 
-import com.shakdwipeea.tuesday.data.entities.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 
 /**
  * Created by ashak on 10-11-2016.

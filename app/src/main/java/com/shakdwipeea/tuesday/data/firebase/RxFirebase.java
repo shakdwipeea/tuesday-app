@@ -62,6 +62,20 @@ public class RxFirebase {
                 .map(RxFirebase::getKeys);
     }
 
+    static <T> Observable<ArrayList<T>> getDataList (DatabaseReference reference,
+                                                     MapDataToType<T> mapDataToType) {
+        return getData(reference)
+                .flatMap(dataSnapshot -> Observable.just(dataSnapshot.getChildren()))
+                .map(dataSnapshots -> {
+                    ArrayList<T> resultSet = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshots) {
+                        resultSet.add(mapDataToType.mapToType(snapshot));
+                    }
+
+                    return resultSet;
+                });
+    }
+
     static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<>();
 
@@ -70,5 +84,9 @@ public class RxFirebase {
         }
 
         return keys;
+    }
+
+    interface MapDataToType<T> {
+        T mapToType(DataSnapshot dataSnapshot);
     }
 }

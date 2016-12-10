@@ -8,9 +8,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
-import com.shakdwipeea.tuesday.data.entities.Provider;
-import com.shakdwipeea.tuesday.data.entities.ProviderDetails;
-import com.shakdwipeea.tuesday.data.entities.User;
+import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import java.util.ArrayList;
@@ -148,6 +149,11 @@ public class FirebaseService {
 //           }
 //        });
 //    }
+
+    public void addAccessGranted(GrantedToDetails details) {
+        userRef.child(User.UserNode.GRANTED_BY)
+                .child(details.grantedByuid).setValue(details.providerName);
+    }
 
     public static Observable<List<Provider>> getProviderInfo(DatabaseReference profileRef) {
         return RxFirebase
