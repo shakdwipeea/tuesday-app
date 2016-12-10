@@ -68,31 +68,32 @@ public class NotificationFragment extends Fragment implements NotificationContra
 
     private void setupTabs() {
         binding.notificationTabLayout.getTabAt(0).select();
-        binding.notificationTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        binding.notificationList.setAdapter(requestAdapter);
-                       // requestAdapter.notifyDataSetChanged();
-                        break;
-                    case 1:
-                        binding.notificationList.setAdapter(grantedAdapter);
-                        //grantedAdapter.notifyDataSetChanged();
-                        break;
-                }
-            }
+        binding.notificationTabLayout
+                .addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        switch (tab.getPosition()) {
+                            case 0:
+                                binding.notificationList.setAdapter(requestAdapter);
+                               // requestAdapter.notifyDataSetChanged();
+                                break;
+                            case 1:
+                                binding.notificationList.setAdapter(grantedAdapter);
+                                //grantedAdapter.notifyDataSetChanged();
+                                break;
+                        }
+                    }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
 
-            }
+                    }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
 
-            }
-        });
+                    }
+                });
     }
 
     public void displayError(String reason) {

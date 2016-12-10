@@ -90,8 +90,4 @@ public class ProviderDetailsFragment extends Fragment implements ProviderDetails
         binding.setVariable(BR.actionText, text);
     }
 
-    @Override
-    public void loadNextProvider() {
-        fragChange.loadFragment(provider);
-    }
 }

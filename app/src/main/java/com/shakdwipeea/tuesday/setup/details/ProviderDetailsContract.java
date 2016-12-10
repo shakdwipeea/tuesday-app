@@ -12,6 +12,5 @@ public interface ProviderDetailsContract {
     interface View {
         void displayError(String reason);
         void changeButtonText(String text);
-        void loadNextProvider();
     }
 }

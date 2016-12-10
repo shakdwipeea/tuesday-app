@@ -54,6 +54,17 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
         return providers.get(index);
     }
 
+    public void unSelectAll() {
+        for (Provider p: providers) {
+            p.setSelected(false);
+        }
+    }
+
+    public void unSelectExcept(Provider provider) {
+        unSelectAll();
+        provider.setSelected(true);
+    }
+
     @Override
     public ProviderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();

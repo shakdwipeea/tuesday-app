@@ -27,8 +27,6 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
 
     ProviderAdapter providerAdapter;
 
-    int selectedProviderIndex = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +49,6 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
                 .getProviderList()
                 .doOnNext(providers -> {
                     // TODO: 16-11-2016 edit icon should be there instead of this
-                    for (Provider p: providers) {
-                        p.setSelected(false);
-                    }
                     providerAdapter.setProviders(providers);
 
                     // Load the first provider initially
@@ -63,6 +58,17 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
                         providers -> Log.d(TAG, "setupProviders: providers" + providers),
                         Throwable::printStackTrace
                 );
+
+
+        binding.buttonDone.setOnClickListener(view -> {
+            // All provider's details has been entered and setup is now complete
+            Preferences.getInstance(this)
+                    .setSetupComplete(true);
+
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void displayError(String reason) {
@@ -72,29 +78,18 @@ public class ProviderDetailsActivity extends AppCompatActivity implements Fragme
 
     @Override
     public void loadFragment(Provider curProvider) {
+        providerAdapter.unSelectExcept(curProvider);
 
-        if (selectedProviderIndex < providerAdapter.getProviders().size()) {
-            ProviderDetailsFragment fragment = new ProviderDetailsFragment();
+        ProviderDetailsFragment fragment = new ProviderDetailsFragment();
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ProviderDetailsFragment.SELECTED_PROVIDER_KEY,
-                    Parcels.wrap(providerAdapter.getProvider(selectedProviderIndex)));
-            fragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ProviderDetailsFragment.SELECTED_PROVIDER_KEY,
+                Parcels.wrap(curProvider));
+        fragment.setArguments(bundle);
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, fragment);
-            ft.commit();
-
-            selectedProviderIndex++;
-        } else {
-            // All provider's details has been entered and setup is now complete
-            Preferences.getInstance(this)
-                    .setSetupComplete(true);
-
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, fragment);
+        ft.commit();
     }
 
 }

@@ -115,8 +115,10 @@ public class ProfileActivity extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false);
         providerAdapter = new ProviderAdapter();
-        providerAdapter.setChangeListener(curProvider ->
-                presenter.displayProviderDetails(curProvider));
+        providerAdapter.setChangeListener(curProvider -> {
+            providerAdapter.unSelectExcept(curProvider);
+            presenter.displayProviderDetails(curProvider);
+        });
 
         binding.content.providerList.setLayoutManager(linearLayoutManager);
         binding.content.providerList.setAdapter(providerAdapter);
@@ -253,6 +255,7 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     public void addProvider(List<Provider> providerList) {
         providerAdapter.setProviders(providerList);
+        providerAdapter.unSelectAll();
     }
 
     @Override

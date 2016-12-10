@@ -25,6 +25,6 @@ public class ProviderDetailsPresenter implements ProviderDetailsContract.Present
         providerDetailsView.changeButtonText("Saving");
         userService.saveProvider(provider);
         providerDetailsView.changeButtonText("Save");
-        providerDetailsView.loadNextProvider();
+        //providerDetailsView.loadNextProvider();
     }
 }
