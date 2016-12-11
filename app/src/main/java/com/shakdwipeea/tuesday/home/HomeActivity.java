@@ -1,6 +1,7 @@
 package com.shakdwipeea.tuesday.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.NotificationService;
 import com.shakdwipeea.tuesday.databinding.ActivityHomeBinding;
 import com.shakdwipeea.tuesday.home.home.HomeFragment;
 import com.shakdwipeea.tuesday.home.notification.NotificationFragment;
@@ -52,6 +54,9 @@ public class HomeActivity extends AppCompatActivity {
         binding.homeFragmentContainer.setOffscreenPageLimit(3);
 
         setupTabs();
+
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
         //loadFragment(homeFragment);
     }
 

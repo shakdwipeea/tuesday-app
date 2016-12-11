@@ -22,13 +22,13 @@ import rx.subscriptions.CompositeSubscription;
 public class NotificationPresenter implements NotificationContract.Presenter {
     private static final String TAG = "NotificationPresenter";
 
-    private NotificationContract.View notificationView;
+    private NotificationContract.NotificationView notificationNotificationView;
     private CompositeSubscription compositeSubscription;
 
     private UserService userService;
 
-    public NotificationPresenter(NotificationContract.View view) {
-        this.notificationView = view;
+    public NotificationPresenter(NotificationContract.NotificationView notificationView) {
+        this.notificationNotificationView = notificationView;
     }
 
     @Override
@@ -62,9 +62,9 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                     return firebaseService.inflateNotificationUser(notificationDetail);
                 })
                 .doOnNext(notificationDetail ->
-                        notificationView.addRequestNotification(notificationDetail))
+                        notificationNotificationView.addRequestNotification(notificationDetail))
                 .compose(Util.applySchedulers())
-                .doOnSubscribe(() -> notificationView.clearRequestNotification())
+                .doOnSubscribe(() -> notificationNotificationView.clearRequestNotification())
                 .subscribe();
     }
 
@@ -119,12 +119,12 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                     return firebaseService.inflateNotificationUser(notificationDetail);
                 })
                 .compose(Util.applySchedulers())
-                .doOnSubscribe(() -> notificationView.clearGrantedNotification())
+                .doOnSubscribe(() -> notificationNotificationView.clearGrantedNotification())
                 .subscribe(
                         notificationDetail ->
-                                notificationView.addGrantedNotification(notificationDetail),
+                                notificationNotificationView.addGrantedNotification(notificationDetail),
                         throwable -> {
-                            notificationView.displayError(throwable.getMessage());
+                            notificationNotificationView.displayError(throwable.getMessage());
                             throwable.printStackTrace();
                         }
                 );

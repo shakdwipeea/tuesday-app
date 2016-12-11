@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{(view) -> actionHandler.openProfile(view, contact)}"
+        android:onClick="@{(notificationView) -> actionHandler.openProfile(notificationView, contact)}"
         >
 
         <de.hdodenhof.circleimageview.CircleImageView

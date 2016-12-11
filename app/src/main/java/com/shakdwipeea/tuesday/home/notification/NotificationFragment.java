@@ -19,7 +19,7 @@ import com.shakdwipeea.tuesday.databinding.FragmentNotificationBinding;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NotificationFragment extends Fragment implements NotificationContract.View {
+public class NotificationFragment extends Fragment implements NotificationContract.NotificationView {
 
     FragmentNotificationBinding binding;
 

@@ -7,7 +7,7 @@ import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
  */
 
 public class NotificationContract {
-    interface View {
+    public interface NotificationView {
         void displayError(String reason);
         void displayProgressBar(boolean enable);
 

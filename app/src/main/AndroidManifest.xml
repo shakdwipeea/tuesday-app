@@ -78,6 +78,11 @@
             android:label="@string/title_activity_people_list"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <service
+            android:name=".data.NotificationService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
