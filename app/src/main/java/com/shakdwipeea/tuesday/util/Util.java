@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.squareup.picasso.Picasso;
 
@@ -105,5 +107,12 @@ public class Util {
     public static <T> Observable.Transformer<T, T> applySchedulers() {
         return observable -> observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public static MaterialDialog.Builder createProgressDialog(Context context) {
+        return new MaterialDialog.Builder(context)
+                .title(R.string.progress_dialog)
+                .content(R.string.please_wait)
+                .progress(true, 0);
     }
 }

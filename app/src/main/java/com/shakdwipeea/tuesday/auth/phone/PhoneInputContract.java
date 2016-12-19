@@ -8,7 +8,7 @@ public class PhoneInputContract {
     interface View {
         void displayError(String message);
         void launchOtpView();
-        void launchHomeView();
+        void displayProgressBar(boolean enable);
     }
 
     interface Presenter {

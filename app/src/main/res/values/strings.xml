@@ -123,4 +123,6 @@
     <string name="having_contact">People having your contact</string>
     <string name="title_activity_people_list">PeopleListActivity</string>
     <string name="phone_label">Enter your phone number</string>
+    <string name="progress_dialog">Loading</string>
+    <string name="please_wait">Please wait</string>
 </resources>

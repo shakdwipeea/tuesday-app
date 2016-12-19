@@ -2,6 +2,8 @@ package com.shakdwipeea.tuesday.data.entities.user;
 
 import android.graphics.Bitmap;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.parceler.Parcel;
 
 /**
@@ -15,13 +17,20 @@ public class User {
     public String name;
     public String pic;
     public String uid;
+
+    @SerializedName("phone")
     public String phoneNumber;
+
     public String email;
     public Bitmap photo;
 
     public Boolean hasHighResProfilePic;
     public Boolean isIndexed;
     public String tuesId;
+
+    public Boolean verified;
+    public String otp;
+    public String token;
 
     public User() {}
 
