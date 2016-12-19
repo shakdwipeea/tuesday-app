@@ -85,10 +85,7 @@ public class PhoneInputFragment extends Fragment implements PhoneInputContract.V
     @Override
     public void displayProgressBar(boolean enable) {
         if (progressDialog == null)
-            progressDialog = new MaterialDialog.Builder(getContext())
-                    .title(R.string.progress_dialog)
-                    .content(R.string.please_wait)
-                    .progress(true, 0).show();
+            progressDialog = Util.createProgressDialog(getContext()).show();
 
         if (enable) progressDialog.show();
         else progressDialog.dismiss();
