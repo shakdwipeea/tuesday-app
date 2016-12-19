@@ -16,15 +16,15 @@ import rx.Observable;
  */
 
 public interface ApiService {
-    @GET("/tuesid")
-    Observable<HttpResponse.TuesIDResponse> getTuesID();
+    @POST("/phone")
+    Observable<User> getAccountDetails(@Body User user);
 
     @POST("/register")
-    Observable<HttpResponse.GenResponse> indexName(@Body User user);
+    Observable<HttpResponse.GenResponse> saveDetails(@Body User user);
 
-    @GET("/search")
-    Observable<List<User>> searchName(@Query("key") String prefix);
+    @POST("/verify")
+    Observable<User> verifyOtp(@Body User user);
 
-    @GET("/get")
-    Observable<User> getContact(@Query("tuesid") String tuesId);
+    @GET("/profile")
+    Observable<User> getContact(@Query("phone") String phoneNumber);
 }

@@ -41,9 +41,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private Preferences preferences;
 
-    // control flow in case subscribe is called twice
-    private boolean reqNewTuesId;
-
     private boolean showTuesId = true;
 
 
@@ -54,40 +51,17 @@ public class HomePresenter implements HomeContract.Presenter {
     //todo not sure if passing the context here is a good idea
     @Override
     public void subscribe(Context context) {
-        long t = System.currentTimeMillis();
-
-        Log.d(TAG, "subscribe: Subscribing start " + t);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Log.d(TAG, "subscribe: Subscribing complete 1 " + (System.currentTimeMillis() - t));
-        t = System.currentTimeMillis();
         userService = UserService.getInstance();
-
-        Log.d(TAG, "subscribe: Subscribing complete 2 " + (System.currentTimeMillis() - t));
-        t = System.currentTimeMillis();
         preferences = Preferences.getInstance(context);
-
-        Log.d(TAG, "subscribe: Subscribing complete 3 " + (System.currentTimeMillis() - t));
-        t = System.currentTimeMillis();
 
         if (homeView.hasPermissions()) {
             getContacts(context);
         }
-        Log.d(TAG, "subscribe: Subscribing complete 4 " + (System.currentTimeMillis() - t));
-        t = System.currentTimeMillis();
-
 
         // Check if name is already indexed if not then index it
         registerProfile();
-        Log.d(TAG, "subscribe: Subscribing complete 5 " + (System.currentTimeMillis() - t));
-        t = System.currentTimeMillis();
-
-        //getFriendList();
-        Log.d(TAG, "subscribe: Subscribing complete 6 " + (System.currentTimeMillis() - t));
-        t = System.currentTimeMillis();
-
-        getTuesID();
-        Log.d(TAG, "subscribe: Subscribing complete 7 " + (System.currentTimeMillis() - t));
     }
 
     private void registerProfile() {
@@ -111,48 +85,6 @@ public class HomePresenter implements HomeContract.Presenter {
                             homeView.displayError(throwable.getMessage());
                         }
                 );
-    }
-
-    private void getTuesID() {
-        homeView.displayTuesIdProgress(true);
-        userService.getTuesId()
-                .doOnNext(tuesId -> {
-                    homeView.displayTuesIdProgress(false);
-                    if (tuesId == null) {
-                        getNewTuesId();
-                     } else {
-                        homeView.displayTuesId(tuesId);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(
-                        tuesId -> {},
-                        throwable -> {
-                            homeView.displayTuesIdFailure();
-                            homeView.displayTuesIdProgress(false);
-                            homeView.displayError(throwable.getMessage());
-                            throwable.printStackTrace();
-                        }
-                );
-    }
-
-    private void getNewTuesId() {
-        if (!reqNewTuesId) {
-            reqNewTuesId = true;
-            ApiFactory.getInstance().getTuesID()
-                    .map(tuesIDResponse -> tuesIDResponse.tuesID)
-                    .doOnNext(tuesId -> userService.setTuesId(tuesId))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            this::indexName,
-                            throwable -> {
-                                homeView.displayTuesIdFailure();
-                                homeView.displayError(throwable.getMessage());
-                            }
-                    );
-        }
     }
 
     public void searchFriends(String pattern) {
@@ -227,15 +159,6 @@ public class HomePresenter implements HomeContract.Presenter {
                 );
     }
 
-    @Override
-    public Observable<List<User>> searchName(String name) {
-        Log.d(TAG, "searchName: Called " + name);
-
-        return ApiFactory.getInstance().searchName(name)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
     private void indexName(String tuesId) {
         User user = new User();
         user.name = firebaseUser.getDisplayName();
@@ -245,7 +168,7 @@ public class HomePresenter implements HomeContract.Presenter {
         if (firebaseUser.getPhotoUrl() != null)
             user.pic = firebaseUser.getPhotoUrl().toString();
 
-        ApiFactory.getInstance().indexName(user)
+        ApiFactory.getInstance().saveDetails(user)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -301,9 +224,9 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     @Override
-    public void getTuesContact(String tuesId) {
-        Log.d(TAG, "getTuesContact: Search for " + tuesId);
-        ApiFactory.getInstance().getContact(tuesId)
+    public void getTuesContact(String phoneNumber) {
+        Log.d(TAG, "getTuesContact: Search for " + phoneNumber);
+        ApiFactory.getInstance().getContact(phoneNumber)
                 .compose(Util.applySchedulers())
                 .doOnSubscribe(() -> homeView.showProgress(true))
                 .subscribe(

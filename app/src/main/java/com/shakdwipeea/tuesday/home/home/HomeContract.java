@@ -16,7 +16,6 @@ public interface HomeContract {
     interface View {
         void displayError(String message);
         void displayPhoneContacts(List<User> user);
-        void displayTuesId(String tuesId);
         void addPhoneContact(User user);
         void displayTuesIdProgress(Boolean value);
         void displayTuesIdFailure();
@@ -32,7 +31,6 @@ public interface HomeContract {
 
     interface Presenter {
         void subscribe(Context context);
-        Observable<List<User>> searchName(String name);
         void getContacts(Context context);
         void unsubscribe();
         void getTuesContact(String tuesId);

@@ -131,7 +131,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         setUpBackBehaviour();
 
-        binding.tuesidEdit.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+        binding.phoneEdit.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 presenter.getTuesContact(textView.getText().toString());
                 return true;
@@ -173,11 +173,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         phoneContactAdapter.setUsers(users);
     }
 
-    @Override
-    public void displayTuesId(String tuesId) {
-        binding.tuesidView.setText(tuesId);
-    }
-
     public void addTuesContact(User user) {
         tuesContactAdapter.addUser(user);
     }
@@ -192,12 +187,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         if (enable) {
             editingTuesId = true;
             binding.tuesidView.setVisibility(View.GONE);
-            binding.tuesidEdit.setVisibility(View.VISIBLE);
+            binding.phoneEdit.setVisibility(View.VISIBLE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp));
         } else {
             editingTuesId = false;
-            binding.tuesidEdit.setVisibility(View.GONE);
+            binding.phoneEdit.setVisibility(View.GONE);
             binding.tuesidView.setVisibility(View.VISIBLE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_add_black_24dp));

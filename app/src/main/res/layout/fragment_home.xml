@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"/>
 
                     <EditText
-                        android:id="@+id/tuesid_edit"
+                        android:id="@+id/phone_edit"
                         tools:text="ab24d1"
                         android:textAllCaps="true"
                         android:inputType="text"
@@ -189,7 +189,7 @@
             android:layout_margin="@dimen/fab_margin"
             app:layout_anchorGravity="bottom|right|end"
             android:onClick="@{() -> handler.toggleTuesContactView()}"
-            app:srcCompat="@drawable/ic_add_black_24dp"
+            android:src="@drawable/ic_add_black_24dp"
             app:layout_anchor="@id/home_content"/>
 
     </android.support.design.widget.CoordinatorLayout>
