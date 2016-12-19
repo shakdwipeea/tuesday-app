@@ -269,7 +269,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .filter(value -> !value)
-                        .doOnNext(aBoolean -> getHighResPicFromProvider())
                         .subscribe(
                                 aBoolean -> {},
                                 throwable -> {
@@ -327,19 +326,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
     }
 
     /**
-     * Get high res photo based on provider
-     */
-    private void getHighResPicFromProvider() {
-        if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER)) {
-            displayPic(AuthService.getFbProfilePic());
-        } else if (provider.equals(AuthService.GOOGLE_AUTH_PROVIDER)) {
-            displayPic(AuthActivity.AuthMode.GOOGLE_AUTH);
-        } else if (provider.equals(AuthService.TWITTER_AUTH_PROVIDER)) {
-            displayPic(AuthActivity.AuthMode.TWITTER_AUTH);
-        }
-    }
-
-    /**
      * used for fb  AuthService provides Observables with gives the profile pic,
      * this function uses that observable to display the profile pic
      * @param profilePicObservable Observable that provides url for high res profile pic
@@ -356,28 +342,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                         Throwable::printStackTrace
                 );
 
-    }
-
-    /**
-     * used in case of google, twitter displays the profile pic by
-     * transforming existing low res url
-     */
-    private void displayPic(AuthActivity.AuthMode authMode) {
-        String lowResUrl = loggedInUser.getPhotoUrl() != null ? loggedInUser.getPhotoUrl().toString() : null;
-        if (lowResUrl != null) {
-            String highResUrl = getHighResUrl(lowResUrl, authMode);
-            saveProfilePicture(highResUrl);
-            profileView.displayProfilePic(highResUrl);
-        }
-    }
-
-
-    private String getHighResUrl(String lowResUrl, AuthActivity.AuthMode authMode) {
-        switch (authMode) {
-            case GOOGLE_AUTH: return parseGoogleUrl(lowResUrl);
-            case TWITTER_AUTH: return parseTwitterUrl(lowResUrl);
-            default: return null;
-        }
     }
 
     /**

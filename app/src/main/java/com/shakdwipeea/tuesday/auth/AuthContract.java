@@ -8,9 +8,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class AuthContract {
     interface View {
-        void openGoogleLogin();
-        void openFacebookLogin();
-        void openTwitterLogin();
         void displayError(String message);
         void openProfile(FirebaseUser user);
     }

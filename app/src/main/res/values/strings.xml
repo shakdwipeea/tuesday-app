@@ -122,4 +122,5 @@
     <string name="request_access">Request Access</string>
     <string name="having_contact">People having your contact</string>
     <string name="title_activity_people_list">PeopleListActivity</string>
+    <string name="phone_label">Enter your phone number</string>
 </resources>
