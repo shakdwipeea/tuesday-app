@@ -125,4 +125,8 @@
     <string name="phone_label">Enter your phone number</string>
     <string name="progress_dialog">Loading</string>
     <string name="please_wait">Please wait</string>
+    <string name="otp_label">Enter Otp</string>
+    <string name="name_label">Enter name</string>
+    <string name="otp_hint">Enter otp</string>
+    <string name="save">Save</string>
 </resources>

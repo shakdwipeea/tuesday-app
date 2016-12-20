@@ -7,7 +7,7 @@ package com.shakdwipeea.tuesday.auth.phone;
 public class PhoneInputContract {
     interface View {
         void displayError(String message);
-        void launchOtpView();
+        void launchOtpView(String phoneNumber);
         void displayProgressBar(boolean enable);
     }
 

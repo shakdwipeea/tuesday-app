@@ -1,0 +1,26 @@
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        tools:context="com.shakdwipeea.tuesday.auth.details.DetailsFragment">
+
+        <EditText
+            android:layout_margin="8dp"
+            android:id="@+id/name_input"
+            android:hint="@string/name_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_margin="8dp"
+            android:text="@string/save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</layout>

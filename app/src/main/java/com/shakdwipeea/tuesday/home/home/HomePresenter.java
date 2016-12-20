@@ -75,12 +75,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        user -> {
-                            if ((user == null || user.isIndexed == null || !user.isIndexed)
-                                    && (user != null && user.tuesId != null)) {
-                                indexName(user.tuesId);
-                            }
-                        },
+                        user -> {},
                         throwable -> {
                             homeView.displayError(throwable.getMessage());
                         }
@@ -156,43 +151,6 @@ public class HomePresenter implements HomeContract.Presenter {
                             homeView.displayPhoneContacts(contactList);
                         },
                         Throwable::printStackTrace
-                );
-    }
-
-    private void indexName(String tuesId) {
-        User user = new User();
-        user.name = firebaseUser.getDisplayName();
-        user.uid = firebaseUser.getUid();
-        user.tuesId = tuesId;
-
-        if (firebaseUser.getPhotoUrl() != null)
-            user.pic = firebaseUser.getPhotoUrl().toString();
-
-        ApiFactory.getInstance().saveDetails(user)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        genResponse -> {
-                            preferences.setNameIndexed(true);
-                            userService.setIndexed(true);
-                        },
-                        throwable -> {
-                            if (throwable instanceof HttpException) {
-                                try {
-                                    ResponseBody errorBody = ((HttpException) throwable)
-                                            .response().errorBody();
-                                    HttpResponse.GenResponse response =
-                                            new Gson().fromJson(
-                                                    errorBody.string(),
-                                                    HttpResponse.GenResponse.class
-                                            );
-                                    homeView.displayError(response.message);
-
-                                } catch (IOException ex){
-                                    ex.printStackTrace();
-                                }
-                            }
-                        }
                 );
     }
 

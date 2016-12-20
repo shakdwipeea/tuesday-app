@@ -47,12 +47,7 @@ public class SettingsPresenter implements SettingsContract.Presenter {
 
     public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
-
-        // explicit sign out from facebook
-        //if (provider.equals(AuthService.FACEBOOK_AUTH_PROVIDER))
-        LoginManager.getInstance().logOut();
         preferences.clear();
-
         settingsView.launchAuth();
     }
 

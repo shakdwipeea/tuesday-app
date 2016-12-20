@@ -1,5 +1,8 @@
 package com.shakdwipeea.tuesday.auth;
 
+import android.content.Context;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -14,6 +17,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.shakdwipeea.tuesday.data.Preferences;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -35,8 +41,11 @@ public class AuthPresenter {
 
     public static Observable<String> profilePic;
 
-    AuthPresenter(AuthContract.View view) {
+    private Context context;
+
+    AuthPresenter(AuthContract.View view, Context context) {
         this.view = view;
+        this.context = context;
     }
 
     void subscribe() {
@@ -56,6 +65,8 @@ public class AuthPresenter {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             Log.d(TAG, "init: User is " + user);
             if (user != null) {
+                updateFirebaseUser(user);
+
                 // User is signed in
                 Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 view.openProfile(user);
@@ -70,5 +81,19 @@ public class AuthPresenter {
         };
 
         auth.addAuthStateListener(authListener);
+    }
+
+    private void updateFirebaseUser(FirebaseUser user) {
+        User userDetails = Preferences.getInstance(context)
+                .getUserDetails();
+
+        UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder()
+                .setDisplayName(userDetails.name);
+
+        if (!TextUtils.isEmpty(userDetails.pic)) {
+            builder.setPhotoUri(Uri.parse(userDetails.pic));
+        }
+
+        user.updateProfile(builder.build());
     }
 }

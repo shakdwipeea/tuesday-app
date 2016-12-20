@@ -75,10 +75,16 @@ public class PhoneInputFragment extends Fragment implements PhoneInputContract.V
     }
 
     @Override
-    public void launchOtpView() {
+    public void launchOtpView(String phoneNumber) {
+        OtpFragment otpFragment = new OtpFragment();
+
+        Bundle args = new Bundle();
+        args.putString(OtpFragment.PHONE_NUMBER_ARG_KEY, phoneNumber);
+        otpFragment.setArguments(args);
+
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
-        fragmentTransaction.replace(R.id.auth_fragment_container, new OtpFragment());
+        fragmentTransaction.replace(R.id.auth_fragment_container, otpFragment);
         fragmentTransaction.commit();
     }
 

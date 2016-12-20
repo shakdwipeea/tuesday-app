@@ -15,13 +15,18 @@ public class User {
     public static String KEY = "users";
 
     public String name;
+
+    @SerializedName("photo")
     public String pic;
+
     public String uid;
 
     @SerializedName("phone")
     public String phoneNumber;
 
     public String email;
+
+    @SerializedName("bitmap")
     public Bitmap photo;
 
     public Boolean hasHighResProfilePic;

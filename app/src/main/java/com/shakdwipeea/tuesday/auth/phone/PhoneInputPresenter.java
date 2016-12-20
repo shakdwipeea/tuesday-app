@@ -31,12 +31,7 @@ public class PhoneInputPresenter implements PhoneInputContract.Presenter {
                 .subscribe(
                         user1 -> {
                             phoneInputView.displayProgressBar(false);
-
-                            if (user1.verified) {
-                                // sign in with the token received
-                            } else {
-                                phoneInputView.launchOtpView();
-                            }
+                            phoneInputView.launchOtpView(user1.phoneNumber);
                         },
                         throwable -> {
                             throwable.printStackTrace();

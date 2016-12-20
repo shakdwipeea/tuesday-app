@@ -64,7 +64,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.View
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth);
 
-        authPresenter = new AuthPresenter(this);
+        authPresenter = new AuthPresenter(this, this);
         binding.setVm(authPresenter);
 
         profileLaunched = false;
