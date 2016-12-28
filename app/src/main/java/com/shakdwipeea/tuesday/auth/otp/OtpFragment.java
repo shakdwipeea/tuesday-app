@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class OtpFragment extends Fragment implements OtpContract.View {
 
         phone = getArguments().getString(PHONE_NUMBER_ARG_KEY);
 
-        if (phone == null)
+        if (TextUtils.isEmpty(phone))
             displayError("Incorrect usage");
 
         presenter = new OtpPresenter(this);

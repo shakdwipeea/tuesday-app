@@ -18,6 +18,7 @@ import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.picture.ProfilePicturePresenter;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.io.FileNotFoundException;
@@ -30,7 +31,10 @@ import rx.schedulers.Schedulers;
  * Created by ashak on 15-10-2016.
  */
 
-public class ProfilePresenter implements ProfileContract.Presenter {
+public class ProfilePresenter
+        extends ProfilePicturePresenter
+        implements ProfileContract.Presenter {
+
     private static final String TAG = "ProfilePresenter";
 
     private ProfileContract.View profileView;
@@ -52,9 +56,10 @@ public class ProfilePresenter implements ProfileContract.Presenter {
     private Boolean isSelf;
 
     ProfilePresenter(ProfileContract.View profileView) {
+        super(profileView);
+
         this.profileView = profileView;
         userService = UserService.getInstance();
-
         addContactService = new AddContactService(profileView.getContext());
     }
 
@@ -116,49 +121,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                 );
     }
 
-    @Override
-    public void updateProfilePic(Context context, Uri imageUri) {
-        try {
-            // Get the stream to get the bitmap and display the image
-            Bitmap bitmap = BitmapFactory.decodeStream(
-                    Util.getInputStreamFromFileUri(context, imageUri)
-            );
-            profileView.displayProfilePic(bitmap);
-
-            // get the stream again, to upload and set as profile pic
-            updateProfilePicFromObject(Util.getInputStreamFromFileUri(context, imageUri));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            profileView.displayError(e.getMessage());
-            setupProfile();
-        }
-    }
-
-    /**
-     * click handler to delete the profile picture
-     */
-    @Override
-    public void deleteProfilePic() {
-        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(null)
-                .build();
-
-        profileView.setProgressBar(true);
-        userService.updateProfile(request)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> {
-                    setupProfile();
-                    profileView.setProgressBar(false);
-                })
-                .subscribe(
-                        aVoid -> {},
-                        throwable -> {
-                            profileView.setProgressBar(false);
-                            profileView.displayError(throwable.getMessage());
-                        }
-                );
-    }
 
     public void toggleContact() {
 //        if (!profileView.hasContactPermission()) {
@@ -210,49 +172,8 @@ public class ProfilePresenter implements ProfileContract.Presenter {
         profileView.setAddFriendFabIcon(true);
     }
 
-    @Override
-    public void updateProfilePic(String filePath) {
-        updateProfilePicFromObject(filePath);
-        profileView.displayProfilePicFromPath(filePath);
-    }
-
-    private void updateProfilePicFromObject(Object file) {
-        ProfilePicService.saveProfilePic(file)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(ProfilePicService::transformUrl)
-                .subscribe(
-                        this::saveProfilePicture,
-                        throwable -> {
-                            Log.e(TAG, "updateProfilePic: ", throwable);
-                            profileView.displayError(throwable.getMessage());
-                            setupProfile();
-                        }
-                );
-    }
-
-    private void saveProfilePicture(String url) {
-        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(Uri.parse(url))
-                .build();
-
-        userService.updateProfile(profileChangeRequest)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> {
-                    profileView.displayProfilePic(url);
-                    userService.setHighResProfilePic(true);
-                })
-                .subscribe(
-                         aVoid ->  {},
-                        throwable -> {
-                            profileView.displayError(throwable.getMessage());
-                            setupProfile();
-                        }
-                );
-    }
-
     private void setupProfile() {
+        profileView.setProgressBar(false);
         if (loggedInUser != null && loggedInUser.getProviders() != null) {
             // display loggedInUser name
             profileView.displayName(loggedInUser.getDisplayName());
@@ -263,19 +184,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
 
             if (loggedInUser.getPhotoUrl() == null) {
                 profileView.displayDefaultPic();
-            } else {
-                // check if loggedInUser already has a high resolution photo o/w get one
-                userService.hasHighResProfilePic()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .filter(value -> !value)
-                        .subscribe(
-                                aBoolean -> {},
-                                throwable -> {
-                                    throwable.printStackTrace();
-                                    profileView.displayError(throwable.getMessage());
-                                }
-                        );
             }
         } else {
             profileView.displayError("You are not logged in.");
@@ -336,7 +244,7 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         url -> {
-                            saveProfilePicture(url);
+                            //saveProfilePicture(url);
                             profileView.displayProfilePic(url);
                         },
                         Throwable::printStackTrace

@@ -14,6 +14,7 @@ import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentDetailsBinding;
+import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.util.Util;
 
 /**
@@ -29,6 +30,8 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
 
     MaterialDialog dialog;
 
+    ProfilePictureUtil pictureUtil;
+
     public DetailsFragment() {
         // Required empty public constructor
     }
@@ -42,6 +45,8 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
                 container, false);
 
         presenter = new DetailsPresenter(this);
+
+        //pictureUtil = new ProfilePictureUtil()
 
         String token = getArguments().getString(KEY_TOKEN);
         String phone = getArguments().getString(KEY_PHONE);

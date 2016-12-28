@@ -7,10 +7,6 @@
         <variable
             name="handler"
             type="com.shakdwipeea.tuesday.profile.ProfileContract.Presenter" />
-
-        <variable
-            name="intentHandler"
-            type="com.shakdwipeea.tuesday.profile.ProfileContract.IntentActions" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout

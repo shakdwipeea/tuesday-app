@@ -42,7 +42,7 @@ public class ProfilePicService {
 
                 subscriber.onNext(response);
                 subscriber.onCompleted();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 subscriber.onError(e);
                 e.printStackTrace();
             }

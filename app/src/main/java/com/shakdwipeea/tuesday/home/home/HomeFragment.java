@@ -186,14 +186,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void showTuesidInput(boolean enable) {
         if (enable) {
             editingTuesId = true;
-            binding.tuesidView.setVisibility(View.GONE);
-            binding.phoneEdit.setVisibility(View.VISIBLE);
+            binding.tuesidCard.setVisibility(View.VISIBLE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp));
         } else {
             editingTuesId = false;
-            binding.phoneEdit.setVisibility(View.GONE);
-            binding.tuesidView.setVisibility(View.VISIBLE);
+            binding.tuesidCard.setVisibility(View.GONE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_add_black_24dp));
         }
@@ -223,24 +221,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void addPhoneContact(User user) {
         phoneContactAdapter.addUser(user);
     }
-
-    @Override
-    public void displayTuesIdProgress(Boolean value) {
-        if (value) {
-            binding.tuesidView.setAllCaps(false);
-            binding.tuesidView.setText(getString(R.string.tuesid_progress));
-        } else {
-            binding.tuesidView.setAllCaps(true);
-            binding.tuesidView.setTypeface(DEFAULT_BOLD);
-        }
-    }
-
-    @Override
-    public void displayTuesIdFailure() {
-        // Any boolean is not used because this is not transient
-        binding.tuesidView.setText(getString(R.string.tuesid_failure));
-    }
-
 
     private void setupSearch() {
         subscription = RxTextView.textChanges(binding.search)
@@ -279,7 +259,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-
             requestPermissions(new String[]{
                     Manifest.permission.READ_CONTACTS,
                     Manifest.permission.WRITE_CONTACTS

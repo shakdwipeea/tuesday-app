@@ -15,12 +15,12 @@
         >
 
         <android.support.v4.widget.NestedScrollView
-            android:id="@+id/home_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
             >
 
         <LinearLayout
+            android:id="@+id/home_content"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -54,6 +54,7 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:elevation="4dp"
+                android:visibility="gone"
                 card_view:cardCornerRadius="4dp">
 
                 <LinearLayout
@@ -63,31 +64,24 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/contact_phone_input_label"
                         android:gravity="center_horizontal"
                         android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/tuesid_label"/>
-
-                    <TextView
-                        android:id="@+id/tuesid_view"
-                        tools:text="ab24d1"
-                        android:textAllCaps="true"
-                        android:gravity="center_horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:text="Enter phone number"/>
 
                     <EditText
                         android:id="@+id/phone_edit"
                         tools:text="ab24d1"
                         android:textAllCaps="true"
-                        android:inputType="text"
+                        android:inputType="phone"
                         android:maxLines="1"
                         android:gravity="center_horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionSearch"
-                        android:visibility="gone"/>
+                        />
 
                 </LinearLayout>
 
@@ -187,7 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
-            app:layout_anchorGravity="bottom|right|end"
+            app:layout_anchorGravity="bottom|right"
             android:onClick="@{() -> handler.toggleTuesContactView()}"
             android:src="@drawable/ic_add_black_24dp"
             app:layout_anchor="@id/home_content"/>

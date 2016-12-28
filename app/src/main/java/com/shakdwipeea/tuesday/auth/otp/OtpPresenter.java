@@ -35,11 +35,11 @@ public class OtpPresenter implements OtpContract.Presenter {
                 .doOnCompleted(() -> otpView.displayProgressbar(false))
                 .subscribe(
                         user1 -> {
-                            if (TextUtils.isEmpty(user1.name))
+                            //if (TextUtils.isEmpty(user1.name))
                                 otpView.launchDetailsInputView(user1.token);
-                            else {
-                                signInUser(user1);
-                            }
+                           // else {
+                            //    signInUser(user1);
+                          //  }
                         },
                         throwable -> {
                             otpView.displayError(throwable.getMessage());

@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
+import com.shakdwipeea.tuesday.picture.ProfilePictureView;
 
 import java.util.List;
 
@@ -14,40 +15,19 @@ import java.util.List;
  */
 
 public interface ProfileContract {
-    interface View {
-        void displayError(String error);
-
-        void displayProfilePic(String url);
-        void displayProfilePic(Bitmap bitmap);
-        void displayProfilePicFromPath(String imagePath);
+    interface View extends ProfilePictureView {
         void displayDefaultPic();
         void displayName(String name);
 
         void loggedInUser(boolean show);
-
-        void openImageMenu();
-        void setProgressBar(boolean show);
-
         void displayUser(User user);
-        void setAddFriendFabIcon(Boolean value);
 
+        void setAddFriendFabIcon(Boolean value);
         void addProvider(List<Provider> provider);
 
-        void clearProvider();
         void launchSetup();
         void displayProviderInfo(Provider provider, String providerDetails);
         void showAccessButton(boolean enable);
-
-        Context getContext();
-        boolean hasContactPermission();
-    }
-
-    /**
-     * those actions which directly trigger an intent
-     */
-    interface IntentActions {
-        void openPhotoPicker();
-        void openCamera();
     }
 
     interface Presenter {
@@ -58,5 +38,6 @@ public interface ProfileContract {
         void deleteProfilePic();
         void handleFab();
         void displayProviderDetails(Provider provider);
+        void toggleContact();
     }
 }

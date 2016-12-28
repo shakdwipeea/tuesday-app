@@ -17,8 +17,6 @@ public interface HomeContract {
         void displayError(String message);
         void displayPhoneContacts(List<User> user);
         void addPhoneContact(User user);
-        void displayTuesIdProgress(Boolean value);
-        void displayTuesIdFailure();
         boolean hasPermissions();
         void addTuesContact(User user);
         void clearTuesContact();
