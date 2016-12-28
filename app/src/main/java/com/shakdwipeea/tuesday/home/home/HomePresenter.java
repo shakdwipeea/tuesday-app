@@ -5,26 +5,22 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.contacts.ContactsService;
-import com.shakdwipeea.tuesday.data.entities.HttpResponse;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 import com.shakdwipeea.tuesday.home.OnBackPressedListener;
 import com.shakdwipeea.tuesday.util.Util;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by ashak on 05-11-2016.
@@ -43,9 +39,11 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private boolean showTuesId = true;
 
+    private CompositeSubscription compositeSubscription;
 
     HomePresenter(HomeContract.View homeView) {
         this.homeView = homeView;
+        compositeSubscription = new CompositeSubscription();
     }
 
     //todo not sure if passing the context here is a good idea
@@ -64,9 +62,14 @@ public class HomePresenter implements HomeContract.Presenter {
         registerProfile();
     }
 
+    @Override
+    public void unSubscribe() {
+        compositeSubscription.unsubscribe();
+    }
+
     private void registerProfile() {
         FirebaseService firebaseService = new FirebaseService(firebaseUser.getUid());
-        firebaseService.getProfile()
+        Subscription subscription = firebaseService.getProfile()
                 .doOnNext(user -> {
                     if (user == null || user.name == null) userService.saveUserDetails();
                     else
@@ -80,17 +83,22 @@ public class HomePresenter implements HomeContract.Presenter {
                             homeView.displayError(throwable.getMessage());
                         }
                 );
+        compositeSubscription.add(subscription);
     }
 
     public void searchFriends(String pattern) {
-        userService.getTuesContacts()
+        Subscription subscription = userService.getTuesContacts()
                 .doOnNext((uidList) -> filterFriends(uidList, pattern))
                 .compose(Util.applySchedulers())
-                .subscribe();
+                .subscribe(
+                        strings -> {},
+                        Throwable::printStackTrace
+                );
+        compositeSubscription.add(subscription);
     }
 
     private void filterFriends(ArrayList<String> uidList, String pattern) {
-        fetchProfile(uidList)
+        Subscription subscription = fetchProfile(uidList)
                 .filter(user -> user.name.toLowerCase().contains(pattern.toLowerCase()))
                 .doOnSubscribe(() -> homeView.clearTuesContact())
                 .subscribe(
@@ -100,6 +108,7 @@ public class HomePresenter implements HomeContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
+        compositeSubscription.add(subscription);
     }
 
     private Observable<User> fetchProfile(ArrayList<String> uidList) {
@@ -112,15 +121,18 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     public void getFriendList() {
-        // TODO: 03-12-2016 add subscription
-        userService.getTuesContacts()
+        Subscription subscription = userService.getTuesContacts()
                 .doOnNext(this::getProfile)
                 .compose(Util.applySchedulers())
-                .subscribe();
+                .subscribe(
+                        strings -> {},
+                        Throwable::printStackTrace
+                );
+        compositeSubscription.add(subscription);
     }
 
     public void getProfile(ArrayList<String> uidList) {
-        fetchProfile(uidList)
+        Subscription subscription = fetchProfile(uidList)
                 .doOnSubscribe(() -> homeView.clearTuesContact())
                 .subscribe(
                         user -> homeView.addTuesContact(user),
@@ -129,12 +141,13 @@ public class HomePresenter implements HomeContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
+        compositeSubscription.add(subscription);
     }
 
 
     public void getContacts(Context context) {
         contactsService = ContactsService.getInstance(context);
-        contactsService.getContacts()
+        Subscription subscription = contactsService.getContacts()
                 .map(contact -> {
                     //Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
@@ -152,6 +165,7 @@ public class HomePresenter implements HomeContract.Presenter {
                         },
                         Throwable::printStackTrace
                 );
+        compositeSubscription.add(subscription);
     }
 
     public void toggleTuesContactView() {
@@ -177,14 +191,9 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     @Override
-    public void unsubscribe() {
-
-    }
-
-    @Override
     public void getTuesContact(String phoneNumber) {
         Log.d(TAG, "getTuesContact: Search for " + phoneNumber);
-        ApiFactory.getInstance().getContact(phoneNumber)
+        Subscription subscription = ApiFactory.getInstance().getContact(phoneNumber)
                 .compose(Util.applySchedulers())
                 .doOnSubscribe(() -> homeView.showProgress(true))
                 .subscribe(
@@ -198,5 +207,6 @@ public class HomePresenter implements HomeContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
+        compositeSubscription.add(subscription);
     }
 }

@@ -30,7 +30,7 @@ public interface HomeContract {
     interface Presenter {
         void subscribe(Context context);
         void getContacts(Context context);
-        void unsubscribe();
+        void unSubscribe();
         void getTuesContact(String tuesId);
         void searchFriends(String pattern);
     }

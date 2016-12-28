@@ -62,7 +62,11 @@ public class AuthPresenter {
 
         //listen to firebase auth changes
         authListener = firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() != null) {
+                view.openProfile(firebaseAuth.getCurrentUser());
+            }
 
+            auth.removeAuthStateListener(authListener);
         };
 
         auth.addAuthStateListener(authListener);

@@ -88,16 +88,16 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.View
         // TODO: 15-10-2016 investigate why the auth changed is called twice
         if (!profileLaunched) {
             profileLaunched = true;
-// TODO: 28/12/16 for npw
-//            Intent intent;
-//            if (Preferences.getInstance(this).isSetupComplete()) {
-//                intent = new Intent(this, HomeActivity.class);
-//            } else {
-//                intent = new Intent(this, ProviderPickerActivity.class);
-//            }
-//
-//            startActivity(intent);
-//            finish();
+
+            Intent intent;
+            if (Preferences.getInstance(this).isSetupComplete()) {
+                intent = new Intent(this, HomeActivity.class);
+            } else {
+                intent = new Intent(this, ProviderPickerActivity.class);
+            }
+
+            startActivity(intent);
+            finish();
         }
     }
 }

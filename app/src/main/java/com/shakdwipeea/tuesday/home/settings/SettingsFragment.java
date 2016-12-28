@@ -31,6 +31,11 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
         // Required empty public constructor
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.unSubscribe();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

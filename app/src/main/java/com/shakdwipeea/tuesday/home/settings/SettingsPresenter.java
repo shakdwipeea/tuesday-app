@@ -10,6 +10,7 @@ import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 import com.shakdwipeea.tuesday.people.PeopleListActivity;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -22,15 +23,22 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     private UserService userService;
     private Preferences preferences;
 
+    private Subscription subscription;
+
     public SettingsPresenter(SettingsContract.View settingsView, Context context) {
         this.settingsView = settingsView;
         userService = UserService.getInstance();
         preferences = Preferences.getInstance(context);
     }
 
+    public void unSubscribe() {
+        if (subscription != null)
+            subscription.unsubscribe();
+    }
+
     @Override
     public void getUser() {
-        userService.getUserDetails()
+        subscription = userService.getUserDetails()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> settingsView.showProgress(true))

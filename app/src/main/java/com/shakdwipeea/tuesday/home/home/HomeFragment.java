@@ -76,15 +76,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         setRetainInstance(true);
     }
 
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unsubscribe();
+        presenter.unSubscribe();
         subscription.unsubscribe();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

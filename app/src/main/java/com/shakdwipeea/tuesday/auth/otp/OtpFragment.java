@@ -84,8 +84,6 @@ public class OtpFragment extends Fragment implements OtpContract.View {
 
     private void setupForOtp() {
         binding.phoneInputLabel.setText(R.string.otp_label);
-
-        binding.phoneInput.setInputType(EditorInfo.TYPE_CLASS_TEXT);
         binding.phoneInput.setHint(R.string.otp_hint);
     }
 

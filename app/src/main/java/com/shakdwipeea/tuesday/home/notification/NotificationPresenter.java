@@ -29,11 +29,11 @@ public class NotificationPresenter implements NotificationContract.Presenter {
 
     public NotificationPresenter(NotificationContract.NotificationView notificationView) {
         this.notificationView = notificationView;
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void subscribe() {
-        compositeSubscription = new CompositeSubscription();
         // TODO: 30-11-2016 Check if using getInstance here is wise 🤔
         userService = UserService.getInstance();
 
@@ -45,13 +45,16 @@ public class NotificationPresenter implements NotificationContract.Presenter {
         Subscription subscribe = userService.getProvider()
                 .doOnNext(this::getRequestNotifications)
                 .compose(Util.applySchedulers())
-                .subscribe();
+                .subscribe(
+                        providers -> {},
+                        Throwable::printStackTrace
+                );
 
         compositeSubscription.add(subscribe);
     }
 
     private void getRequestNotifications(List<Provider> providerList) {
-        Observable.from(providerList)
+        Subscription subscription = Observable.from(providerList)
                 .filter(provider ->
                         provider.providerDetails.requestedBy != null
                                 && provider.providerDetails.requestedBy.size() > 0)
@@ -65,7 +68,11 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                         notificationView.addRequestNotification(notificationDetail))
                 .compose(Util.applySchedulers())
                 .doOnSubscribe(() -> notificationView.clearRequestNotification())
-                .subscribe();
+                .subscribe(
+                        notificationDetail -> {},
+                        Throwable::printStackTrace
+                );
+        compositeSubscription.add(subscription);
     }
 
 
@@ -103,15 +110,19 @@ public class NotificationPresenter implements NotificationContract.Presenter {
     }
 
     private void getGrantedDetails() {
-        userService.getGrantedDetails()
+        Subscription subscription = userService.getGrantedDetails()
                 .doOnNext(this::inflateNotificationDetailForGranted)
                 .compose(Util.applySchedulers())
-                .subscribe();
+                .subscribe(
+                        grantedToDetailses -> {},
+                        Throwable::printStackTrace
+                );
+        compositeSubscription.add(subscription);
     }
 
     private void inflateNotificationDetailForGranted(ArrayList<GrantedToDetails>
                                                              grantedToDetailsList) {
-        Observable.from(grantedToDetailsList)
+        Subscription subscription = Observable.from(grantedToDetailsList)
                 .flatMap(details -> {
                     FirebaseService firebaseService = new FirebaseService(details.grantedByuid);
                     NotificationDetail notificationDetail = new NotificationDetail();
@@ -128,6 +139,7 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
+        compositeSubscription.add(subscription);
     }
 
     @Override
