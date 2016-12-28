@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 
 public interface ProfilePictureView {
     Context getContext();
+    Context getApplicationContext();
+
     void startActivityForResult(Intent intent, int requestCode);
     void requestPermissions(String[] permission, int requestCode);
 

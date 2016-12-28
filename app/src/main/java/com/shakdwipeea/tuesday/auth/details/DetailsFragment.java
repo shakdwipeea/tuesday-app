@@ -1,6 +1,7 @@
 package com.shakdwipeea.tuesday.auth.details;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -76,6 +77,11 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        return getContext().getApplicationContext();
     }
 
     @Override

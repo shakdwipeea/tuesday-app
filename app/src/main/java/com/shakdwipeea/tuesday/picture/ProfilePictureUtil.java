@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -87,7 +88,11 @@ public class ProfilePictureUtil {
             if (takePictureIntent
                     .resolveActivity(pictureView.getContext().getPackageManager()) != null) {
                 // get the uri for file using a fileprovider
-                Uri photoURI = Uri.fromFile(imageFile);
+                Uri photoURI = FileProvider.getUriForFile(
+                        pictureView.getContext(),
+                        pictureView.getApplicationContext().getPackageName() + ".provider",
+                        imageFile);
+
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
                 // take the picture
