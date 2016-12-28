@@ -46,8 +46,8 @@ public class SettingsPresenter implements SettingsContract.Presenter {
     }
 
     public void logOut(View view) {
-        FirebaseAuth.getInstance().signOut();
         preferences.clear();
+        FirebaseAuth.getInstance().signOut();
         settingsView.launchAuth();
     }
 

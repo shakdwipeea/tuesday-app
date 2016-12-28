@@ -233,7 +233,6 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         if (!TextUtils.isEmpty(url)) {
             Picasso.with(this)
                     .load(url)
-                    //.placeholder(thumbnailDrawable)
                     .into(binding.profilePic);
         } else {
             // TODO: 17-11-2016 display text drawable from first letter
@@ -243,8 +242,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     @Override
     public void displayProfilePic(Bitmap image) {
         Util.resizeBitmapTo(image, binding.profilePic.getHeight(), binding.profilePic.getWidth())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(Util.applyComputationScheduler())
                 .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
                 .subscribe();
     }
@@ -253,8 +251,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     public void displayProfilePicFromPath(String photoPath) {
         Util.resizeBitmapTo(photoPath,
                 binding.profilePic.getHeight(), binding.profilePic.getWidth())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(Util.applyComputationScheduler())
                 .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
                 .doOnError(throwable -> displayError(throwable.getMessage()))
                 .onErrorResumeNext(Observable.empty())

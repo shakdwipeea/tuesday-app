@@ -14,11 +14,15 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.auth.FirebaseUser;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.details.DetailsFragment;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.databinding.FragmentPhoneInputBinding;
+import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
+import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.util.concurrent.TimeUnit;

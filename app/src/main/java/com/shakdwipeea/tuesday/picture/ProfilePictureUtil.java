@@ -112,6 +112,8 @@ public class ProfilePictureUtil {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
+            // This calls the correct mechanism of requesting permission in both fragment
+            // and activity since this function with same signature is defined there
             pictureView.requestPermissions(
                     new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,

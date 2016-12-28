@@ -62,38 +62,11 @@ public class AuthPresenter {
 
         //listen to firebase auth changes
         authListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            Log.d(TAG, "init: User is " + user);
-            if (user != null) {
-                updateFirebaseUser(user);
-
-                // User is signed in
-                Log.e(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                view.openProfile(user);
-
-                // when profile page is open we don't need this
-                auth.removeAuthStateListener(authListener);
-            } else {
-                // User is signed out
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
 
         };
 
         auth.addAuthStateListener(authListener);
     }
 
-    private void updateFirebaseUser(FirebaseUser user) {
-        User userDetails = Preferences.getInstance(context)
-                .getUserDetails();
 
-        UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder()
-                .setDisplayName(userDetails.name);
-
-        if (!TextUtils.isEmpty(userDetails.pic)) {
-            builder.setPhotoUri(Uri.parse(userDetails.pic));
-        }
-
-        user.updateProfile(builder.build());
-    }
 }
