@@ -55,6 +55,9 @@ public class ProfilePresenter
     // The profile being viewed is of the logged in person
     private Boolean isSelf;
 
+    // TODO: 2/1/17 special snowflake
+    private String phoneNumber;
+
     ProfilePresenter(ProfileContract.View profileView) {
         super(profileView);
 
@@ -70,6 +73,8 @@ public class ProfilePresenter
         //setupProfile();
         //getTuesID();
         this.user = user;
+        phoneNumber = user.phoneNumber;
+
         loadProfile(user);
         isFriend = false;
     }
@@ -83,7 +88,10 @@ public class ProfilePresenter
         firebaseService.getProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(user1 -> user = user1)
+                .doOnNext(user1 -> {
+                    user = user1;
+                    user.phoneNumber = phoneNumber;
+                })
                 .doOnNext(user1 -> {
                     if (!user1.uid.equals(loggedInUser.getUid())) {
                         profileView.loggedInUser(false);
@@ -126,14 +134,16 @@ public class ProfilePresenter
 //        if (!profileView.hasContactPermission()) {
 //            return;
 //        }
+        Log.d(TAG, "toggleContact: for " + user);
 
+        // TODO: 2/1/17 handle case in which contact permission is not there
         try {
             if (isFriend) {
                 deleteContact();
-                //addContactService.deleteContact(user);
+                addContactService.deleteContact(user);
             } else {
                 saveContact();
-                //addContactService.addContact(user);
+                addContactService.addContact(user);
             }
         } catch (Exception e) {
             e.printStackTrace();

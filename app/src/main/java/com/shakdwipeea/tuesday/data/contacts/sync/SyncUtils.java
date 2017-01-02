@@ -39,9 +39,9 @@ public class SyncUtils {
         // Schedule an initial sync if we detect problems with either our account or our local
         // data has been deleted. (Note that it's possible to clear app data WITHOUT affecting
         // the account list, so wee need to check both.)
-//        if (newAccount ) {
+        if (newAccount ) {
             TriggerRefresh(account);
-//        }
+        }
     }
 
     /**

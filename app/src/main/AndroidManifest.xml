@@ -92,7 +92,7 @@
             android:name=".data.contacts.sync.ContactService"
             android:enabled="true"
             android:exported="true"
-            android:process=":sync">
+           >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>

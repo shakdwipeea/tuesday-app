@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -196,6 +197,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     @Override
     public void openTuesContact(User user) {
+        Log.d(TAG, "openTuesContact: for " + user);
         Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
         startActivity(intent);

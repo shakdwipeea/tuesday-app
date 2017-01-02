@@ -133,7 +133,6 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/tues_contact_list"
                     android:scrollbars="vertical"
-                    android:animateLayoutChanges="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 

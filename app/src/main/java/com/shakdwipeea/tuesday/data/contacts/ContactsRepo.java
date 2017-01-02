@@ -9,8 +9,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.Contact;
+
+import java.util.ArrayList;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -21,6 +25,8 @@ import rx.subjects.ReplaySubject;
  */
 
 public class ContactsRepo {
+    private static final String TAG = "ContactsRepo";
+
     private static ContactsRepo contactsRepo;
 
     private Uri QUERY_URI = ContactsContract.Contacts.CONTENT_URI;
@@ -64,7 +70,8 @@ public class ContactsRepo {
         return Observable
                 .create(subscriber -> {
                     String[] projection = new String[]{
-                            CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER, STARRED_CONTACT};
+                            CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER,
+                            ContactsContract.RawContacts.ACCOUNT_TYPE};
 
                     Cursor cursor = contentResolver.query(QUERY_URI, projection,
                             HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
@@ -94,6 +101,13 @@ public class ContactsRepo {
         contact.id = Integer.valueOf(contactId);
         contact.name = name;
         contact.uriString = intentUriString;
+        contact.phone = new ArrayList<>();
+
+        String accountType = cursor.getString(
+                cursor.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_TYPE));
+        if (accountType.equals(SyncUtils.ACCOUNT_TYPE)) {
+            contact.isTuesday = true;
+        }
 
         getPhone(cursor, contactId, contact);
         //getEmail(contactId, contact);
@@ -127,8 +141,9 @@ public class ContactsRepo {
             if (phoneCursor == null) return;
 
             while (phoneCursor.moveToNext()) {
-                contact.phone = phoneCursor
-                        .getString(phoneCursor.getColumnIndex(PHONE_NUMBER));
+                contact.phone.add(
+                        phoneCursor.getString(phoneCursor.getColumnIndex(PHONE_NUMBER))
+                );
             }
             phoneCursor.close();
         }

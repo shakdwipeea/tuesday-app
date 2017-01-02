@@ -2,6 +2,8 @@ package com.shakdwipeea.tuesday.data.entities;
 
 import android.graphics.Bitmap;
 
+import java.util.List;
+
 /**
  * Created by ashak on 07-11-2016.
  */
@@ -9,10 +11,11 @@ import android.graphics.Bitmap;
 public class Contact {
     public int id;
     public String name;
-    public String phone;
+    public List<String> phone;
     public String email;
     public String uriString;
     public Bitmap thumbNail;
+    public boolean isTuesday;
 
     @Override
     public String toString() {

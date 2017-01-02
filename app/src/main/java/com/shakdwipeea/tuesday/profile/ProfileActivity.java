@@ -94,6 +94,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
             return;
         }
 
+        Log.d(TAG, "onCreate: Received user " + user);
+
         // Info passed in Intent can be immediately opened and the rest be retrieved
         displayUser(user);
 

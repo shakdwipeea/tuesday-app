@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
+import android.util.Log;
 
+import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 
 import java.util.ArrayList;
@@ -16,25 +18,34 @@ import java.util.ArrayList;
  */
 
 public class AddContactService {
+    private static final String TAG = "AddContactService";
+
     private ContentResolver contentResolver;
 
     public AddContactService(Context context) {
         contentResolver = context.getContentResolver();
     }
 
-    public void  addContact(User user) throws RemoteException, OperationApplicationException {
+    public void addContact(User user) throws RemoteException, OperationApplicationException {
+        if (user.phoneNumber != null)
              contentResolver.applyBatch(ContactsContract.AUTHORITY, makeContact(user));
+        else
+            Log.d(TAG, "addContact: why u adding this " + user);
     }
 
     public void deleteContact(User user) throws RemoteException, OperationApplicationException {
-        String where = "account_name = ? ";
-        String[] params = new String[] {user.uid};
+        String whereName = ContactsContract.RawContacts.ACCOUNT_NAME + " = ? ";
+        String[] nameParams = new String[] {user.phoneNumber};
+
+        String whereType = ContactsContract.RawContacts.ACCOUNT_TYPE + " = ? ";
+        String[] typeParams = new String[] { SyncUtils.ACCOUNT_TYPE };
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<>();
 
 
         ops.add(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI)
-                .withSelection(where, params)
+                .withSelection(whereName, nameParams)
+                .withSelection(whereType, typeParams)
                 .build());
 
         contentResolver.applyBatch(ContactsContract.AUTHORITY, ops);
@@ -45,8 +56,8 @@ public class AddContactService {
 
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)
-                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "tuesday")
-                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, user.uid)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, SyncUtils.ACCOUNT_TYPE)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, user.phoneNumber)
                 .build());
 
 

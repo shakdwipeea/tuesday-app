@@ -148,11 +148,12 @@ public class HomePresenter implements HomeContract.Presenter {
     public void getContacts(Context context) {
         contactsRepo = ContactsRepo.getInstance(context);
         Subscription subscription = contactsRepo.getContacts()
+                .filter(contact -> !contact.isTuesday)
                 .map(contact -> {
                     //Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
                     user.name = contact.name;
-                    user.phoneNumber = contact.phone;
+                    user.phoneNumber = contact.phone.get(0);
                     user.photo = contact.thumbNail;
                     return user;
                 })
