@@ -10,5 +10,7 @@ public class AuthContract {
     interface View {
         void displayError(String message);
         void openProfile(FirebaseUser user);
+
+        void setupAccount(FirebaseUser user);
     }
 }

@@ -1,5 +1,6 @@
 package com.shakdwipeea.tuesday.auth;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.data.Preferences;
+import com.shakdwipeea.tuesday.data.contacts.sync.ContactSyncAdapter;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -63,6 +65,7 @@ public class AuthPresenter {
         //listen to firebase auth changes
         authListener = firebaseAuth -> {
             if (firebaseAuth.getCurrentUser() != null) {
+                view.setupAccount(firebaseAuth.getCurrentUser());
                 view.openProfile(firebaseAuth.getCurrentUser());
             }
 
@@ -71,6 +74,4 @@ public class AuthPresenter {
 
         auth.addAuthStateListener(authListener);
     }
-
-
 }

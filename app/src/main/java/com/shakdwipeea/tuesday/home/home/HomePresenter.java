@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
-import com.shakdwipeea.tuesday.data.contacts.ContactsService;
+import com.shakdwipeea.tuesday.data.contacts.ContactsRepo;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
@@ -31,7 +31,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private FirebaseUser firebaseUser;
     private UserService userService;
-    private ContactsService contactsService;
+    private ContactsRepo contactsRepo;
 
     private HomeContract.View homeView;
 
@@ -146,8 +146,8 @@ public class HomePresenter implements HomeContract.Presenter {
 
 
     public void getContacts(Context context) {
-        contactsService = ContactsService.getInstance(context);
-        Subscription subscription = contactsService.getContacts()
+        contactsRepo = ContactsRepo.getInstance(context);
+        Subscription subscription = contactsRepo.getContacts()
                 .map(contact -> {
                     //Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
@@ -157,7 +157,6 @@ public class HomePresenter implements HomeContract.Presenter {
                     return user;
                 })
                 .toList()
-                .cache()
                 .compose(Util.applySchedulers())
                 .subscribe(
                         contactList -> {

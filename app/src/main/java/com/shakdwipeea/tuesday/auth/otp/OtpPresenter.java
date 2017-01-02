@@ -1,5 +1,6 @@
 package com.shakdwipeea.tuesday.auth.otp;
 
+import android.accounts.Account;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.api.ApiService;
+import com.shakdwipeea.tuesday.data.contacts.sync.ContactSyncAdapter;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.util.Util;
 
