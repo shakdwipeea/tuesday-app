@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.Contact;
+import com.shakdwipeea.tuesday.data.entities.user.User;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,7 @@ public class ContactsRepo {
     private Uri PHONE_CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
     private String PHONE_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
     private String STARRED_CONTACT = ContactsContract.Contacts.STARRED;
+    private String ACCOUNT_TYPE = ContactsContract.RawContacts.ACCOUNT_TYPE;
 
     private ContentResolver contentResolver;
 
@@ -59,6 +61,28 @@ public class ContactsRepo {
         if (contactsRepo == null) contactsRepo = new ContactsRepo(context);
 
         return contactsRepo;
+    }
+
+    public boolean isContactPresent(User user) {
+        String[] projection = new String[] {
+                CONTACT_ID, DISPLAY_NAME, PHONE_NUMBER
+        };
+
+        String selection = PHONE_NUMBER + " = ? and " + ACCOUNT_TYPE + " = ?";
+        String[] selArgs = new String[]{
+                user.phoneNumber,
+                SyncUtils.ACCOUNT_TYPE
+        };
+
+        Cursor cursor = contentResolver.query(PHONE_CONTENT_URI, projection,
+                selection, selArgs, null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.close();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Observable<Contact> getContacts() {

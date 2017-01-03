@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentSettingsBinding;
 import com.shakdwipeea.tuesday.home.home.ContactItemActionHandler;
@@ -26,6 +27,8 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
 
     FragmentSettingsBinding binding;
     SettingsPresenter presenter;
+
+    Preferences preferences;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -43,9 +46,16 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false);
 
+        preferences = Preferences.getInstance(getContext());
+
         presenter = new SettingsPresenter(this, getContext());
         binding.setPresenter(presenter);
         binding.contactItem.setActionHandler(new ContactItemActionHandler());
+
+        binding.syncContactSwitch.setChecked(preferences.isSync());
+        binding.syncContactSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            preferences.setSync(isChecked);
+        });
 
         presenter.getUser();
 

@@ -10,7 +10,6 @@ import com.shakdwipeea.tuesday.picture.ProfilePictureView;
 
 public class DetailsContract {
     interface View extends ProfilePictureView {
-        void saveUserDetails(User user);
         void openProfile(FirebaseUser user);
         void displayName(String name);
     }

@@ -102,12 +102,6 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
     }
 
     @Override
-    public void saveUserDetails(User user) {
-        Preferences.getInstance(getContext())
-                .setUserDetails(user);
-    }
-
-    @Override
     public void openProfile(FirebaseUser user) {
         Intent intent;
         if (Preferences.getInstance(getContext()).isSetupComplete()) {

@@ -8,6 +8,7 @@ import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 
@@ -21,12 +22,19 @@ public class AddContactService {
     private static final String TAG = "AddContactService";
 
     private ContentResolver contentResolver;
+    private Preferences preferences;
 
     public AddContactService(Context context) {
         contentResolver = context.getContentResolver();
+        preferences = Preferences.getInstance(context);
     }
 
     public void addContact(User user) throws RemoteException, OperationApplicationException {
+        if (!preferences.isSync()) {
+            Log.d(TAG, "addContact: Sync not enabled");
+            return;
+        }
+
         if (user.phoneNumber != null)
              contentResolver.applyBatch(ContactsContract.AUTHORITY, makeContact(user));
         else
@@ -34,6 +42,11 @@ public class AddContactService {
     }
 
     public void deleteContact(User user) throws RemoteException, OperationApplicationException {
+        if (!preferences.isSync()) {
+            Log.d(TAG, "deleteContact: Sync not enabled");
+            return;
+        }
+
         String whereName = ContactsContract.RawContacts.ACCOUNT_NAME + " = ? ";
         String[] nameParams = new String[] {user.phoneNumber};
 

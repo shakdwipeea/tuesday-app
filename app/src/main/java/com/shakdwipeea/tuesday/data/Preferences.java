@@ -15,8 +15,7 @@ public class Preferences {
     private static String KEY_NAME_INDEXED = "name_indexed";
     private static String KEY_SETUP_DONE = "setup_complete";
 
-    private static String KEY_USER_NAME = "user";
-    private static String KEY_USER_PHOTO = "photo";
+    private static String KEY_SYNC_FLAG = "sync_contact";
 
     private static Preferences preferences;
 
@@ -54,30 +53,18 @@ public class Preferences {
                 .apply();
     }
 
-    public void setUserDetails(User user) {
+    public void setSync(boolean enable) {
         sharedPreferences.edit()
-                .putString(KEY_USER_NAME, user.name)
-                .putString(KEY_USER_PHOTO, user.pic)
+                .putBoolean(KEY_SYNC_FLAG, enable)
                 .apply();
     }
 
-    public void clearUserDetails() {
-        sharedPreferences.edit()
-                .remove(KEY_USER_NAME)
-                .remove(KEY_USER_PHOTO)
-                .apply();
-    }
-
-    public User getUserDetails() {
-        User user = new User();
-        user.name = sharedPreferences.getString(KEY_USER_NAME, "default");
-        user.pic = sharedPreferences.getString(KEY_USER_PHOTO, null);
-        return user;
+    public boolean isSync() {
+        return sharedPreferences.getBoolean(KEY_SYNC_FLAG, false);
     }
 
     public void clear() {
         setNameIndexed(false);
         setSetupComplete(false);
-        clearUserDetails();
     }
 }

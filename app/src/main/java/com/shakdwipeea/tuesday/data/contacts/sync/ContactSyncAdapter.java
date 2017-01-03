@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.contacts.AddContactService;
 import com.shakdwipeea.tuesday.data.contacts.ContactsRepo;
@@ -35,6 +36,7 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private ContactsRepo contactsRepo;
     private AddContactService addContactService;
+    private Preferences preferences;
 
     private UserService userService;
 
@@ -43,6 +45,7 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "ContactSyncAdapter: initialized");
         contactsRepo = ContactsRepo.getInstance(context);
         addContactService = new AddContactService(context);
+        preferences = Preferences.getInstance(context);
     }
 
     @Override
@@ -50,10 +53,18 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
                               ContentProviderClient provider, SyncResult syncResult) {
         Log.d(TAG, "onPerformSync: ");
 
+        if (!preferences.isSync()) {
+            Log.d(TAG, "onPerformSync: Sync not enabled. Exiting...");
+            return;
+        }
+
         userService = UserService.getInstance();
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) return;
+        if (firebaseUser == null) {
+            Log.d(TAG, "onPerformSync: Not logged in");
+            return;
+        }
 
         Iterator<Contact> iterator = contactsRepo.getContactsObservable()
                 .toBlocking()
@@ -75,12 +86,16 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 if (user != null) {
                     Log.d(TAG, "onPerformSync: User was not null");
-                    try {
-                        addContactService.addContact(user);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    } catch (OperationApplicationException e) {
-                        e.printStackTrace();
+
+                    if (!contactsRepo.isContactPresent(user)) {
+                        Log.d(TAG, "onPerformSync: contact not present hence adding");
+                        try {
+                            addContactService.addContact(user);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        } catch (OperationApplicationException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     userService.saveTuesContacts(user.uid);
