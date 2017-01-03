@@ -66,14 +66,17 @@ public class UserService {
     }
 
     public void saveUserDetails() {
-        DatabaseReference userRef = dbRef.child(User.KEY).child(user.getUid());
         if (user.getDisplayName() != null)
-            userRef.child(User.UserNode.NAME).setValue(user.getDisplayName());
+            profileRef.child(User.UserNode.NAME).setValue(user.getDisplayName());
         else
             Log.e(TAG, "saveUserDetails: " + user );
 
         if (user.getPhotoUrl() != null)
-            userRef.child(User.UserNode.PROFILE_PIC).setValue(user.getPhotoUrl().toString());
+            profileRef.child(User.UserNode.PROFILE_PIC).setValue(user.getPhotoUrl().toString());
+    }
+
+    public void setName(String name) {
+        profileRef.child(User.UserNode.NAME).setValue(name);
     }
 
     public void setHighResProfilePic(Boolean value) {
@@ -94,24 +97,6 @@ public class UserService {
                     else
                         return (Boolean) dataSnapshot.getValue();
                 });
-    }
-
-    public void setTuesId(String tuesId) {
-        dbRef.child(User.KEY)
-                .child(user.getUid())
-                .child(User.UserNode.TUES_ID).setValue(tuesId);
-    }
-
-    /**
-     * Get tues_id
-     * @return Observable containing the tues_id
-     */
-    public Observable<String> getTuesId() {
-        return RxFirebase
-                .getData(dbRef.child(User.KEY)
-                        .child(user.getUid())
-                        .child(User.UserNode.TUES_ID))
-                .map(dataSnapshot -> (String) dataSnapshot.getValue());
     }
 
     public Observable<Void> updateProfile(UserProfileChangeRequest request) {

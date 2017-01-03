@@ -39,5 +39,6 @@ public interface ProfileContract {
         void handleFab();
         void displayProviderDetails(Provider provider);
         void toggleContact();
+        void changeName(String name);
     }
 }

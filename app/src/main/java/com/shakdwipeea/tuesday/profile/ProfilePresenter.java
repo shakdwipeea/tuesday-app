@@ -31,9 +31,7 @@ import rx.schedulers.Schedulers;
  * Created by ashak on 15-10-2016.
  */
 
-public class ProfilePresenter
-        extends ProfilePicturePresenter
-        implements ProfileContract.Presenter {
+public class ProfilePresenter extends ProfilePicturePresenter implements ProfileContract.Presenter {
 
     private static final String TAG = "ProfilePresenter";
 
@@ -152,6 +150,18 @@ public class ProfilePresenter
     }
 
     @Override
+    public void changeName(String name) {
+        UserProfileChangeRequest changeRequest = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+
+        loggedInUser.updateProfile(changeRequest);
+        userService.setName(name);
+
+        profileView.displayName(name);
+    }
+
+    @Override
     public void handleFab() {
         if (isSelf) {
             profileView.launchSetup();
@@ -241,60 +251,5 @@ public class ProfilePresenter
     public void requestAccess(Provider provider) {
         Log.d(TAG, "requestAccess: " + provider);
         firebaseService.addRequestedBy(provider.name, loggedInUser.getUid());
-    }
-
-    /**
-     * used for fb  AuthService provides Observables with gives the profile pic,
-     * this function uses that observable to display the profile pic
-     * @param profilePicObservable Observable that provides url for high res profile pic
-     */
-    private void displayPic(Observable<String> profilePicObservable) {
-        profilePicObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        url -> {
-                            //saveProfilePicture(url);
-                            profileView.displayProfilePic(url);
-                        },
-                        Throwable::printStackTrace
-                );
-
-    }
-
-    /**
-     * the profile pic url in case of twitter is sth like
-     * http://pbs.twimg.com/profile_images/463646119960920064/_lMH5iFt_normal.jpeg
-     *
-     * Omit the underscore and variant to retrieve the original image.
-     * NOTE THE IMAGE CAN BE VERY LARGE
-     * todo use cloudinary stuff instead
-     *
-     * @param lowResUrl the default low res image
-     * @return highResUrl
-     */
-    private String parseTwitterUrl(String lowResUrl) {
-        return lowResUrl.replace("_normal", "");
-    }
-
-    /**
-     *  google returns the profile url as
-     *  https://lh5.googleusercontent.com/-GoXxObG2mVE/AAAAAAAAAAI/AAAAAAAABFY/PzVrrZdkQYQ/s96-c/photo.jpg
-     *  here 96 is the width and height, to get a full res we can put our required dimensions
-     *  and request
-     *  todo use cloudinary stuff instead
-     *
-     *  @param lowResUrl The default low res url
-     */
-    private String parseGoogleUrl(String lowResUrl) {
-        // find the dimension and change it to 400dp
-        String[] urlParts = lowResUrl.split("/");
-        String dimPart = urlParts[urlParts.length - 2];
-        String[] dimValue = dimPart.split("-");
-        dimValue[0] = "s400";
-
-        // recreate the url
-        urlParts[urlParts.length - 2] = TextUtils.join("-", dimValue);
-        return TextUtils.join("/", urlParts);
     }
 }

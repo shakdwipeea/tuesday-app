@@ -130,4 +130,5 @@
     <string name="otp_hint">Enter otp</string>
     <string name="save">Save</string>
     <string name="sync_label">Sync with contacts</string>
+    <string name="change_name">Change name</string>
 </resources>

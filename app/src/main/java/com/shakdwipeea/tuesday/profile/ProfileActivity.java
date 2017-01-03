@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -87,6 +88,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         // String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
         // Log.d(TAG, "Profile url " + profilePic);
 
+        setSupportActionBar(binding.toolbar);
+
         user = Parcels.unwrap(getIntent().getParcelableExtra(USER_EXTRA_KEY));
         if (user == null) {
             displayError("User not provided");
@@ -127,9 +130,26 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
                 pictureUtil.openImageMenu();
                 return true;
 
+            case R.id.action_change_name:
+                showInputDialog();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void showInputDialog() {
+        new MaterialDialog.Builder(this)
+                .title("Edit name")
+                .content("Name")
+                .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+                .input(
+                        "Enter name",
+                        user.name,
+                        (dialog, input) -> presenter.changeName(input.toString())
+                )
+                .show();
     }
 
     @Override
@@ -267,7 +287,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
     @Override
     public void displayName(String name) {
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(name);
+//        if (getSupportActionBar() != null) getSupportActionBar().setTitle(name);
+        binding.toolbarLayout.setTitle(name);
     }
 
     @Override

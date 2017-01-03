@@ -9,4 +9,10 @@
         android:title="@string/change_picture"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_change_name"
+        android:title="@string/change_name"
+        app:showAsAction="never"
+        />
+
 </menu>
