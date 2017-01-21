@@ -16,7 +16,6 @@ import java.util.List;
 
 public interface ProfileContract {
     interface View extends ProfilePictureView {
-        void displayDefaultPic();
         void displayName(String name);
 
         void loggedInUser(boolean show);

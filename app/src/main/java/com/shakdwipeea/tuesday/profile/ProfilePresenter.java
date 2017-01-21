@@ -192,24 +192,6 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
         profileView.setAddFriendFabIcon(true);
     }
 
-    private void setupProfile() {
-        profileView.setProgressBar(false);
-        if (loggedInUser != null && loggedInUser.getProviders() != null) {
-            // display loggedInUser name
-            profileView.displayName(loggedInUser.getDisplayName());
-
-            // get auth provider
-            provider = loggedInUser.getProviders().get(0);
-            Log.d(TAG, "setupProfile: " + provider);
-
-            if (loggedInUser.getPhotoUrl() == null) {
-                profileView.displayDefaultPic();
-            }
-        } else {
-            profileView.displayError("You are not logged in.");
-        }
-    }
-
     public void displayProviderDetails(Provider provider) {
         String providerDetail = "Not available";
 

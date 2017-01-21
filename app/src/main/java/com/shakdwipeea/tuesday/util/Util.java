@@ -55,6 +55,15 @@ public class Util {
         return context.getContentResolver().openInputStream(uri);
     }
 
+    /**
+     * Utility to show image in circular image view, if the image is null then draw a text
+     * drawable in a placeholder image view
+     *
+     * @param context Context required by Picasso
+     * @param profilePicView CircularImageView to display profile pic present
+     * @param placeholderView Placeholder ImageView to display the text drawable from User's name
+     * @param user User whose picture and/or name is to be displayed
+     */
     public static void displayProfilePic(Context context, CircleImageView profilePicView,
                                          ImageView placeholderView, User user) {
         if (user.pic != null && !user.pic.equals("")) {

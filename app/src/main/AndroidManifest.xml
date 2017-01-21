@@ -69,7 +69,7 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/NoActionBarAppTheme" />
+            android:theme="@style/WhiteActionBarTheme" />
         <activity
             android:name=".home.HomeActivity"
             android:theme="@style/NoActionBarAppTheme"

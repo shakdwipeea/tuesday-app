@@ -131,4 +131,6 @@
     <string name="save">Save</string>
     <string name="sync_label">Sync with contacts</string>
     <string name="change_name">Change name</string>
+    <string name="saved">Saved</string>
+    <string name="edit_profile">Edit Profile</string>
 </resources>

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.InputType;
@@ -40,7 +41,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-// todo ProfileActivity should be independent from logged in user, so that the same can be used for
+// ProfileActivity is independent from logged in user, so that the same can be used for
 // viewing of other people profile
 public class ProfileActivity extends AppCompatActivity implements ProfileContract.View {
     public static String TAG = "ProfileActivity";
@@ -65,6 +66,11 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
     ProfilePictureUtil pictureUtil;
 
+    int colorAcc;
+    int white;
+
+    Drawable whiteRect;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -77,6 +83,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
         setSupportActionBar(binding.toolbar);
 
+        colorAcc = ContextCompat.getColor(getContext(), R.color.colorAcc);
+        white = ContextCompat.getColor(getContext(), android.R.color.white);
+        whiteRect = ContextCompat.getDrawable(getContext(), R.drawable.rectangle_rounded);
+
         binding.toolbar.inflateMenu(R.menu.menu_profile);
 
         presenter = new ProfilePresenter(this);
@@ -84,11 +94,12 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
         pictureUtil = new ProfilePictureUtil(presenter, this);
 
-        // todo check if this is done -> display the low res profile pic initially
-        // String profilePic = getIntent().getStringExtra(PROFILE_IMAGE_EXTRA);
-        // Log.d(TAG, "Profile url " + profilePic);
-
         setSupportActionBar(binding.toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         user = Parcels.unwrap(getIntent().getParcelableExtra(USER_EXTRA_KEY));
         if (user == null) {
@@ -126,6 +137,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
             case R.id.action_change_picture:
                 pictureUtil.openImageMenu();
                 return true;
@@ -174,6 +189,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
             case PermConstants.REQUEST_WRITE_CONTACTS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO: 21/1/17 this is wrong, check why the permission was requested
+                    // BUG: it is toggling the contact when I changed my profile picture and
+                    // permission was requested
                     presenter.toggleContact();
                 } else {
                     displayError("Cannot save photo then");
@@ -215,11 +233,18 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
     @Override
     public void setAddFriendFabIcon(Boolean addFriendFabIcon) {
-        if (addFriendFabIcon) binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
-                R.drawable.ic_person_add_black_24dp));
-        else
-            binding.fab.setImageDrawable(ContextCompat.getDrawable(this,
-                    R.drawable.ic_people_black_24dp));
+        if (addFriendFabIcon) {
+            Log.d(TAG, "setAddFriendFabIcon: Setting text to save");
+            binding.content.saveButton.setBackground(whiteRect);
+            binding.content.saveButton.setText(R.string.save);
+            binding.content.saveButton.setTextColor(colorAcc);
+        }
+        else {
+            Log.d(TAG, "setAddFriendFabIcon: setting text to saved");
+            binding.content.saveButton.setBackgroundColor(colorAcc);
+            binding.content.saveButton.setTextColor(white);
+            binding.content.saveButton.setText(R.string.saved);
+        }
     }
 
     @Override
@@ -242,62 +267,50 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
                 .show();
     }
 
-    // a hack to get the thumbnail as placeholder
-    // see https://github.com/square/picasso/issues/383
-    private void getLowResDrawable(String profilePic) {
-        Picasso.with(this)
-                .load(profilePic)
-                .into(binding.profilePic);
-    }
-
     @Override
     public void displayProfilePic(String url) {
         if (!TextUtils.isEmpty(url)) {
             Picasso.with(this)
                     .load(url)
-                    .into(binding.profilePic);
+                    .into(binding.content.profilePic);
         } else {
-            // TODO: 17-11-2016 display text drawable from first letter
+            Util.displayProfilePic(getContext(), binding.content.profilePic,
+                    binding.content.placeholderProfilePic, user);
         }
     }
 
     @Override
     public void displayProfilePic(Bitmap image) {
-        Util.resizeBitmapTo(image, binding.profilePic.getHeight(), binding.profilePic.getWidth())
+        Util.resizeBitmapTo(image, binding.content.profilePic.getHeight(), binding.content.profilePic.getWidth())
                 .compose(Util.applyComputationScheduler())
-                .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .doOnNext(bitmap -> binding.content.profilePic.setImageBitmap(bitmap))
                 .subscribe();
     }
 
     @Override
     public void displayProfilePicFromPath(String photoPath) {
         Util.resizeBitmapTo(photoPath,
-                binding.profilePic.getHeight(), binding.profilePic.getWidth())
+                binding.content.profilePic.getHeight(), binding.content.profilePic.getWidth())
                 .compose(Util.applyComputationScheduler())
-                .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .doOnNext(bitmap -> binding.content.profilePic.setImageBitmap(bitmap))
                 .doOnError(throwable -> displayError(throwable.getMessage()))
                 .onErrorResumeNext(Observable.empty())
                 .subscribe();
     }
 
     @Override
-    public void displayDefaultPic() {
-        binding.profilePic.setImageResource(R.drawable.ic_users_11);
-    }
-
-    @Override
     public void displayName(String name) {
-//        if (getSupportActionBar() != null) getSupportActionBar().setTitle(name);
-        binding.toolbarLayout.setTitle(name);
+        binding.content.name.setText(name);
     }
 
     @Override
     public void loggedInUser(boolean show) {
         if (show) {
-            binding.fab.setImageDrawable(ContextCompat
-                    .getDrawable(this, R.drawable.ic_edit_black_24dp));
+            Log.d(TAG, "loggedInUser: Setting text to edit profile");
+            binding.content.saveButton.setText(R.string.edit_profile);
+            binding.content.saveButton.setTextColor(colorAcc);
+            binding.content.saveButton.setBackground(whiteRect);
         } else {
-            binding.fab.setVisibility(View.VISIBLE);
             binding.toolbar.getMenu().clear();
         }
     }

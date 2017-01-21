@@ -33,4 +33,12 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="WhiteActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:actionBarStyle">@style/TuesdayActionBarTheme</item>
+    </style>
+
+    <style name="TuesdayActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#fff</item>
+    </style>
+
 </resources>
