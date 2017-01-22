@@ -172,10 +172,13 @@ public class FirebaseService {
                         Provider provider = ProviderService.getInstance()
                                 .getProviderHashMap()
                                 .get(snap.getKey());
-                        provider.setProviderDetails(providerDetails);
 
-                        Log.d(TAG, "onDataChange: provider " + provider);
-                        providerList.add(provider);
+                        if (provider != null) {
+                            provider.setProviderDetails(providerDetails);
+
+                            Log.d(TAG, "onDataChange: provider " + provider);
+                            providerList.add(provider);
+                        }
                     }
 
                     return providerList;
