@@ -28,6 +28,7 @@ import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentHomeBinding;
 import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
+import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
 
 import org.parceler.Parcels;
 
@@ -199,7 +200,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void openTuesContact(User user) {
         Log.d(TAG, "openTuesContact: for " + user);
         Intent intent = new Intent(context, ProfileActivity.class);
-        intent.putExtra(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
+        intent.putExtra(ProfileViewFragment.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
         startActivity(intent);
     }
 

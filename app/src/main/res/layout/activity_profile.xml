@@ -6,7 +6,7 @@
     <data>
         <variable
             name="handler"
-            type="com.shakdwipeea.tuesday.profile.ProfileContract.Presenter" />
+            type="com.shakdwipeea.tuesday.profile.view.ProfileContract.Presenter" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -43,9 +43,14 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <include
-            android:id="@+id/content"
-            layout="@layout/content_profile" />
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!--<include-->
+            <!--android:id="@+id/content"-->
+            <!--layout="@layout/content_profile" />-->
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

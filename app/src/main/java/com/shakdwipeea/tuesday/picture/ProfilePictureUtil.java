@@ -1,21 +1,16 @@
 package com.shakdwipeea.tuesday.picture;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.profile.ProfileContract;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 
 import java.io.File;

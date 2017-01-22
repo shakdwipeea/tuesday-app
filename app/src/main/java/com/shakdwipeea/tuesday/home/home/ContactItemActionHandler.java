@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
+import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
 
 import org.parceler.Parcels;
 
@@ -29,7 +30,7 @@ public class ContactItemActionHandler {
 
         if (!TextUtils.isEmpty(user.uid)) {
             Intent intent = new Intent(context, ProfileActivity.class);
-            intent.putExtra(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
+            intent.putExtra(ProfileViewFragment.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
             context.startActivity(intent);
         } else {
             Snackbar.make(view, "Not available on tuesday", Snackbar.LENGTH_SHORT)

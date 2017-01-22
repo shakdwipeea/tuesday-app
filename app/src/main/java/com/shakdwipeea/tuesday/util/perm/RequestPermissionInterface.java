@@ -12,5 +12,5 @@ public interface RequestPermissionInterface {
      * @param permissions List of permission to be requested
      * @param permIdentifier Identifier used to map the requests
      */
-    void requestPermission(String[] permissions, int permIdentifier);
+    void requestPermissions(String[] permissions, int permIdentifier);
 }

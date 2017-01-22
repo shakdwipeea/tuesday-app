@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.shakdwipeea.tuesday.profile.CallItemViewModel" />
+            type="com.shakdwipeea.tuesday.profile.view.CallItemViewModel" />
     </data>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

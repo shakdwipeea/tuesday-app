@@ -1,4 +1,4 @@
-package com.shakdwipeea.tuesday.profile;
+package com.shakdwipeea.tuesday.profile.view;
 
 import android.Manifest;
 import android.content.Intent;
