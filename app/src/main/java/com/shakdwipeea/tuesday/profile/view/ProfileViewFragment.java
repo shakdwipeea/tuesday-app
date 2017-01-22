@@ -118,6 +118,8 @@ public class ProfileViewFragment extends Fragment
         white = ContextCompat.getColor(getContext(), android.R.color.white);
         whiteRect = ContextCompat.getDrawable(getContext(), R.drawable.rectangle_rounded);
 
+        setHasOptionsMenu(true);
+
         user = Parcels.unwrap(getActivity().getIntent().getParcelableExtra(USER_EXTRA_KEY));
         if (user == null) {
             displayError("User not provided");
@@ -206,44 +208,44 @@ public class ProfileViewFragment extends Fragment
         }
     }
 
-//    /**
-//     * Initialize the contents of the Fragment host's standard options menu.  You
-//     * should place your menu items in to <var>menu</var>.  For this method
-//     * to be called, you must have first called {@link #setHasOptionsMenu}.  See
-//     * {@link Activity#onCreateOptionsMenu(Menu) Activity.onCreateOptionsMenu}
-//     * for more information.
-//     *
-//     * @param menu     The options menu in which you place your items.
-//     * @param inflater
-//     * @see #setHasOptionsMenu
-//     * @see #onPrepareOptionsMenu
-//     * @see #onOptionsItemSelected
-//     */
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.menu_profile, menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                getActivity().onBackPressed();
-//                return true;
-//
-//            case R.id.action_change_picture:
-//                pictureUtil.openImageMenu();
-//                return true;
-//
-//            case R.id.action_change_name:
-//                showInputDialog();
-//                return true;
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    /**
+     * Initialize the contents of the Fragment host's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.  For this method
+     * to be called, you must have first called {@link #setHasOptionsMenu}.  See
+     * {@link Activity#onCreateOptionsMenu(Menu) Activity.onCreateOptionsMenu}
+     * for more information.
+     *
+     * @param menu     The options menu in which you place your items.
+     * @param inflater
+     * @see #setHasOptionsMenu
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_profile, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
+
+            case R.id.action_change_picture:
+                pictureUtil.openImageMenu();
+                return true;
+
+            case R.id.action_change_name:
+                showInputDialog();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
