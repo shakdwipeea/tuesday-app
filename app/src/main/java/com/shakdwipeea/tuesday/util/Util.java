@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -85,6 +86,11 @@ public class Util {
             placeholderView.setVisibility(View.VISIBLE);
             profilePicView.setVisibility(View.GONE);
         }
+    }
+
+    public static void displaySnack(View view, String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     public static <T> Observable.Transformer<T, T> applySchedulers() {

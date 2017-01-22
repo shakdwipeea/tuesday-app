@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +26,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.PermConstants;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
+import com.shakdwipeea.tuesday.databinding.MailItemBinding;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.setup.ProviderAdapter;
 import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
+import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 import com.shakdwipeea.tuesday.util.Util;
+import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
+import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -38,12 +44,11 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 // ProfileActivity is independent from logged in user, so that the same can be used for
 // viewing of other people profile
-public class ProfileActivity extends AppCompatActivity implements ProfileContract.View {
+public class ProfileActivity extends AppCompatActivity
+        implements ProfileContract.View, RequestPermissionInterface {
     public static String TAG = "ProfileActivity";
 
     public static String PROFILE_IMAGE_EXTRA = "profilePic";
@@ -63,8 +68,12 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     User user;
 
     ProviderAdapter providerAdapter;
+    SingleViewAdapter<ProviderDetails, CallItemViewModel> callListAdapter;
+    SingleViewAdapter<ProviderDetails, MailItemViewModel> mailListAdapter;
 
     ProfilePictureUtil pictureUtil;
+
+    PermViewUtil permViewUtil;
 
     int colorAcc;
     int white;
@@ -89,6 +98,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
         binding.toolbar.inflateMenu(R.menu.menu_profile);
 
+        // Utility to manage permission
+        permViewUtil = new PermViewUtil(binding.getRoot());
+
         presenter = new ProfilePresenter(this);
         binding.setHandler(presenter);
 
@@ -110,6 +122,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
         Log.d(TAG, "onCreate: Received user " + user);
 
+        setupCallList();
+        setupMailList();
+
         // Info passed in Intent can be immediately opened and the rest be retrieved
         displayUser(user);
 
@@ -125,6 +140,26 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         binding.content.providerList.setAdapter(providerAdapter);
 
         binding.content.setHandler(presenter);
+    }
+
+    private void setupCallList() {
+        LinearLayoutManager callListLayoutManager = new LinearLayoutManager(getContext());
+
+        callListAdapter = new SingleViewAdapter<>(new CallItemViewModel(permViewUtil, this),
+                R.layout.call_item);
+
+        binding.content.callDetailList.setLayoutManager(callListLayoutManager);
+        binding.content.callDetailList.setAdapter(callListAdapter);
+    }
+
+    private void setupMailList() {
+        LinearLayoutManager mailListLayoutManager = new LinearLayoutManager(getContext());
+
+        mailListAdapter = new SingleViewAdapter<>(new MailItemViewModel(),
+                R.layout.mail_item);
+
+        binding.content.emailDetailList.setLayoutManager(mailListLayoutManager);
+        binding.content.emailDetailList.setAdapter(mailListAdapter);
     }
 
     @Override
@@ -197,8 +232,12 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
                     displayError("Cannot save photo then");
                 }
             }
+
             // other 'case' lines to check for other
             // permissions this app might request
+
+            default:
+                permViewUtil.onPermissionResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -254,6 +293,27 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         // show first provider
         presenter.displayProviderDetails(providerAdapter.getProvider(0));
         providerAdapter.unSelectExcept(providerAdapter.getProvider(0));
+    }
+
+    @Override
+    public void addCallDetails(ProviderDetails callDetails) {
+        Log.d(TAG, "addCallDetails: Details to be added " + callDetails);
+        callListAdapter.addItem(callDetails);
+    }
+
+    @Override
+    public void addMailDetails(ProviderDetails mailDetails) {
+        mailListAdapter.addItem(mailDetails);
+    }
+
+    @Override
+    public void clearCallDetails() {
+        callListAdapter.clear();
+    }
+
+    @Override
+    public void clearMailDetails() {
+        mailListAdapter.clear();
     }
 
     @Override
@@ -328,4 +388,14 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         }
     }
 
+    /**
+     * Request permission at run time
+     *
+     * @param permissions    List of permission to be requested
+     * @param permIdentifier Identifier used to map the requests
+     */
+    @Override
+    public void requestPermission(String[] permissions, int permIdentifier) {
+        ActivityCompat.requestPermissions(this, permissions, permIdentifier);
+    }
 }

@@ -1,27 +1,19 @@
 package com.shakdwipeea.tuesday.profile;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.shakdwipeea.tuesday.auth.AuthActivity;
-import com.shakdwipeea.tuesday.data.AuthService;
-import com.shakdwipeea.tuesday.data.ProfilePicService;
 import com.shakdwipeea.tuesday.data.contacts.AddContactService;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.picture.ProfilePicturePresenter;
-import com.shakdwipeea.tuesday.util.Util;
 
-import java.io.FileNotFoundException;
+import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,7 +30,6 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
     private ProfileContract.View profileView;
 
     private FirebaseUser loggedInUser;
-    private String provider;
 
     private UserService userService;
     private FirebaseService firebaseService;
@@ -106,8 +97,9 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
         firebaseService.getProvider()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(this::processProviders)
                 .subscribe(
-                        providerList -> profileView.addProvider(providerList),
+                        providerList -> {},
                         Throwable::printStackTrace,
                         () -> Log.e(TAG, "loadProfile: Complete called")
                 );
@@ -123,6 +115,37 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                 })
                 .subscribe(
                         s -> Log.d(TAG, "loadProfile: Friend uid is " + s),
+                        Throwable::printStackTrace
+                );
+    }
+
+    /**
+     * Extract out the call and email type
+     *
+     * @param providerList The entire providerList
+     */
+    private void processProviders(List<Provider> providerList) {
+        Observable.from(providerList)
+                .doOnSubscribe(() -> {
+                    profileView.clearCallDetails();
+                    profileView.clearMailDetails();
+                })
+                .filter(provider -> {
+                    switch (provider.getName()) {
+                        case ProviderNames.Email:
+                            profileView.addMailDetails(provider.providerDetails);
+                            return false;
+
+                        case ProviderNames.Call:
+                            profileView.addCallDetails(provider.providerDetails);
+                            return false;
+
+                        default: return true;
+                    }
+                })
+                .toList()
+                .subscribe(
+                        providerList1 ->  profileView.addProvider(providerList1),
                         Throwable::printStackTrace
                 );
     }

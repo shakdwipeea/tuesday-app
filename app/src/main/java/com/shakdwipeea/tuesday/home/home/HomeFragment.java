@@ -235,7 +235,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_WRITE_CONTACTS: {

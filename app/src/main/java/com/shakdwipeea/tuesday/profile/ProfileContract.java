@@ -1,10 +1,10 @@
 package com.shakdwipeea.tuesday.profile;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.picture.ProfilePictureView;
 
@@ -23,6 +23,12 @@ public interface ProfileContract {
 
         void setAddFriendFabIcon(Boolean value);
         void addProvider(List<Provider> provider);
+
+        void addCallDetails(ProviderDetails callDetails);
+        void clearCallDetails();
+
+        void addMailDetails(ProviderDetails mailDetails);
+        void clearMailDetails();
 
         void launchSetup();
         void displayProviderInfo(Provider provider, String providerDetails);

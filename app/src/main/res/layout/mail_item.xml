@@ -1,67 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/call_item_container"
-    android:layout_margin="30dp"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout>
 
-    <LinearLayout
-        android:id="@+id/details_container"
-        android:orientation="vertical"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <data>
+        <variable
+            name="item"
+            type="com.shakdwipeea.tuesday.data.entities.user.ProviderDetails" />
 
-        <TextView
-            android:id="@+id/email"
-            tools:text="ashakdwipeea@gmail.com"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <variable
+            name="vm"
+            type="com.shakdwipeea.tuesday.profile.MailItemViewModel" />
+    </data>
 
-        <TextView
-            android:id="@+id/email_type"
-            tools:text="Work"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_alignBottom="@id/details_container"
-        android:layout_alignTop="@id/details_container"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="center_vertical"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/call_item_container"
+        android:layout_margin="30dp"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:src="@drawable/ic_email_black_24dp"
-            android:tint="@color/colorAcc"
-            android:padding="16dp"
-            android:scaleX="2"
-            android:scaleY="2"
+        <LinearLayout
+            android:id="@+id/details_container"
+            android:orientation="vertical"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/email"
+                tools:text="ashakdwipeea@gmail.com"
+                android:text="@{item.username}"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/email_type"
+                tools:text="Work"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_alignBottom="@id/details_container"
+            android:layout_alignTop="@id/details_container"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_email_black_24dp"
+                android:tint="@color/colorAcc"
+                android:padding="8dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                android:onClick="@{(view) -> vm.emailPerson(view, item.username)}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
-    <View
-        android:layout_alignParentBottom="true"
-        android:background="#000"
-        android:layout_width="match_parent"
-        android:layout_height="1dp" />
+        <View
+            android:layout_alignParentBottom="true"
+            android:background="#000"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

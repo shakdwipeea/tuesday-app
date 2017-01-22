@@ -102,4 +102,17 @@ public class ProviderDetails extends BaseObservable{
     public void setType(Provider.Type type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "ProviderDetails{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", username='" + username + '\'' +
+                ", description='" + description + '\'' +
+                ", isPersonal=" + isPersonal +
+                ", type=" + type +
+                ", accessibleBy=" + accessibleBy +
+                ", requestedBy=" + requestedBy +
+                '}';
+    }
 }

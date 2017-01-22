@@ -53,63 +53,10 @@ public class ProviderService {
         Provider provider = new Provider();
         ProviderDetails providerDetails = new ProviderDetails();
 
-        provider.setName("Behance");
-        provider.setIcon(R.drawable.behance_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
 
         provider = new Provider();
         providerDetails = new ProviderDetails();
-        provider.setName("Blackberry");
-        provider.setIcon(R.drawable.blackberry_color_1);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
-
-        provider = new Provider();
-        providerDetails = new ProviderDetails();
-        provider.setName("Blogger");
-        provider.setIcon(R.drawable.blogger_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
-
-        provider = new Provider();
-        providerDetails = new ProviderDetails();
-        provider.setName("Codepen");
-        provider.setIcon(R.drawable.codepen_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
-
-        provider = new Provider();
-        providerDetails = new ProviderDetails();
-        provider.setName("Dribble");
-        provider.setIcon(R.drawable.dribbble_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
-
-        provider = new Provider();
-        providerDetails = new ProviderDetails();
-        provider.setName("Drive");
-        provider.setIcon(R.drawable.drive_color_1);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
-
-        provider = new Provider();
-        providerDetails = new ProviderDetails();
-        provider.setName("Dropbox");
-        provider.setIcon(R.drawable.dropbox_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
-        provider.setProviderDetails(providerDetails);
-        providers.add(provider);
-
-        provider = new Provider();
-        providerDetails = new ProviderDetails();
-        provider.setName("Facebook");
+        provider.setName(ProviderNames.Facebook);
         provider.setIcon(R.drawable.facebook_color);
         providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
         provider.setProviderDetails(providerDetails);
@@ -117,17 +64,72 @@ public class ProviderService {
 
         provider = new Provider();
         providerDetails = new ProviderDetails();
-        provider.setName("Flickr");
-        provider.setIcon(R.drawable.flickr_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setName(ProviderNames.Call);
+        provider.setIcon(R.drawable.ic_call_black_24dp);
+        providerDetails.setType(Provider.Type.PHONE_NUMBER_VERIFICATION);
+        provider.setSelected(true);
         provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
         provider = new Provider();
         providerDetails = new ProviderDetails();
-        provider.setName("Call");
-        provider.setIcon(R.drawable.ic_call_black_24dp);
-        providerDetails.setType(Provider.Type.PHONE_NUMBER_VERIFICATION);
+        provider.setName(ProviderNames.Email);
+        provider.setIcon(R.drawable.ic_email_black_24dp);
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
+        providers.add(provider);
+
+        provider = new Provider();
+        providerDetails = new ProviderDetails();
+        provider.setName(ProviderNames.Github);
+        provider.setIcon(R.drawable.github_color);
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
+        providers.add(provider);
+
+        provider = new Provider();
+        providerDetails = new ProviderDetails();
+        provider.setName(ProviderNames.Google);
+        provider.setIcon(R.drawable.google_color);
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
+        providers.add(provider);
+
+        provider = new Provider();
+        providerDetails = new ProviderDetails();
+        provider.setName(ProviderNames.LinkedIn);
+        provider.setIcon(R.drawable.linkedin_color);
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
+        providers.add(provider);
+
+        provider = new Provider();
+        providerDetails = new ProviderDetails();
+        provider.setName(ProviderNames.StackOverflow);
+        provider.setIcon(R.drawable.stackoverflow_color);
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
+        providers.add(provider);
+
+        provider = new Provider();
+        providerDetails = new ProviderDetails();
+        provider.setName(ProviderNames.Twitter);
+        provider.setIcon(R.drawable.twitter_color);
+        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        provider.setSelected(true);
+        provider.setProviderDetails(providerDetails);
+        providers.add(provider);
+
+        provider = new Provider();
+        providerDetails = new ProviderDetails();
+        provider.setName(ProviderNames.WhatsApp);
+        provider.setIcon(R.drawable.whatsapp_color);
+        providerDetails.setType(Provider.Type.PHONE_NUMBER_NO_VERIFICATION);
         provider.setSelected(true);
         provider.setProviderDetails(providerDetails);
         providers.add(provider);
