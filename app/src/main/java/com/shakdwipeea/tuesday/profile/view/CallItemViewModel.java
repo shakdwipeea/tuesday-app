@@ -8,6 +8,9 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
 import com.shakdwipeea.tuesday.auth.otp.OtpContract;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
+import com.shakdwipeea.tuesday.databinding.CallItemBinding;
+import com.shakdwipeea.tuesday.util.adapter.ItemViewModel;
 import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
 import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 
@@ -15,7 +18,7 @@ import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
  * Created by akash on 21/1/17.
  */
 
-public class CallItemViewModel {
+public class CallItemViewModel implements ItemViewModel<CallItemBinding,ProviderDetails> {
     PermViewUtil permViewUtil;
     RequestPermissionInterface requestPermissionInterface;
 
@@ -41,4 +44,8 @@ public class CallItemViewModel {
         view.getContext().startActivity(intent);
     }
 
+    @Override
+    public void bindDetail(CallItemBinding binding, ProviderDetails item) {
+        // Any required binding can be done here
+    }
 }

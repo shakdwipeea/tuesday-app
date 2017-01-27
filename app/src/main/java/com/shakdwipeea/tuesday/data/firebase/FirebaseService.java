@@ -22,7 +22,7 @@ import rx.Observable;
 /**
  * Created by ashak on 07-11-2016.
  */
-// FirebaseService retreives the entire Profulw
+// FirebaseService retrieves the entire Profulw
 public class FirebaseService {
     private static final String TAG = "FirebaseService";
 

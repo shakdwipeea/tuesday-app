@@ -3,12 +3,11 @@ package com.shakdwipeea.tuesday.util.adapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.android.databinding.library.baseAdapters.BR;
+import com.shakdwipeea.tuesday.BR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +21,13 @@ import java.util.List;
  *
  * @param <ItemType> ItemType whose list is to be displayed
  * @param <ItemViewModelType> Viewholder responsible to bind the views for data
+ * @param <ViewBindingType> DataBinding type
  */
-public class SingleViewAdapter<ItemType, ItemViewModelType>
-        extends RecyclerView.Adapter<SingleViewHolder> {
+public class SingleViewAdapter<ItemType,
+        ItemViewModelType extends ItemViewModel<ViewBindingType, ItemType>,
+        ViewBindingType extends ViewDataBinding>
+        extends RecyclerView.Adapter<SingleViewHolder<ViewBindingType>> {
+    private static final String TAG = "SingleViewAdapter";
 
     private ItemViewModelType itemViewModel;
     private List<ItemType> itemList = new ArrayList<>();
@@ -43,7 +46,7 @@ public class SingleViewAdapter<ItemType, ItemViewModelType>
 
     public void addItem(ItemType item) {
         this.itemList.add(item);
-        this.notifyItemInserted(this.itemList.size());
+        this.notifyDataSetChanged();
     }
 
     public void clear() {
@@ -52,18 +55,20 @@ public class SingleViewAdapter<ItemType, ItemViewModelType>
     }
 
     @Override
-    public SingleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewDataBinding binding = DataBindingUtil.inflate(
-                LayoutInflater.from(parent.getContext()), layoutId, null, false
+    public SingleViewHolder<ViewBindingType> onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewBindingType binding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()), layoutId, parent, false
         );
 
-        return new SingleViewHolder(binding);
+        return new SingleViewHolder<>(binding);
     }
 
     @Override
-    public void onBindViewHolder(SingleViewHolder holder, int position) {
+    public void onBindViewHolder(SingleViewHolder<ViewBindingType> holder, int position) {
+        Log.d(TAG, "onBindViewHolder: Here " + itemViewModel) ;
         holder.getBinding().setVariable(BR.item, itemList.get(position));
         holder.getBinding().setVariable(BR.vm, itemViewModel);
+        itemViewModel.bindDetail(holder.getBinding(), itemList.get(position));
     }
 
     /**

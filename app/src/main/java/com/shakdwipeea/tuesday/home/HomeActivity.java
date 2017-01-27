@@ -19,6 +19,7 @@ import com.shakdwipeea.tuesday.databinding.ActivityHomeBinding;
 import com.shakdwipeea.tuesday.home.home.HomeFragment;
 import com.shakdwipeea.tuesday.home.notification.NotificationFragment;
 import com.shakdwipeea.tuesday.home.settings.SettingsFragment;
+import com.shakdwipeea.tuesday.setup.details.ProviderDetailsActivity;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";

@@ -1,6 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout>
 
-</LinearLayout>
+    <data>
+        <variable
+            name="item"
+            type="com.shakdwipeea.tuesday.data.entities.user.ProviderDetails"/>
+        <variable
+            name="vm"
+            type="com.shakdwipeea.tuesday.profile.edit.EditProfileItemViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--<TextView-->
+            <!--tools:text="Phone"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textSize="22sp"-->
+            <!--android:padding="8dp"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Spinner
+                android:id="@+id/detail_type_spinner"
+                android:entries="@array/detail_types"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:hint="@string/detail_label"
+                android:id="@+id/detail_content"
+                tools:text="ashakdwipeea@gmail.com"
+                android:layout_weight="4"
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:text="@{vm.getDetail(item)}"
+                android:layout_height="wrap_content" />
+
+            <CheckBox
+                android:id="@+id/detail_private_check"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:checked="@{item.isPersonal}"
+                android:text="Private"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/detail_delete"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_clear_black_24dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <Button
+            android:background="#fff"
+            android:text="@string/add_another_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</layout>

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.InputType;
@@ -30,8 +31,11 @@ import com.shakdwipeea.tuesday.data.PermConstants;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.user.User;
+import com.shakdwipeea.tuesday.databinding.CallItemBinding;
 import com.shakdwipeea.tuesday.databinding.FragmentProfileViewBinding;
+import com.shakdwipeea.tuesday.databinding.MailItemBinding;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
+import com.shakdwipeea.tuesday.profile.edit.EditProfileFragment;
 import com.shakdwipeea.tuesday.setup.ProviderAdapter;
 import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.shakdwipeea.tuesday.util.Util;
@@ -65,8 +69,8 @@ public class ProfileViewFragment extends Fragment
     User user;
 
     ProviderAdapter providerAdapter;
-    SingleViewAdapter<ProviderDetails, CallItemViewModel> callListAdapter;
-    SingleViewAdapter<ProviderDetails, MailItemViewModel> mailListAdapter;
+    SingleViewAdapter<ProviderDetails, CallItemViewModel, CallItemBinding> callListAdapter;
+    SingleViewAdapter<ProviderDetails, MailItemViewModel, MailItemBinding> mailListAdapter;
 
     ProfilePictureUtil pictureUtil;
 
@@ -181,7 +185,8 @@ public class ProfileViewFragment extends Fragment
     public void showInputDialog() {
         new MaterialDialog.Builder(getContext())
                 .title("Edit name")
-                .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+                .inputType(InputType.TYPE_CLASS_TEXT |
+                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
                 .input(
                         "Enter name",
                         user.name,
@@ -345,8 +350,12 @@ public class ProfileViewFragment extends Fragment
 
     @Override
     public void launchSetup() {
-        Intent intent = new Intent(getContext(), ProviderPickerActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(getContext(), ProviderPickerActivity.class);
+//        startActivity(intent);
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, new EditProfileFragment());
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     public void displayError(String error) {
@@ -368,7 +377,8 @@ public class ProfileViewFragment extends Fragment
 
     @Override
     public void displayProfilePic(Bitmap image) {
-        Util.resizeBitmapTo(image, binding.profilePic.getHeight(), binding.profilePic.getWidth())
+        Util.resizeBitmapTo(image,
+                binding.profilePic.getHeight(), binding.profilePic.getWidth())
                 .compose(Util.applyComputationScheduler())
                 .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
                 .subscribe();

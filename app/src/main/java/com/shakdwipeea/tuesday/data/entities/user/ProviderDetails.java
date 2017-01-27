@@ -13,6 +13,7 @@ import java.util.List;
 import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.DESCRIPTION_KEY;
 import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.IS_PERSONAL_KEY;
 import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.PHONE_NUMBER_KEY;
+import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.PROVIDER_DETAIL_TYPE_KEY;
 import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.PROVIDER_TYPE_KEY;
 import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.USERNAME_KEY;
 
@@ -29,6 +30,9 @@ public class ProviderDetails extends BaseObservable{
     public boolean isPersonal;
     public Provider.Type type;
 
+    // This is the detail type i.e. Primary, Work etc.
+    public String detailType;
+
     public List<String> accessibleBy;
     public List<String> requestedBy;
 
@@ -41,6 +45,7 @@ public class ProviderDetails extends BaseObservable{
         public static String DESCRIPTION_KEY = "description";
         public static String IS_PERSONAL_KEY = "isPersonal";
         public static String PROVIDER_TYPE_KEY = "type";
+        public static String PROVIDER_DETAIL_TYPE_KEY = "detailType";
     }
 
     /**
@@ -53,6 +58,16 @@ public class ProviderDetails extends BaseObservable{
         reference.child(DESCRIPTION_KEY).setValue(description);
         reference.child(IS_PERSONAL_KEY).setValue(isPersonal);
         reference.child(PROVIDER_TYPE_KEY).setValue(type);
+        reference.child(PROVIDER_DETAIL_TYPE_KEY).setValue(detailType);
+    }
+
+    @Bindable
+    public String getDetailType() {
+        return detailType;
+    }
+
+    public void setDetailType(String detailType) {
+        this.detailType = detailType;
     }
 
     @Bindable

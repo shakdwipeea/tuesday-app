@@ -133,4 +133,9 @@
     <string name="change_name">Change name</string>
     <string name="saved">Saved</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="detail_label">Enter detail</string>
+    <string name="add_another_account">Add Another Account</string>
+    <string name="add_phone">Add phone number</string>
+    <string name="add_email">Add email</string>
+    <string name="add_social">Add social account</string>
 </resources>

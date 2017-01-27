@@ -15,17 +15,17 @@ import com.shakdwipeea.tuesday.databinding.ProviderPickerItemBinding;
  * Created by akash on 21/1/17.
  */
 
-class SingleViewHolder extends RecyclerView.ViewHolder {
-    private ViewDataBinding binding;
+class SingleViewHolder<V extends ViewDataBinding> extends RecyclerView.ViewHolder {
+    private V binding;
 
-    public SingleViewHolder(ViewDataBinding binding) {
+    public SingleViewHolder(V binding) {
         super(binding.getRoot());
 
         this.binding = binding;
         this.binding.executePendingBindings();
     }
 
-    public ViewDataBinding getBinding() {
+    public V getBinding() {
         return binding;
     }
 }

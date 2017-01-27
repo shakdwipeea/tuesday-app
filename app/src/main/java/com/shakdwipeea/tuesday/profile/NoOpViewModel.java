@@ -1,8 +1,16 @@
 package com.shakdwipeea.tuesday.profile;
 
+import android.databinding.ViewDataBinding;
+
+import com.shakdwipeea.tuesday.util.adapter.ItemViewModel;
+
 /**
  * Created by akash on 24/1/17.
  */
 
-public class NoOpViewModel {
+public class NoOpViewModel implements ItemViewModel<ViewDataBinding, Object> {
+    @Override
+    public void bindDetail(ViewDataBinding binding, Object item) {
+
+    }
 }
