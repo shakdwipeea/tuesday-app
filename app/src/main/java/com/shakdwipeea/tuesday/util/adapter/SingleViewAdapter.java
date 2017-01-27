@@ -39,6 +39,10 @@ public class SingleViewAdapter<ItemType,
         this.layoutId = layoutId;
     }
 
+    public List<ItemType> getItemList() {
+        return itemList;
+    }
+
     public void setItemList(List<ItemType> itemList) {
         this.itemList = itemList;
         notifyDataSetChanged();
@@ -68,7 +72,7 @@ public class SingleViewAdapter<ItemType,
         Log.d(TAG, "onBindViewHolder: Here " + itemViewModel) ;
         holder.getBinding().setVariable(BR.item, itemList.get(position));
         holder.getBinding().setVariable(BR.vm, itemViewModel);
-        itemViewModel.bindDetail(holder.getBinding(), itemList.get(position));
+        itemViewModel.bindDetail(holder.getBinding(), itemList.get(position), position);
     }
 
     /**

@@ -45,7 +45,7 @@ public class CallItemViewModel implements ItemViewModel<CallItemBinding,Provider
     }
 
     @Override
-    public void bindDetail(CallItemBinding binding, ProviderDetails item) {
+    public void bindDetail(CallItemBinding binding, ProviderDetails item, int position) {
         // Any required binding can be done here
     }
 }

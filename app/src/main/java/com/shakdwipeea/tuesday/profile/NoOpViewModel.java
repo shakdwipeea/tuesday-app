@@ -10,7 +10,7 @@ import com.shakdwipeea.tuesday.util.adapter.ItemViewModel;
 
 public class NoOpViewModel implements ItemViewModel<ViewDataBinding, Object> {
     @Override
-    public void bindDetail(ViewDataBinding binding, Object item) {
+    public void bindDetail(ViewDataBinding binding, Object item, int position) {
 
     }
 }

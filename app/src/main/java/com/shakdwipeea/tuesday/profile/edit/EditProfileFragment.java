@@ -6,15 +6,18 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentEditProfileBinding;
 import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
@@ -33,7 +36,7 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
     FragmentEditProfileBinding binding;
 
     SingleViewAdapter<
-            ProviderDetails,
+            Provider,
             EditProfileItemViewModel,
             ProviderDetailEditBinding> phoneAdapter, mailAdapter, providerAdapter;
 
@@ -57,11 +60,15 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
             Log.e(TAG, "onCreateView: user parcel not received ");
         }
 
+        setHasOptionsMenu(true);
+
         editProfilePresenter = new EditProfilePresenter(this);
 
         displayUser(user);
 
         setupRecyclerViews();
+
+        binding.saveProfile.setOnClickListener(v -> getActivity().onBackPressed());
 
         return binding.getRoot();
     }
@@ -101,7 +108,7 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
 
     public void setupRecyclerViews() {
         LinearLayoutManager phoneLM = new LinearLayoutManager(getContext());
-        phoneAdapter = new SingleViewAdapter<>(new EditProfileItemViewModel(),
+        phoneAdapter = new SingleViewAdapter<>(new EditProfileItemViewModel(editProfilePresenter),
                 R.layout.provider_detail_edit);
 
         binding.callDetailList.setLayoutManager(phoneLM);
@@ -109,7 +116,7 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
 
         LinearLayoutManager mailLM = new LinearLayoutManager(getContext());
         mailAdapter =
-                new SingleViewAdapter<>(new EditProfileItemViewModel(),
+                new SingleViewAdapter<>(new EditProfileItemViewModel(editProfilePresenter),
                         R.layout.provider_detail_edit);
 
         binding.emailDetailList.setLayoutManager(mailLM);
@@ -117,12 +124,30 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
 
         LinearLayoutManager providerLM = new LinearLayoutManager(getContext());
         providerAdapter =
-                new SingleViewAdapter<>(new EditProfileItemViewModel(),
+                new SingleViewAdapter<>(new EditProfileItemViewModel(editProfilePresenter),
                         R.layout.provider_detail_edit);
 
         binding.providerList.setLayoutManager(providerLM);
         binding.providerList.setAdapter(providerAdapter);
 
+    }
+
+    /**
+     * Initialize the contents of the Fragment host's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.  For this method
+     * to be called, you must have first called {@link #setHasOptionsMenu}.  See
+     * {@link Activity#onCreateOptionsMenu(Menu) Activity.onCreateOptionsMenu}
+     * for more information.
+     *
+     * @param menu     The options menu in which you place your items.
+     * @param inflater
+     * @see #setHasOptionsMenu
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -158,8 +183,8 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
     }
 
     @Override
-    public void addProvider(ProviderDetails providerDetails) {
-        providerAdapter.addItem(providerDetails);
+    public void addProvider(Provider provider) {
+        providerAdapter.addItem(provider);
     }
 
     @Override
@@ -168,8 +193,8 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
     }
 
     @Override
-    public void addCallDetails(ProviderDetails callDetails) {
-        phoneAdapter.addItem(callDetails);
+    public void addCallDetails(Provider provider) {
+        phoneAdapter.addItem(provider);
     }
 
     @Override
@@ -178,8 +203,8 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
     }
 
     @Override
-    public void addMailDetails(ProviderDetails mailDetails) {
-        mailAdapter.addItem(mailDetails);
+    public void addMailDetails(Provider provider) {
+        mailAdapter.addItem(provider);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class MailItemViewModel implements ItemViewModel<MailItemBinding,Provider
     }
 
     @Override
-    public void bindDetail(MailItemBinding binding, ProviderDetails item) {
+    public void bindDetail(MailItemBinding binding, ProviderDetails item, int position) {
         // Any required binding can be done here
     }
 }

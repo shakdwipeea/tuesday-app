@@ -16,7 +16,8 @@ import rx.subscriptions.CompositeSubscription;
  * Created by akash on 24/1/17.
  */
 
-public class EditProfilePresenter implements EditProfileContract.Presenter {
+public class EditProfilePresenter implements EditProfileContract.Presenter,
+        EditProfileContract.ItemPresenter {
     private EditProfileContract.View editProfileView;
     private UserService userService;
     private CompositeSubscription compositeSubscription;
@@ -49,21 +50,20 @@ public class EditProfilePresenter implements EditProfileContract.Presenter {
                 .filter(provider -> {
                     switch (provider.name) {
                         case ProviderNames.Call:
-                            editProfileView.addCallDetails(provider.providerDetails);
+                            editProfileView.addCallDetails(provider);
                             return false;
 
                         case ProviderNames.Email:
-                            editProfileView.addMailDetails(provider.providerDetails);
+                            editProfileView.addMailDetails(provider);
                             return false;
 
                         default:
-                            editProfileView.addProvider(provider.providerDetails);
+                            editProfileView.addProvider(provider);
                             return true;
                     }
                 })
                 .subscribe(
-                        provider -> {
-                        },
+                        provider -> {},
                         Throwable::printStackTrace
                 );
         compositeSubscription.add(subscription);
@@ -77,5 +77,15 @@ public class EditProfilePresenter implements EditProfileContract.Presenter {
     @Override
     public void unSubscribe() {
         compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public void saveDetails(Provider provider) {
+        userService.saveProvider(provider);
+    }
+
+    @Override
+    public void deleteDetail(Provider provider) {
+        // TODO: 28/1/17 add delete provider
     }
 }

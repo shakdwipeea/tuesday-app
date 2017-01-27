@@ -14,13 +14,13 @@ public class EditProfileContract {
     interface View {
         void displayError(String reason);
 
-        void addProvider(ProviderDetails providerDetails);
+        void addProvider(Provider provider);
         void clearProvider();
 
-        void addCallDetails(ProviderDetails callDetails);
+        void addCallDetails(Provider call);
         void clearCallDetails();
 
-        void addMailDetails(ProviderDetails mailDetails);
+        void addMailDetails(Provider mail);
         void clearMailDetails();
 
         void displayProgress(boolean enable);
@@ -30,5 +30,10 @@ public class EditProfileContract {
         void loadProviders();
         void subscribe();
         void unSubscribe();
+    }
+
+    interface ItemPresenter {
+        void saveDetails(Provider provider);
+        void deleteDetail(Provider provider);
     }
 }
