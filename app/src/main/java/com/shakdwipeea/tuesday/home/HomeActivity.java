@@ -98,10 +98,10 @@ public class HomeActivity extends AppCompatActivity {
                     tab.setIcon(tabIcon);
                 }
 
-                if (tab.isSelected())
-                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
-                else
-                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
+//                if (tab.isSelected())
+//                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
+//                else
+//                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
             }
         }
 
@@ -111,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Drawable tabIcon = tab.getIcon();
                 if (tabIcon != null) {
-                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
+//                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
                 }
             }
 
@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 Drawable tabIcon = tab.getIcon();
                 if (tabIcon != null) {
-                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
+//                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
                 }
             }
 
