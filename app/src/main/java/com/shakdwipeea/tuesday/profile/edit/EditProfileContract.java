@@ -23,11 +23,13 @@ public class EditProfileContract {
         void addMailDetails(Provider mail);
         void clearMailDetails();
 
-        void displayProgress(boolean enable);
+        void setProgressBar(boolean enable);
+        void displayUser(User user);
     }
 
     interface Presenter {
         void loadProviders();
+        void changeName(String name);
         void subscribe();
         void unSubscribe();
     }

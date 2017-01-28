@@ -59,7 +59,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
 
         presenter = new DetailsPresenter(this);
 
-        pictureUtil = new ProfilePictureUtil(presenter, this);
+        pictureUtil = new ProfilePictureUtil(presenter);
 
         String token = getArguments().getString(KEY_TOKEN);
         String phone = getArguments().getString(KEY_PHONE);

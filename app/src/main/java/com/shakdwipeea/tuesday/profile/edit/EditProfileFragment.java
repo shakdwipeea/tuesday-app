@@ -3,6 +3,7 @@ package com.shakdwipeea.tuesday.profile.edit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
@@ -28,10 +34,16 @@ import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.picture.ProfilePictureView;
 import com.shakdwipeea.tuesday.profile.view.ProfileContract;
 import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
+import com.shakdwipeea.tuesday.util.Util;
 import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,6 +64,10 @@ public class EditProfileFragment extends Fragment
 
     ProfilePictureUtil profilePictureUtil;
 
+    MaterialDialog progressDialog;
+
+    Subscription subscription;
+
     public EditProfileFragment() {
         // Required empty public constructor
     }
@@ -64,26 +80,42 @@ public class EditProfileFragment extends Fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile,
                 container, false);
 
-        User user = Parcels.unwrap(getActivity().getIntent()
-                .getParcelableExtra(ProfileViewFragment.USER_EXTRA_KEY));
-        if (user == null) {
-            Log.e(TAG, "onCreateView: user parcel not received ");
-        }
+//        User user = Parcels.unwrap(getActivity().getIntent()
+//                .getParcelableExtra(ProfileViewFragment.USER_EXTRA_KEY));
+//        if (user == null) {
+//            Log.e(TAG, "onCreateView: user parcel not received ");
+//        }
 
         setHasOptionsMenu(true);
 
         editProfilePresenter = new EditProfilePresenter(this);
 
-        profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this), this);
-
-        displayUser(user);
+//        displayUser(user);
 
         setupRecyclerViews();
+
+        setupNameDisplay();
 
         editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter);
         binding.setVm(editProfileViewModel);
 
+        profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));
+        binding.cameraIcon.setOnClickListener(v -> profilePictureUtil.openImageMenu());
+
+        progressDialog = Util.createProgressDialog(getContext()).build();
+
         return binding.getRoot();
+    }
+
+    private void setupNameDisplay() {
+        subscription = RxTextView.textChanges(binding.nameInput)
+                .debounce(200, TimeUnit.MILLISECONDS)
+                .doOnNext(charSequence -> editProfilePresenter.changeName(charSequence.toString()))
+                .subscribe(
+                        charSequence -> {
+                        },
+                        Throwable::printStackTrace
+                );
     }
 
     /**
@@ -107,9 +139,10 @@ public class EditProfileFragment extends Fragment
     public void onPause() {
         super.onPause();
         editProfilePresenter.unSubscribe();
+        subscription.unsubscribe();
     }
 
-    private void displayUser(User user) {
+    public void displayUser(User user) {
         binding.nameInput.setText(user.name);
 
         if (user.pic != null) {
@@ -192,17 +225,13 @@ public class EditProfileFragment extends Fragment
 
     @Override
     public Context getApplicationContext() {
-        return null;
+        return getActivity().getApplicationContext();
     }
 
     @Override
     public void setProgressBar(boolean enable) {
-
-    }
-
-    @Override
-    public void displayProfilePic(String url) {
-
+        if (enable) progressDialog.show();
+        else progressDialog.dismiss();
     }
 
     @Override
@@ -211,14 +240,53 @@ public class EditProfileFragment extends Fragment
                 .show();
     }
 
+    /**
+     * Receive the result from a previous call to
+     * {@link #startActivityForResult(Intent, int)}.  This follows the
+     * related Activity API as described there in
+     * {@link Activity#onActivityResult(int, int, Intent)}.
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     */
     @Override
-    public void displayProfilePicFromPath(String filePath) {
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        profilePictureUtil.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void displayProfilePic(Bitmap bitmap) {
+    public void displayProfilePic(String url) {
+        if (!TextUtils.isEmpty(url)) {
+            Picasso.with(getContext())
+                    .load(url)
+                    .into(binding.profilePic);
+        } else {
+            // TODO: 17-11-2016 display text drawable from first letter
+        }
+    }
 
+    @Override
+    public void displayProfilePic(Bitmap image) {
+        Util.resizeBitmapTo(image, binding.profilePic.getHeight(), binding.profilePic.getWidth())
+                .compose(Util.applyComputationScheduler())
+                .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .subscribe();
+    }
+
+    @Override
+    public void displayProfilePicFromPath(String photoPath) {
+        Util.resizeBitmapTo(photoPath,
+                binding.profilePic.getHeight(), binding.profilePic.getWidth())
+                .compose(Util.applyComputationScheduler())
+                .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
+                .doOnError(throwable -> displayError(throwable.getMessage()))
+                .onErrorResumeNext(Observable.empty())
+                .subscribe();
     }
 
     @Override
@@ -249,10 +317,5 @@ public class EditProfileFragment extends Fragment
     @Override
     public void clearMailDetails() {
         mailAdapter.clear();
-    }
-
-    @Override
-    public void displayProgress(boolean enable) {
-        Log.d(TAG, "displayProgress: " + enable);
     }
 }

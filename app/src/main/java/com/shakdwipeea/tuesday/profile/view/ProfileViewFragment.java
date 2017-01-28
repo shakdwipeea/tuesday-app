@@ -138,7 +138,7 @@ public class ProfileViewFragment extends Fragment
         presenter = new ProfilePresenter(this);
         binding.setHandler(presenter);
 
-        pictureUtil = new ProfilePictureUtil(presenter, this);
+        pictureUtil = new ProfilePictureUtil(presenter);
 
         setupCallList();
         setupMailList();

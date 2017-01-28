@@ -1,5 +1,8 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
@@ -22,15 +25,18 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
     private UserService userService;
     private CompositeSubscription compositeSubscription;
 
+    private FirebaseUser user;
+
     public EditProfilePresenter(EditProfileContract.View editProfileView) {
         this.editProfileView = editProfileView;
         this.userService = UserService.getInstance();
         this.compositeSubscription = new CompositeSubscription();
+        this.user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
     public void loadProviders() {
-        editProfileView.displayProgress(true);
+        editProfileView.setProgressBar(true);
 
         // We dont want to watch changes here as all the update is done here itself
         Subscription subscription = userService.getProvider()
@@ -38,7 +44,7 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
                 .first()
                 .doOnNext(this::processProviders)
                 .subscribe(
-                        providerList -> editProfileView.displayProgress(false),
+                        providerList -> editProfileView.setProgressBar(false),
                         Throwable::printStackTrace
                 );
         compositeSubscription.add(subscription);
@@ -73,8 +79,28 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
     }
 
     @Override
+    public void changeName(String name) {
+        UserProfileChangeRequest changeRequest = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null)
+            currentUser.updateProfile(changeRequest);
+        else
+            editProfileView.displayError("You are not signed in");
+        userService.setName(name);
+    }
+
+    @Override
     public void subscribe() {
         loadProviders();
+
+        User user = new User();
+        user.name = this.user.getDisplayName();
+        user.uid = this.user.getUid();
+        user.pic = this.user.getPhotoUrl().toString();
+        editProfileView.displayUser(user);
     }
 
     @Override

@@ -35,9 +35,9 @@ public class ProfilePictureUtil {
 
     private String currentPhotoPath;
 
-    public ProfilePictureUtil(ProfilePicturePresenter presenter, ProfilePictureView pictureView) {
+    public ProfilePictureUtil(ProfilePicturePresenter presenter) {
         this.presenter = presenter;
-        this.pictureView = pictureView;
+        this.pictureView = presenter.getPictureView();
     }
 
     public void openImageMenu() {
