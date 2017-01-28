@@ -1,29 +1,29 @@
 package com.shakdwipeea.tuesday.auth.otp;
 
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.auth.FirebaseUser;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.details.DetailsFragment;
-import com.shakdwipeea.tuesday.data.Preferences;
+import com.shakdwipeea.tuesday.data.SmsReceiver;
 import com.shakdwipeea.tuesday.databinding.FragmentPhoneInputBinding;
-import com.shakdwipeea.tuesday.home.HomeActivity;
-import com.shakdwipeea.tuesday.profile.ProfileActivity;
-import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.shakdwipeea.tuesday.util.Util;
+import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
+import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +33,9 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OtpFragment extends Fragment implements OtpContract.View {
+public class OtpFragment extends Fragment implements OtpContract.View, RequestPermissionInterface {
+    private static final String TAG = "OtpFragment";
+
     FragmentPhoneInputBinding binding;
 
     private Subscription subscription;
@@ -41,6 +43,8 @@ public class OtpFragment extends Fragment implements OtpContract.View {
     private MaterialDialog dialog;
 
     private OtpPresenter presenter;
+
+    PermViewUtil permViewUtil;
 
     String phone;
 
@@ -85,6 +89,44 @@ public class OtpFragment extends Fragment implements OtpContract.View {
     private void setupForOtp() {
         binding.phoneInputLabel.setText(R.string.otp_label);
         binding.phoneInput.setHint(R.string.otp_hint);
+
+        permViewUtil = new PermViewUtil(binding.getRoot());
+        permViewUtil.performActionWithPermissions(
+                getContext(),
+                Manifest.permission.RECEIVE_SMS,
+                new String[]{Manifest.permission.RECEIVE_SMS},
+                this,
+                this::setupSmsReceiver
+        );
+    }
+
+    /**
+     * Callback for the result from requesting permissions. This method
+     * is invoked for every call on {@link #requestPermissions(String[], int)}.
+     * <p>
+     * <strong>Note:</strong> It is possible that the permissions request interaction
+     * with the user is interrupted. In this case you will receive empty permissions
+     * and results arrays which should be treated as a cancellation.
+     * </p>
+     *
+     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *                     which is either {@link PackageManager#PERMISSION_GRANTED}
+     *                     or {@link PackageManager#PERMISSION_DENIED}. Never null.
+     * @see #requestPermissions(String[], int)
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permViewUtil.onPermissionResult(requestCode, permissions, grantResults);
+    }
+
+    private void setupSmsReceiver() {
+        SmsReceiver.bindListener(message -> {
+            binding.phoneInput.setText(message.split(" ")[0]);
+        });
     }
 
     @Override
