@@ -138,4 +138,6 @@
     <string name="add_phone">Add phone number</string>
     <string name="add_email">Add email</string>
     <string name="add_social">Add social account</string>
+    <string name="select_provider_label">Select a provider</string>
+    <string name="choose">Choose</string>
 </resources>

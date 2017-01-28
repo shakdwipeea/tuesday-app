@@ -165,8 +165,8 @@ public class ProfileViewFragment extends Fragment
     private void setupCallList() {
         LinearLayoutManager callListLayoutManager = new LinearLayoutManager(getContext());
 
-        callListAdapter = new SingleViewAdapter<>(new CallItemViewModel(permViewUtil, this),
-                R.layout.call_item);
+        callListAdapter = new SingleViewAdapter<>(R.layout.call_item,
+                (providerDetails) -> new CallItemViewModel(permViewUtil, this));
 
         binding.callDetailList.setLayoutManager(callListLayoutManager);
         binding.callDetailList.setAdapter(callListAdapter);
@@ -175,8 +175,8 @@ public class ProfileViewFragment extends Fragment
     private void setupMailList() {
         LinearLayoutManager mailListLayoutManager = new LinearLayoutManager(getContext());
 
-        mailListAdapter = new SingleViewAdapter<>(new MailItemViewModel(),
-                R.layout.mail_item);
+        mailListAdapter = new SingleViewAdapter<>(R.layout.mail_item,
+                item -> new MailItemViewModel());
 
         binding.emailDetailList.setLayoutManager(mailListLayoutManager);
         binding.emailDetailList.setAdapter(mailListAdapter);

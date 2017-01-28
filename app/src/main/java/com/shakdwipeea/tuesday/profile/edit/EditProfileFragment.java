@@ -2,7 +2,9 @@ package com.shakdwipeea.tuesday.profile.edit;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,10 @@ import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentEditProfileBinding;
 import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
+import com.shakdwipeea.tuesday.picture.ProfilePicturePresenter;
+import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
+import com.shakdwipeea.tuesday.picture.ProfilePictureView;
+import com.shakdwipeea.tuesday.profile.view.ProfileContract;
 import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
 import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 import com.squareup.picasso.Picasso;
@@ -30,7 +36,8 @@ import org.parceler.Parcels;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditProfileFragment extends Fragment implements EditProfileContract.View {
+public class EditProfileFragment extends Fragment
+        implements EditProfileContract.View, ProfilePictureView {
     private static final String TAG = "EditProfileFragment";
 
     FragmentEditProfileBinding binding;
@@ -41,6 +48,9 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
             ProviderDetailEditBinding> phoneAdapter, mailAdapter, providerAdapter;
 
     EditProfilePresenter editProfilePresenter;
+    EditProfileViewModel editProfileViewModel;
+
+    ProfilePictureUtil profilePictureUtil;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -64,11 +74,14 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
 
         editProfilePresenter = new EditProfilePresenter(this);
 
+        profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this), this);
+
         displayUser(user);
 
         setupRecyclerViews();
 
-        binding.saveProfile.setOnClickListener(v -> getActivity().onBackPressed());
+        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter);
+        binding.setVm(editProfileViewModel);
 
         return binding.getRoot();
     }
@@ -108,24 +121,22 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
 
     public void setupRecyclerViews() {
         LinearLayoutManager phoneLM = new LinearLayoutManager(getContext());
-        phoneAdapter = new SingleViewAdapter<>(new EditProfileItemViewModel(editProfilePresenter),
-                R.layout.provider_detail_edit);
+        phoneAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
+                (provider) -> new EditProfileItemViewModel(editProfilePresenter, provider));
 
         binding.callDetailList.setLayoutManager(phoneLM);
         binding.callDetailList.setAdapter(phoneAdapter);
 
         LinearLayoutManager mailLM = new LinearLayoutManager(getContext());
-        mailAdapter =
-                new SingleViewAdapter<>(new EditProfileItemViewModel(editProfilePresenter),
-                        R.layout.provider_detail_edit);
+        mailAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
+                (provider) -> new EditProfileItemViewModel(editProfilePresenter, provider));
 
         binding.emailDetailList.setLayoutManager(mailLM);
         binding.emailDetailList.setAdapter(mailAdapter);
 
         LinearLayoutManager providerLM = new LinearLayoutManager(getContext());
-        providerAdapter =
-                new SingleViewAdapter<>(new EditProfileItemViewModel(editProfilePresenter),
-                        R.layout.provider_detail_edit);
+        providerAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
+                (provider) -> new EditProfileItemViewModel(editProfilePresenter, provider));
 
         binding.providerList.setLayoutManager(providerLM);
         binding.providerList.setAdapter(providerAdapter);
@@ -148,6 +159,7 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_edit_profile, menu);
     }
 
     /**
@@ -169,17 +181,44 @@ public class EditProfileFragment extends Fragment implements EditProfileContract
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_save_details:
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        return null;
+    }
+
+    @Override
+    public void setProgressBar(boolean enable) {
+
+    }
+
+    @Override
+    public void displayProfilePic(String url) {
+
     }
 
     @Override
     public void displayError(String reason) {
         Snackbar.make(binding.getRoot(), reason, Snackbar.LENGTH_SHORT)
                 .show();
+    }
+
+    @Override
+    public void displayProfilePicFromPath(String filePath) {
+
+    }
+
+    @Override
+    public void displayProfilePic(Bitmap bitmap) {
+
     }
 
     @Override

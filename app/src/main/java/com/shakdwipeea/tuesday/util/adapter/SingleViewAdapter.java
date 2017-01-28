@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.BR;
+import com.shakdwipeea.tuesday.data.entities.user.Provider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +25,25 @@ import java.util.List;
  * @param <ViewBindingType> DataBinding type
  */
 public class SingleViewAdapter<ItemType,
-        ItemViewModelType extends ItemViewModel<ViewBindingType, ItemType>,
+        ItemViewModelType extends ItemViewModel<ViewBindingType>,
         ViewBindingType extends ViewDataBinding>
         extends RecyclerView.Adapter<SingleViewHolder<ViewBindingType>> {
     private static final String TAG = "SingleViewAdapter";
 
-    private ItemViewModelType itemViewModel;
     private List<ItemType> itemList = new ArrayList<>();
+
+    private ItemViewModelFactory<ItemViewModelType, ItemType> itemViewModelFactory;
 
     private int layoutId;
 
-    public SingleViewAdapter(ItemViewModelType itemViewModel, int layoutId) {
-        this.itemViewModel = itemViewModel;
+    public SingleViewAdapter(int layoutId) {
         this.layoutId = layoutId;
+    }
+
+    public SingleViewAdapter(int layoutId,
+                             ItemViewModelFactory<ItemViewModelType, ItemType> itemViewModelFactory) {
+        this.layoutId = layoutId;
+        this.itemViewModelFactory = itemViewModelFactory;
     }
 
     public List<ItemType> getItemList() {
@@ -69,10 +76,29 @@ public class SingleViewAdapter<ItemType,
 
     @Override
     public void onBindViewHolder(SingleViewHolder<ViewBindingType> holder, int position) {
-        Log.d(TAG, "onBindViewHolder: Here " + itemViewModel) ;
+        Log.d(TAG, "onBindViewHolder: Here " + position + " " + itemList.get(position)) ;
+
+//
+//        try {
+//            if (presenter != null) {
+//                itemViewModel = this.viewModel
+//                        .getDeclaredConstructor(new Class[]{presenterTypeClass}).newInstance();
+//            } else {
+//                itemViewModel = this.viewModel.newInstance();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        if (itemViewModelFactory != null) {
+            ItemViewModel<ViewBindingType> itemViewModel = itemViewModelFactory
+                    .newInstance(itemList.get(position));
+            holder.getBinding().setVariable(BR.vm, itemViewModel);
+            itemViewModel.bindDetail(holder.getBinding());
+        }
+
         holder.getBinding().setVariable(BR.item, itemList.get(position));
-        holder.getBinding().setVariable(BR.vm, itemViewModel);
-        itemViewModel.bindDetail(holder.getBinding(), itemList.get(position), position);
+        holder.getBinding().executePendingBindings();
     }
 
     /**

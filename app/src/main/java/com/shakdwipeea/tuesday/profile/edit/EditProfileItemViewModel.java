@@ -30,16 +30,20 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class EditProfileItemViewModel
-        implements ItemViewModel<ProviderDetailEditBinding,Provider> {
+        implements ItemViewModel<ProviderDetailEditBinding> {
     private static final String TAG = "EditProfileItemViewMode";
 
     private EditProfileContract.ItemPresenter itemPresenter;
+    private Provider provider;
 
-    public EditProfileItemViewModel(EditProfileContract.ItemPresenter itemPresenter) {
+    public EditProfileItemViewModel(EditProfileContract.ItemPresenter itemPresenter,
+                                    Provider provider) {
         this.itemPresenter = itemPresenter;
+        this.provider = provider;
     }
 
-    public String getDetail(ProviderDetails providerDetails) {
+    public String getDetail() {
+        ProviderDetails providerDetails = provider.providerDetails;
         switch (providerDetails.getType()) {
             case PHONE_NUMBER_VERIFICATION:
             case PHONE_NUMBER_NO_VERIFICATION:
@@ -95,7 +99,11 @@ public class EditProfileItemViewModel
     }
 
     @Override
-    public void bindDetail(ProviderDetailEditBinding binding, Provider provider, int position) {
+    public void bindDetail(ProviderDetailEditBinding binding) {
+        Log.d(TAG, "bindDetail: " + binding + " " + provider);
+
+        binding.detailContent.setText(getDetail());
+
         if (provider.getName().equals(ProviderNames.Call) ||
                 provider.getName().equals(ProviderNames.Email)) {
             setSpinnerSelection(binding, provider.providerDetails);
@@ -149,12 +157,15 @@ public class EditProfileItemViewModel
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d(TAG, "afterTextChanged: For provider and string " + provider + s);
                 ProviderDetails newProvider = updateProviderDetailsByType(
                         provider.providerDetails, s.toString());
+                binding.detailTypeSpinner.getSelectedItem();
                 provider.setProviderDetails(newProvider);
                 itemPresenter.saveDetails(provider);
             }
         });
+
 
         //Attaching listener to the private field
         binding.detailPrivateCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {

@@ -31,8 +31,11 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
     @Override
     public void loadProviders() {
         editProfileView.displayProgress(true);
+
+        // We dont want to watch changes here as all the update is done here itself
         Subscription subscription = userService.getProvider()
                 .compose(Util.applySchedulers())
+                .first()
                 .doOnNext(this::processProviders)
                 .subscribe(
                         providerList -> editProfileView.displayProgress(false),

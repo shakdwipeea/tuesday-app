@@ -14,14 +14,14 @@ import com.shakdwipeea.tuesday.util.adapter.ItemViewModel;
  * Created by akash on 22/1/17.
  */
 
-public class MailItemViewModel implements ItemViewModel<MailItemBinding,ProviderDetails> {
+public class MailItemViewModel implements ItemViewModel<MailItemBinding> {
     public void emailPerson(View view, String email) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + email));
         view.getContext().startActivity(intent);
     }
 
     @Override
-    public void bindDetail(MailItemBinding binding, ProviderDetails item, int position) {
+    public void bindDetail(MailItemBinding binding) {
         // Any required binding can be done here
     }
 }

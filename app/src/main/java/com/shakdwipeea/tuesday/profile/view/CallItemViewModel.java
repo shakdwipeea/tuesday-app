@@ -18,7 +18,7 @@ import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
  * Created by akash on 21/1/17.
  */
 
-public class CallItemViewModel implements ItemViewModel<CallItemBinding,ProviderDetails> {
+public class CallItemViewModel implements ItemViewModel<CallItemBinding> {
     PermViewUtil permViewUtil;
     RequestPermissionInterface requestPermissionInterface;
 
@@ -45,7 +45,7 @@ public class CallItemViewModel implements ItemViewModel<CallItemBinding,Provider
     }
 
     @Override
-    public void bindDetail(CallItemBinding binding, ProviderDetails item, int position) {
+    public void bindDetail(CallItemBinding binding) {
         // Any required binding can be done here
     }
 }

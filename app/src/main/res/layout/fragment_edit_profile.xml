@@ -7,6 +7,10 @@
         <variable
             name="item"
             type="com.shakdwipeea.tuesday.data.entities.user.Provider"/>
+
+        <variable
+            name="vm"
+            type="com.shakdwipeea.tuesday.profile.edit.EditProfileViewModel" />
     </data>
 
     <android.support.v4.widget.NestedScrollView
@@ -20,16 +24,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             tools:context="com.shakdwipeea.tuesday.profile.edit.EditProfileFragment">
-
-            <Button
-                android:id="@+id/save_profile"
-                android:textSize="15sp"
-                android:text="@string/save"
-                android:background="@android:color/transparent"
-                android:layout_gravity="right|end"
-                android:textColor="@color/colorAcc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             <FrameLayout
                 android:layout_gravity="center_horizontal"
@@ -73,11 +67,27 @@
                 tools:numColumns="1"
                 />
 
+
+            <Button
+                android:id="@+id/add_call_item"
+                android:background="#fff"
+                android:text="@string/add_another_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <android.support.v7.widget.RecyclerView
                 android:layout_marginTop="15dp"
                 android:id="@+id/email_detail_list"
                 android:scrollbars="vertical"
                 tools:listitem="@layout/provider_detail_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <Button
+                android:id="@+id/add_email_item"
+                android:background="#fff"
+                android:text="@string/add_another_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -89,6 +99,15 @@
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+
+            <Button
+                android:id="@+id/add_provider_item"
+                android:background="#fff"
+                android:text="@string/add_another_account"
+                android:onClick="@{() -> vm.addProviderAccount()}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

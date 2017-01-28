@@ -31,6 +31,10 @@ public class ProfilePicturePresenter {
         this.userService = UserService.getInstance();
     }
 
+    public ProfilePictureView getPictureView() {
+        return pictureView;
+    }
+
     public void updateProfilePic(Context context, Uri imageUri) {
         try {
             // Get the stream to get the bitmap and display the image

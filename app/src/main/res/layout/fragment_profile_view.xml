@@ -16,14 +16,14 @@
     <android.support.v4.widget.NestedScrollView
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/app_bar_height"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/app_bar_height"
         >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:padding="15dp"
             android:textAlignment="center"
             android:shadowColor="#26000000"
             android:orientation="vertical"

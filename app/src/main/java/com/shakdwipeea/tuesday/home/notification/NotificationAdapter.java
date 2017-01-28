@@ -76,7 +76,7 @@ public class NotificationAdapter extends
                 holder.binding.placeholderProfilePic, notificationDetail.user);
 
         if (actionRequired) {
-            holder.binding.setItemViewModel(new NotificationItemViewModel());
+            holder.binding.setViewModel(new NotificationItemViewModel());
             holder.binding.actionButtonHolder.setVisibility(View.VISIBLE);
         } else {
             holder.binding.actionButtonHolder.setVisibility(View.GONE);

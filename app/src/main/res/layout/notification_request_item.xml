@@ -15,7 +15,7 @@
             type="com.shakdwipeea.tuesday.home.home.ContactItemActionHandler" />
 
         <variable
-            name="itemViewModel"
+            name="viewModel"
             type="com.shakdwipeea.tuesday.home.notification.NotificationItemViewModel" />
     </data>
 
@@ -70,14 +70,14 @@
                 android:src="@drawable/ic_check_black_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> itemViewModel.handleApproval(true, provider, contact)}"
+                android:onClick="@{() -> viewModel.handleApproval(true, provider, contact)}"
                 />
 
             <ImageButton
                 android:src="@drawable/ic_clear_black_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> itemViewModel.handleApproval(false, provider, contact)}"
+                android:onClick="@{() -> viewModel.handleApproval(false, provider, contact)}"
                 />
 
         </LinearLayout>

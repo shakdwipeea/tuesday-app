@@ -53,7 +53,6 @@
                 android:layout_weight="4"
                 android:textSize="14sp"
                 android:layout_width="0dp"
-                android:text="@{vm.getDetail(itemDetail)}"
                 android:layout_height="wrap_content" />
 
             <CheckBox
@@ -73,12 +72,6 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-
-        <Button
-            android:background="#fff"
-            android:text="@string/add_another_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </layout>
