@@ -143,9 +143,6 @@ public class ProfileViewFragment extends Fragment
         setupCallList();
         setupMailList();
 
-        // Info passed in Intent can be immediately opened and the rest be retrieved
-        displayUser(user);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
         providerAdapter = new ProviderAdapter();

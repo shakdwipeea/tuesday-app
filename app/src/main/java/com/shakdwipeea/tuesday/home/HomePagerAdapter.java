@@ -13,6 +13,9 @@ import com.shakdwipeea.tuesday.home.settings.SettingsFragment;
  */
 
 public class HomePagerAdapter extends FragmentPagerAdapter {
+    private HomeFragment homeFragment = new HomeFragment();
+    private NotificationFragment notificationFragment = new NotificationFragment();
+    private SettingsFragment settingsFragment = new SettingsFragment();
 
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
@@ -27,11 +30,11 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                return new HomeFragment();
+                return homeFragment;
             case 1:
-                return new NotificationFragment();
+                return notificationFragment;
             case 2:
-                return new SettingsFragment();
+                return settingsFragment;
         }
         return null;
     }

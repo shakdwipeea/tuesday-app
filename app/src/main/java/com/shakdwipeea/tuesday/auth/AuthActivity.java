@@ -101,11 +101,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.View
             profileLaunched = true;
 
             Intent intent;
-            if (Preferences.getInstance(this).isSetupComplete()) {
-                intent = new Intent(this, HomeActivity.class);
-            } else {
-                intent = new Intent(this, ProviderPickerActivity.class);
-            }
+            intent = new Intent(this, HomeActivity.class);
 
             startActivity(intent);
 

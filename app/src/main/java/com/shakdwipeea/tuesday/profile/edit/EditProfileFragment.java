@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentEditProfileBinding;
@@ -214,11 +215,14 @@ public class EditProfileFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_save_details:
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
-
+            case R.id.action_save_details:
+                Preferences preferences = Preferences.getInstance(getContext());
+                preferences.setSetupComplete(true);
+                getActivity().onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

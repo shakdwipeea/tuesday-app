@@ -104,11 +104,7 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
     @Override
     public void openProfile(FirebaseUser user) {
         Intent intent;
-        if (Preferences.getInstance(getContext()).isSetupComplete()) {
-            intent = new Intent(getContext(), HomeActivity.class);
-        } else {
-            intent = new Intent(getContext(), ProviderPickerActivity.class);
-        }
+         intent = new Intent(getContext(), HomeActivity.class);
 
         startActivity(intent);
         getActivity().finish();

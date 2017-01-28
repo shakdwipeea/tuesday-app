@@ -24,8 +24,10 @@ import android.view.inputmethod.EditorInfo;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentHomeBinding;
+import com.shakdwipeea.tuesday.home.FragmentViewPagerLifeCycle;
 import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
 import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
@@ -42,7 +44,8 @@ import static android.graphics.Typeface.DEFAULT_BOLD;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements HomeContract.View {
+public class HomeFragment extends Fragment
+        implements HomeContract.View, FragmentViewPagerLifeCycle {
     private static final String TAG = "HomeFragment";
 
     private static final int REQUEST_WRITE_CONTACTS = 120;
@@ -130,6 +133,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         setUpBackBehaviour();
 
+        setUpCompleteProfile();
+
         binding.phoneEdit.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 presenter.getTuesContact(textView.getText().toString());
@@ -142,6 +147,23 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         return binding.getRoot();
     }
 
+    private void setUpCompleteProfile() {
+        Preferences preferences = Preferences.getInstance(getContext());
+        if (!preferences.isSetupComplete()) {
+            binding.completeProfile.setVisibility(View.VISIBLE);
+            binding.completeProfile.setOnClickListener(v -> {
+                // Directly open edit fragment
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(ProfileActivity.MODE_KEY,
+                        ProfileActivity.ProfileActivityMode.EDIT_MODE);
+                startActivity(intent);
+            });
+        } else {
+            if (binding != null && binding.completeProfile != null)
+                binding.completeProfile.setVisibility(View.GONE);
+        }
+    }
+
     private void setUpBackBehaviour() {
         HomeActivity activity = (HomeActivity) getActivity();
         activity.setBackPressedListener(presenter.getBackPressedListener());
@@ -150,7 +172,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     @Override
     public void onPause() {
-        super.onPause();
+;        super.onPause();
 
         recyclerViewState = new Bundle();
         Parcelable listState = binding.phoneContactList.getLayoutManager().onSaveInstanceState();
@@ -160,12 +182,18 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void onResume() {
         super.onResume();
+
+        setUpCompleteProfile();
         // restore RecyclerView state
         if (recyclerViewState != null) {
             Parcelable listState = recyclerViewState.getParcelable(KEY_RECYCLER_STATE);
             binding.phoneContactList.getLayoutManager().onRestoreInstanceState(listState);
         }
     }
+
+
+
+
 
     @Override
     public void displayPhoneContacts(List<User> users) {
@@ -270,4 +298,19 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         return true;
     }
 
+    /**
+     * Called when fragment is not foreground
+     */
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    /**
+     * Called when fragment comes foreground
+     */
+    @Override
+    public void onResumeFragment() {
+        setUpCompleteProfile();
+    }
 }

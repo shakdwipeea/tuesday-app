@@ -46,6 +46,29 @@
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/complete_profile"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:elevation="4dp"
+                card_view:cardCornerRadius="4dp">
+
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:text="Complete your profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/tuesid_card"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"

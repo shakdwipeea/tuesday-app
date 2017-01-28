@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
 
         binding.homeFragmentContainer.setAdapter(pagerAdapter);
         binding.homeFragmentContainer.setOffscreenPageLimit(3);
+        binding.homeFragmentContainer.setCurrentItem(0);
 
         setupTabs();
 
@@ -109,17 +110,17 @@ public class HomeActivity extends AppCompatActivity {
         binding.homeTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Drawable tabIcon = tab.getIcon();
-                if (tabIcon != null) {
-//                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
+                Fragment item = pagerAdapter.getItem(tab.getPosition());
+                if (item instanceof FragmentViewPagerLifeCycle) {
+                    ((FragmentViewPagerLifeCycle) item).onResumeFragment();
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                Drawable tabIcon = tab.getIcon();
-                if (tabIcon != null) {
-//                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
+                Fragment item = pagerAdapter.getItem(tab.getPosition());
+                if (item instanceof FragmentViewPagerLifeCycle) {
+                    ((FragmentViewPagerLifeCycle) item).onPauseFragment();
                 }
             }
 
