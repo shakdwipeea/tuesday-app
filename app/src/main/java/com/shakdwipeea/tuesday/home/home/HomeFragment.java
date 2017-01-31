@@ -105,6 +105,7 @@ public class HomeFragment extends Fragment
         phoneContactAdapter = new ContactAdapter();
         tuesContactAdapter = new ContactAdapter();
 
+
         LinearLayoutManager searchLayoutManager = new LinearLayoutManager(context);
         LinearLayoutManager phoneContactLayoutManager = new LinearLayoutManager(context);
         LinearLayoutManager tuesContactLayoutManager = new LinearLayoutManager(context);
@@ -136,8 +137,6 @@ public class HomeFragment extends Fragment
 
         presenter = new HomePresenter(this);
         binding.setHandler(presenter);
-
-        setUpBackBehaviour();
 
         setUpCompleteProfile();
 

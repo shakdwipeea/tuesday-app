@@ -3,8 +3,11 @@ package com.shakdwipeea.tuesday.people;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.user.User;
@@ -36,6 +39,12 @@ public class PeopleListActivity extends AppCompatActivity implements PeopleListC
         binding = DataBindingUtil.setContentView(this, R.layout.activity_people_list);
         setSupportActionBar(binding.toolbar);
 
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle("People");
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         presenter = new PeopleListPresenter(this);
 
         adapter = new ContactAdapter();
@@ -43,6 +52,17 @@ public class PeopleListActivity extends AppCompatActivity implements PeopleListC
 
         binding.content.peopleList.setLayoutManager(layoutManager);
         binding.content.peopleList.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
