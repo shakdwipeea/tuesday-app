@@ -136,7 +136,8 @@ public class TuesdayAuthenticator extends AbstractAccountAuthenticator {
      *                               network error
      */
     @Override
-    public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
+    public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account,
+                               String authTokenType, Bundle options) throws NetworkErrorException {
         return null;
     }
 
@@ -172,7 +173,9 @@ public class TuesdayAuthenticator extends AbstractAccountAuthenticator {
      *                               network error
      */
     @Override
-    public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
+    public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account,
+                                    String authTokenType, Bundle options)
+            throws NetworkErrorException {
         return null;
     }
 
@@ -195,7 +198,8 @@ public class TuesdayAuthenticator extends AbstractAccountAuthenticator {
      *                               network error
      */
     @Override
-    public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) throws NetworkErrorException {
+    public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account,
+                              String[] features) throws NetworkErrorException {
         return null;
     }
 }

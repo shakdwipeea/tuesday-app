@@ -116,7 +116,7 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.View
 
     @Override
     public void setupAccount(FirebaseUser user) {
-        Account account = new Account(user.getUid(), SyncUtils.ACCOUNT_TYPE);
+        Account account = new Account(user.getDisplayName(), SyncUtils.ACCOUNT_TYPE);
         SyncUtils.createSyncAccount(context, account);
     }
 }
