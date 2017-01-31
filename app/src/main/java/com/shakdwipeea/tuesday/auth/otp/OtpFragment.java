@@ -33,7 +33,8 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OtpFragment extends Fragment implements OtpContract.View, RequestPermissionInterface {
+public class OtpFragment extends Fragment implements OtpContract.View,
+        RequestPermissionInterface {
     private static final String TAG = "OtpFragment";
 
     FragmentPhoneInputBinding binding;

@@ -1,13 +1,16 @@
 package com.shakdwipeea.tuesday.data.contacts;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,8 +50,11 @@ public class ContactsRepo {
 
     private ReplaySubject<Contact> replaySubject;
 
+    private Context context;
+
     // would make more sense to inject this via DI
     private ContactsRepo(Context context) {
+        this.context = context;
         contentResolver = context.getContentResolver();
         replaySubject = ReplaySubject.create();
 
@@ -90,6 +96,11 @@ public class ContactsRepo {
     }
 
     public Observable<Contact> getContactsObservable() {
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+
         // TODO: 08-11-2016 prevent flickering of contacts
         return Observable
                 .create(subscriber -> {

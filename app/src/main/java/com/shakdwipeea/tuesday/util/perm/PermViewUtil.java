@@ -10,6 +10,9 @@ import android.view.View;
 
 import com.shakdwipeea.tuesday.util.Util;
 
+import java.util.Random;
+import java.util.UUID;
+
 /**
  * Created by ashak on 18-11-2016.
  */
@@ -34,7 +37,9 @@ public class PermViewUtil {
      *
      * @param context Context
      * @param permissionToCheck Permission to check before action
-     * @param fragment Fragment
+     * @param permissions Permission to request
+     * @param permissionInterface Interface that defines how permission is requested.
+     *                            Don't get tempted and pass a lambda.
      * @param actionInterface Contains the action to perform
      */
     public void performActionWithPermissions(Context context,
@@ -42,10 +47,12 @@ public class PermViewUtil {
                                              String[] permissions,
                                              RequestPermissionInterface permissionInterface,
                                              ActionInterface actionInterface) {
+        int reqCode = new Random().nextInt(100);
+
         if (ContextCompat.checkSelfPermission(context,
                 permissionToCheck) != PackageManager.PERMISSION_GRANTED) {
-            pendingActionMap.append(REQUEST_CALL, actionInterface);
-            permissionInterface.requestPermissions(permissions, REQUEST_CALL);
+            pendingActionMap.append(reqCode, actionInterface);
+            permissionInterface.requestPermissions(permissions, reqCode);
         } else {
             actionInterface.performAction();
         }
@@ -55,14 +62,14 @@ public class PermViewUtil {
      * This method should be called when the activity/fragment has received the request permission
      *
      * Callback for the result from requesting permissions. This method
-     * is invoked for every call on {@link #requestPermissions(String[], int)}.
+     * is invoked for every call on.
      * <p>
      * <strong>Note:</strong> It is possible that the permissions request interaction
      * with the user is interrupted. In this case you will receive empty permissions
      * and results arrays which should be treated as a cancellation.
      * </p>
      *
-     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param requestCode  The request code
      * @param permissions  The requested permissions. Never null.
      * @param grantResults The grant results for the corresponding permissions
      *                     which is either {@link PackageManager#PERMISSION_GRANTED}

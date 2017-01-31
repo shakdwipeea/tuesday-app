@@ -1,5 +1,6 @@
 package com.shakdwipeea.tuesday.data.contacts.sync;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
@@ -7,8 +8,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.SyncResult;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +46,7 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
     public ContactSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         Log.d(TAG, "ContactSyncAdapter: initialized");
+
         contactsRepo = ContactsRepo.getInstance(context);
         addContactService = new AddContactService(context);
         preferences = Preferences.getInstance(context);

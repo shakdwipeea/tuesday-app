@@ -54,10 +54,6 @@ public class HomePresenter implements HomeContract.Presenter {
         userService = UserService.getInstance();
         preferences = Preferences.getInstance(context);
 
-        if (homeView.hasPermissions()) {
-            getContacts(context);
-        }
-
         // Check if name is already indexed if not then index it
         registerProfile();
     }

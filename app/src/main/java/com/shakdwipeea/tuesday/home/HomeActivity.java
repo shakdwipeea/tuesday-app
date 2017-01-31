@@ -57,8 +57,6 @@ public class HomeActivity extends AppCompatActivity {
 
         setupTabs();
 
-        Intent intent = new Intent(this, NotificationService.class);
-        startService(intent);
         //loadFragment(homeFragment);
     }
 

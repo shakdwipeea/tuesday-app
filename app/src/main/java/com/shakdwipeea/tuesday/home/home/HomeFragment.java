@@ -24,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
+import com.shakdwipeea.tuesday.data.NotificationService;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentHomeBinding;
@@ -31,6 +32,8 @@ import com.shakdwipeea.tuesday.home.FragmentViewPagerLifeCycle;
 import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.profile.ProfileActivity;
 import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
+import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
+import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 
 import org.parceler.Parcels;
 
@@ -45,7 +48,7 @@ import static android.graphics.Typeface.DEFAULT_BOLD;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment
-        implements HomeContract.View, FragmentViewPagerLifeCycle {
+        implements HomeContract.View, FragmentViewPagerLifeCycle, RequestPermissionInterface {
     private static final String TAG = "HomeFragment";
 
     private static final int REQUEST_WRITE_CONTACTS = 120;
@@ -68,6 +71,8 @@ public class HomeFragment extends Fragment
     static Bundle recyclerViewState;
 
     boolean editingTuesId = false;
+
+    PermViewUtil permViewUtil;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -109,6 +114,7 @@ public class HomeFragment extends Fragment
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,
                 searchLayoutManager.getOrientation());
 
+        permViewUtil = new PermViewUtil(binding.getRoot());
 
         // Search listing
         binding.contactList.setLayoutManager(searchLayoutManager);
@@ -143,6 +149,20 @@ public class HomeFragment extends Fragment
 
             return false;
         });
+
+        permViewUtil.performActionWithPermissions(
+                getContext(),
+                Manifest.permission.READ_CONTACTS,
+                new String[]{
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.WRITE_CONTACTS
+                },
+                this, () -> {
+                    Context context = getContext();
+                    Intent intent = new Intent(context, NotificationService.class);
+                    context.startService(intent);
+                    presenter.getContacts(context);
+                });
 
         return binding.getRoot();
     }
@@ -190,10 +210,6 @@ public class HomeFragment extends Fragment
             binding.phoneContactList.getLayoutManager().onRestoreInstanceState(listState);
         }
     }
-
-
-
-
 
     @Override
     public void displayPhoneContacts(List<User> users) {
@@ -266,20 +282,7 @@ public class HomeFragment extends Fragment
     @Override
      public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_WRITE_CONTACTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.getContacts(context);
-                } else {
-                    displayError("Cannot read contacts now. Fuck you");
-                }
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
+        permViewUtil.onPermissionResult(requestCode, permissions, grantResults);
     }
 
     @Override
