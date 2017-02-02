@@ -26,12 +26,23 @@ public class EditProfileViewModel {
     private SingleViewAdapter<
             Provider,
             EditProfileItemViewModel,
-            ProviderDetailEditBinding> adapter;
+            ProviderDetailEditBinding> socialAdapter, phoneAdapter, emailAdapter;
 
-    public EditProfileViewModel(Context context, SingleViewAdapter<Provider,
-            EditProfileItemViewModel, ProviderDetailEditBinding> adapter) {
+    public String emailProvider = ProviderNames.Email;
+    public String callProvider = ProviderNames.Call;
+
+    public EditProfileViewModel(
+            Context context,
+            SingleViewAdapter<Provider,
+                    EditProfileItemViewModel, ProviderDetailEditBinding> socialAdapter,
+            SingleViewAdapter<Provider,
+                    EditProfileItemViewModel, ProviderDetailEditBinding> emailAdapter,
+            SingleViewAdapter<Provider,
+                    EditProfileItemViewModel, ProviderDetailEditBinding> phoneAdapter) {
         this.context = context;
-        this.adapter = adapter;
+        this.phoneAdapter = phoneAdapter;
+        this.emailAdapter = emailAdapter;
+        this.socialAdapter = socialAdapter;
     }
 
     /**
@@ -56,12 +67,10 @@ public class EditProfileViewModel {
     public void addProviderAccount() {
         new MaterialDialog.Builder(context)
                 .title(R.string.select_provider_label)
-                .items(newProviderList(adapter.getItemList()))
+                .items(newProviderList(socialAdapter.getItemList()))
                 .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
                     if (text != null) {
-                        Provider provider = ProviderService.getInstance()
-                                .getProviderHashMap().get(text.toString());
-                        adapter.addItem(provider);
+                        addAccount(text.toString());
                         return true;
                     }
 
@@ -69,5 +78,23 @@ public class EditProfileViewModel {
                 })
                 .positiveText(R.string.choose)
                 .show();
+    }
+
+    public void addAccount(String providerName) {
+        Provider provider = ProviderService.getInstance()
+                .getProviderHashMap().get(providerName);
+
+        switch (providerName) {
+            case ProviderNames.Call:
+                phoneAdapter.addItem(provider);
+                break;
+
+            case ProviderNames.Email:
+                emailAdapter.addItem(provider);
+                break;
+
+            default:
+                socialAdapter.addItem(provider);
+        }
     }
 }

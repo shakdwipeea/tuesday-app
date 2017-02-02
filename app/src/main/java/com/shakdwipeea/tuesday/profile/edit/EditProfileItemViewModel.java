@@ -80,6 +80,13 @@ public class EditProfileItemViewModel
         }
     }
 
+    /**
+     * Spinner selection for phones and mails as their spinner value is retreived from
+     * detailType
+     *
+     * @param binding View Binding
+     * @param details Detail selected
+     */
     public void setSpinnerSelection(ProviderDetailEditBinding binding, ProviderDetails details) {
         Context context = binding.getRoot().getContext();
 
@@ -90,6 +97,12 @@ public class EditProfileItemViewModel
         binding.detailTypeSpinner.setSelection(detailPos);
     }
 
+    /**
+     * Spinner selection for social providers
+     *
+     * @param binding View Binding
+     * @param name Name of provider
+     */
     public void setSpinnerSelection(ProviderDetailEditBinding binding, String name) {
         ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(
                 binding.getRoot().getContext(),

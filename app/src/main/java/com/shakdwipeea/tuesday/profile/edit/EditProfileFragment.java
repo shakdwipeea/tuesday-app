@@ -97,7 +97,8 @@ public class EditProfileFragment extends Fragment
 
         setupNameDisplay();
 
-        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter);
+        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter,
+                mailAdapter, phoneAdapter);
         binding.setVm(editProfileViewModel);
 
         profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));

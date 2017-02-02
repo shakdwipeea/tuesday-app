@@ -79,12 +79,13 @@
                 />
 
 
-            <!--<Button-->
-                <!--android:id="@+id/add_call_item"-->
-                <!--android:background="#fff"-->
-                <!--android:text="@string/add_another_account"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content" />-->
+            <Button
+                android:id="@+id/add_call_item"
+                android:background="@android:color/transparent"
+                android:text="@string/add_another_account"
+                android:onClick="@{() -> vm.addAccount(vm.callProvider)}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:text="Email"
@@ -104,12 +105,13 @@
                 android:layout_height="wrap_content" />
 
 
-            <!--<Button-->
-                <!--android:id="@+id/add_email_item"-->
-                <!--android:background="#fff"-->
-                <!--android:text="@string/add_another_account"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content" />-->
+            <Button
+                android:id="@+id/add_email_item"
+                android:background="@android:color/transparent"
+                android:text="@string/add_another_account"
+                android:onClick="@{() -> vm.addAccount(vm.emailProvider)}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:text="Social Accounts"
