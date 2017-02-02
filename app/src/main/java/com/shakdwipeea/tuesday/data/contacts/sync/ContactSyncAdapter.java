@@ -62,13 +62,14 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
 
-        userService = UserService.getInstance();
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             Log.d(TAG, "onPerformSync: Not logged in");
             return;
         }
+
+        userService = UserService.getInstance();
 
         Iterator<Contact> iterator = contactsRepo.getContactsObservable()
                 .toBlocking()

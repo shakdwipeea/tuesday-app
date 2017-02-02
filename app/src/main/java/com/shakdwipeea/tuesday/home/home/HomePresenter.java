@@ -95,7 +95,16 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private void filterFriends(ArrayList<String> uidList, String pattern) {
         Subscription subscription = fetchProfile(uidList)
-                .filter(user -> user.name.toLowerCase().contains(pattern.toLowerCase()))
+               .filter(user -> {
+                    Log.d(TAG, "filterFriends: Name is " + user.name + "  pattern " + pattern);
+
+                    if (user.name != null) {
+                        boolean contains = user.name.toLowerCase().contains(pattern.toLowerCase());
+                        return contains;
+                    } else {
+                        return false;
+                    }
+                })
                 .doOnSubscribe(() -> homeView.clearTuesContact())
                 .subscribe(
                         user -> homeView.addTuesContact(user),
