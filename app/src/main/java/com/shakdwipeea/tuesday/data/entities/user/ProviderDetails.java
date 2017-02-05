@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.shakdwipeea.tuesday.data.entities.user.ProviderDetails.ProviderDetailNode.DESCRIPTION_KEY;
@@ -46,6 +48,16 @@ public class ProviderDetails extends BaseObservable{
         public static String IS_PERSONAL_KEY = "isPersonal";
         public static String PROVIDER_TYPE_KEY = "type";
         public static String PROVIDER_DETAIL_TYPE_KEY = "detailType";
+    }
+
+    public static class DetailType {
+        final public static String PRIMARY = "Primary";
+        final public static String WORK = "Work";
+        final public static String HOME = "Home";
+
+        public static ArrayList<String> getDetailTypes() {
+            return new ArrayList<>(Arrays.asList(PRIMARY, WORK, HOME));
+        }
     }
 
     /**

@@ -11,6 +11,8 @@
         <variable
             name="vm"
             type="com.shakdwipeea.tuesday.profile.edit.EditProfileViewModel" />
+
+        <import type="com.shakdwipeea.tuesday.data.providers.ProviderNames" />
     </data>
 
     <android.support.v4.widget.NestedScrollView
@@ -83,7 +85,7 @@
                 android:id="@+id/add_call_item"
                 android:background="@android:color/transparent"
                 android:text="@string/add_another_account"
-                android:onClick="@{() -> vm.addAccount(vm.callProvider)}"
+                android:onClick="@{() -> vm.addPhoneOrEmailAccount(ProviderNames.Call)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -109,7 +111,7 @@
                 android:id="@+id/add_email_item"
                 android:background="@android:color/transparent"
                 android:text="@string/add_another_account"
-                android:onClick="@{() -> vm.addAccount(vm.emailProvider)}"
+                android:onClick="@{() -> vm.addPhoneOrEmailAccount(ProviderNames.Email)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

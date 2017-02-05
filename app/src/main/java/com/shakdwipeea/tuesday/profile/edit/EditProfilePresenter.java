@@ -115,6 +115,7 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
 
     @Override
     public void deleteDetail(Provider provider) {
-        // TODO: 28/1/17 add delete provider
+        userService.deleteProvider(provider);
+        loadProviders();
     }
 }

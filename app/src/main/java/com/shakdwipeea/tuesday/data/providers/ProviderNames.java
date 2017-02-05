@@ -31,6 +31,10 @@ public class ProviderNames {
         return name + "_" + detailType;
     }
 
+    public static String getProviderKey(Provider provider) {
+        return getProviderKey(provider.name, provider.providerDetails.detailType);
+    }
+
     /**
      * Get the provider
      *

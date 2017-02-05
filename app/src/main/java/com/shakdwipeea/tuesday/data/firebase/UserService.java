@@ -246,4 +246,18 @@ public class UserService {
         return RxFirebase
                 .getChildKeysAsList(profileRef.child(User.UserNode.ADDED_BY));
     }
+
+    public void deleteProvider(Provider provider) {
+        Log.d(TAG, "deleteProvider: Going to delete " + provider);
+        String providerName = provider.name;
+
+        if (providerName.startsWith(ProviderNames.Call) ||
+                providerName.startsWith(ProviderNames.Email)) {
+            providerName = ProviderNames.getProviderKey(provider);
+        }
+
+        profileRef.child(User.UserNode.PROVIDERS)
+                .child(providerName).removeValue();
+
+    }
 }

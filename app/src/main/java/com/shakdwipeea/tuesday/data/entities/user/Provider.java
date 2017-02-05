@@ -23,14 +23,17 @@ public class Provider extends BaseObservable{
     }
 
     public Provider(Provider provider) {
-        this(provider.name, provider.subName, provider.icon, provider.selected);
+        this(provider.name, provider.subName, provider.icon, provider.selected,
+                provider.getProviderDetails().type);
     }
 
-    public Provider(String name, String subName, int icon, boolean selected) {
+    public Provider(String name, String subName, int icon, boolean selected, Type type) {
         this.name = name;
         this.subName = subName;
         this.icon = icon;
         this.selected = selected;
+        this.providerDetails = new ProviderDetails();
+        this.providerDetails.setType(type);
     }
 
     public ProviderDetails getProviderDetails() {

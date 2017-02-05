@@ -187,6 +187,9 @@ public class EditProfileItemViewModel
         });
 
         //Attach listener for  delete
-        binding.detailDelete.setOnClickListener(v -> itemPresenter.deleteDetail(provider));
+        binding.detailDelete.setOnClickListener(v -> {
+            Log.d(TAG, "bindDetail: Going to delete provider " + provider);
+            itemPresenter.deleteDetail(provider);
+        });
     }
 }
