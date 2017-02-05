@@ -12,6 +12,7 @@ import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.user.User;
+import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import java.util.ArrayList;
@@ -169,15 +170,26 @@ public class FirebaseService {
                                 .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY);
                         providerDetails.requestedBy = RxFirebase.getKeys(requestedByData);
 
+                        String providerName = snap.getKey();
+
+                        // extract provider name in other cases
+                        if (providerName.startsWith(ProviderNames.Call) ||
+                                providerName.startsWith(ProviderNames.Email)) {
+                            providerName = ProviderNames.getProvider(providerName);
+                        }
+
+
                         Provider provider = ProviderService.getInstance()
                                 .getProviderHashMap()
-                                .get(snap.getKey());
+                                .get(providerName);
 
                         if (provider != null) {
-                            provider.setProviderDetails(providerDetails);
+                            Provider pToAdd = new Provider(provider);
+                            pToAdd.setProviderDetails(providerDetails);
 
-                            Log.d(TAG, "onDataChange: provider " + provider);
-                            providerList.add(provider);
+                            Log.d(TAG, "getProviderInfo: provider " + provider);
+                            Log.d(TAG, "onDataChange: providerDetails " + provider.providerDetails);
+                            providerList.add(pToAdd);
                         }
                     }
 

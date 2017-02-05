@@ -137,6 +137,7 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                             return false;
 
                         case ProviderNames.Call:
+                            Log.d(TAG, "processProviders: Adding " + provider.providerDetails);
                             profileView.addCallDetails(provider.providerDetails);
                             return false;
 

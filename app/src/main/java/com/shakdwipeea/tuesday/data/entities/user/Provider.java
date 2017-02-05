@@ -14,9 +14,24 @@ import org.parceler.Parcel;
 @Parcel
 public class Provider extends BaseObservable{
     public String name;
+    public String subName;
     public int icon;
     public boolean selected;
     public ProviderDetails providerDetails;
+
+    public Provider() {
+    }
+
+    public Provider(Provider provider) {
+        this(provider.name, provider.subName, provider.icon, provider.selected);
+    }
+
+    public Provider(String name, String subName, int icon, boolean selected) {
+        this.name = name;
+        this.subName = subName;
+        this.icon = icon;
+        this.selected = selected;
+    }
 
     public ProviderDetails getProviderDetails() {
         return providerDetails;
@@ -56,8 +71,10 @@ public class Provider extends BaseObservable{
     public String toString() {
         return "Provider{" +
                 "name='" + name + '\'' +
+                ", subName='" + subName + '\'' +
                 ", icon=" + icon +
                 ", selected=" + selected +
+                ", providerDetails=" + providerDetails +
                 '}';
     }
 

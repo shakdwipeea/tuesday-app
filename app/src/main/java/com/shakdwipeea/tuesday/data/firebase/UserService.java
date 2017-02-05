@@ -12,6 +12,7 @@ import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.user.User;
+import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import java.util.ArrayList;
@@ -122,10 +123,22 @@ public class UserService {
     }
 
     public void saveProvider(Provider provider) {
-            DatabaseReference providerRef = profileRef.child(User.UserNode.PROVIDERS)
-                    .child(provider.getName());
+        switch (provider.name) {
+            case ProviderNames.Call:
+            case ProviderNames.Email:
+                DatabaseReference subProviderRef = profileRef
+                        .child(User.UserNode.PROVIDERS)
+                        .child(ProviderNames
+                                .getProviderKey(provider.name, provider.providerDetails.detailType));
 
-            provider.getProviderDetails().saveProviderDetails(providerRef);
+                provider.providerDetails.saveProviderDetails(subProviderRef);
+                break;
+            default:
+                DatabaseReference providerRef = profileRef.child(User.UserNode.PROVIDERS)
+                        .child(provider.getName());
+
+                provider.providerDetails.saveProviderDetails(providerRef);
+        }
     }
 
     public Observable<List<Provider>> getProvider() {

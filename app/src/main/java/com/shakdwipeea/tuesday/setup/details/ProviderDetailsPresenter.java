@@ -6,7 +6,7 @@ import com.shakdwipeea.tuesday.data.firebase.UserService;
 /**
  * Created by ashak on 11-11-2016.
  */
-
+@Deprecated
 public class ProviderDetailsPresenter implements ProviderDetailsContract.Presenter {
     private ProviderDetailsContract.View providerDetailsView;
     private UserService userService;

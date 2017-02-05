@@ -318,9 +318,11 @@ public class ProfileViewFragment extends Fragment
     public void addProvider(List<Provider> providerList) {
         providerAdapter.setProviders(providerList);
 
-        // show first provider
-        presenter.displayProviderDetails(providerAdapter.getProvider(0));
-        providerAdapter.unSelectExcept(providerAdapter.getProvider(0));
+        if (providerList.size() > 0) {
+            // show first provider
+            presenter.displayProviderDetails(providerAdapter.getProvider(0));
+            providerAdapter.unSelectExcept(providerAdapter.getProvider(0));
+        }
     }
 
     @Override

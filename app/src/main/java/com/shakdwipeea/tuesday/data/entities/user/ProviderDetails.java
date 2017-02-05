@@ -126,6 +126,7 @@ public class ProviderDetails extends BaseObservable{
                 ", description='" + description + '\'' +
                 ", isPersonal=" + isPersonal +
                 ", type=" + type +
+                ", detailType='" + detailType + '\'' +
                 ", accessibleBy=" + accessibleBy +
                 ", requestedBy=" + requestedBy +
                 '}';
