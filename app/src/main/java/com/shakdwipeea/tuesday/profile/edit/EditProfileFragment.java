@@ -50,7 +50,7 @@ public class EditProfileFragment extends Fragment
     SingleViewAdapter<
             Provider,
             EditProfileItemViewModel,
-            ProviderDetailEditBinding> phoneAdapter, mailAdapter, providerAdapter;
+            ProviderDetailEditBinding> providerAdapter;
 
     EditProfilePresenter editProfilePresenter;
     EditProfileViewModel editProfileViewModel;
@@ -73,24 +73,15 @@ public class EditProfileFragment extends Fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile,
                 container, false);
 
-//        User user = Parcels.unwrap(getActivity().getIntent()
-//                .getParcelableExtra(ProfileViewFragment.USER_EXTRA_KEY));
-//        if (user == null) {
-//            Log.e(TAG, "onCreateView: user parcel not received ");
-//        }
-
         setHasOptionsMenu(true);
 
         editProfilePresenter = new EditProfilePresenter(this);
-
-//        displayUser(user);
 
         setupRecyclerViews();
 
         setupNameDisplay();
 
-        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter,
-                mailAdapter, phoneAdapter);
+        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter);
         binding.setVm(editProfileViewModel);
 
         profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));
@@ -147,19 +138,6 @@ public class EditProfileFragment extends Fragment
     }
 
     public void setupRecyclerViews() {
-        LinearLayoutManager phoneLM = new LinearLayoutManager(getContext());
-        phoneAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
-                (provider) -> new EditProfileItemViewModel(editProfilePresenter, provider));
-
-        binding.callDetailList.setLayoutManager(phoneLM);
-        binding.callDetailList.setAdapter(phoneAdapter);
-
-        LinearLayoutManager mailLM = new LinearLayoutManager(getContext());
-        mailAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
-                (provider) -> new EditProfileItemViewModel(editProfilePresenter, provider));
-
-        binding.emailDetailList.setLayoutManager(mailLM);
-        binding.emailDetailList.setAdapter(mailAdapter);
 
         LinearLayoutManager providerLM = new LinearLayoutManager(getContext());
         providerAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
@@ -167,7 +145,6 @@ public class EditProfileFragment extends Fragment
 
         binding.providerList.setLayoutManager(providerLM);
         binding.providerList.setAdapter(providerAdapter);
-
     }
 
     /**
@@ -296,23 +273,4 @@ public class EditProfileFragment extends Fragment
         providerAdapter.clear();
     }
 
-    @Override
-    public void addCallDetails(Provider provider) {
-        phoneAdapter.addItem(provider);
-    }
-
-    @Override
-    public void clearCallDetails() {
-        phoneAdapter.clear();
-    }
-
-    @Override
-    public void addMailDetails(Provider provider) {
-        mailAdapter.addItem(provider);
-    }
-
-    @Override
-    public void clearMailDetails() {
-        mailAdapter.clear();
-    }
 }

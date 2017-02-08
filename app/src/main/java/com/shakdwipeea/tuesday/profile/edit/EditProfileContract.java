@@ -1,10 +1,7 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
-import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.entities.user.User;
-
-import java.util.List;
 
 /**
  * Created by akash on 24/1/17.
@@ -16,12 +13,6 @@ public class EditProfileContract {
 
         void addProvider(Provider provider);
         void clearProvider();
-
-        void addCallDetails(Provider call);
-        void clearCallDetails();
-
-        void addMailDetails(Provider mail);
-        void clearMailDetails();
 
         void setProgressBar(boolean enable);
         void displayUser(User user);

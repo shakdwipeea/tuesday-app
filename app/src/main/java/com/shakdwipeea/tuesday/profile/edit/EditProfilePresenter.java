@@ -6,7 +6,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
-import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.util.List;
@@ -51,26 +50,10 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
     }
 
     private void processProviders(List<Provider> providerList) {
-        editProfileView.clearMailDetails();
-        editProfileView.clearCallDetails();
         editProfileView.clearProvider();
 
         Subscription subscription = Observable.from(providerList)
-                .filter(provider -> {
-                    switch (provider.name) {
-                        case ProviderNames.Call:
-                            editProfileView.addCallDetails(provider);
-                            return false;
-
-                        case ProviderNames.Email:
-                            editProfileView.addMailDetails(provider);
-                            return false;
-
-                        default:
-                            editProfileView.addProvider(provider);
-                            return true;
-                    }
-                })
+                .doOnNext(provider -> editProfileView.addProvider(provider))
                 .subscribe(
                         provider -> {},
                         Throwable::printStackTrace

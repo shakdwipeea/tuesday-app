@@ -10,15 +10,11 @@ import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
 import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
-import com.shakdwipeea.tuesday.setup.details.ProviderDetailItemViewModel;
 import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * Created by akash on 28/1/17.
@@ -31,22 +27,13 @@ public class EditProfileViewModel {
     private SingleViewAdapter<
             Provider,
             EditProfileItemViewModel,
-            ProviderDetailEditBinding> socialAdapter, phoneAdapter, emailAdapter;
-
-    public String emailProvider = ProviderNames.Email;
-    public String callProvider = ProviderNames.Call;
+            ProviderDetailEditBinding> socialAdapter;
 
     public EditProfileViewModel(
             Context context,
             SingleViewAdapter<Provider,
-                    EditProfileItemViewModel, ProviderDetailEditBinding> socialAdapter,
-            SingleViewAdapter<Provider,
-                    EditProfileItemViewModel, ProviderDetailEditBinding> emailAdapter,
-            SingleViewAdapter<Provider,
-                    EditProfileItemViewModel, ProviderDetailEditBinding> phoneAdapter) {
+                    EditProfileItemViewModel, ProviderDetailEditBinding> socialAdapter) {
         this.context = context;
-        this.phoneAdapter = phoneAdapter;
-        this.emailAdapter = emailAdapter;
         this.socialAdapter = socialAdapter;
     }
 
@@ -87,10 +74,18 @@ public class EditProfileViewModel {
 
     public void addPhoneOrEmailAccount(String providerName) {
         Log.d(TAG, "addPhoneOrEmailAccount: Providername " + providerName);
-        if (providerName.equals(ProviderNames.Call))
-            showDialog(ProviderNames.Call, getRemainingDetailTypes(phoneAdapter));
-        else if (providerName.equals(ProviderNames.Email))
-            showDialog(ProviderNames.Email, getRemainingDetailTypes(emailAdapter));
+        rx.Observable.from(socialAdapter.getItemList())
+                .filter(provider -> provider.name.equals(providerName))
+                .toList()
+                .map(this::getRemainingDetailTypes)
+                .subscribe(
+                        providers -> {
+                            if (providerName.equals(ProviderNames.Call))
+                                showDialog(ProviderNames.Call, providers);
+                            else if (providerName.equals(ProviderNames.Email))
+                                showDialog(ProviderNames.Email, providers);
+                        }
+                );
     }
 
     private void showDialog(String providerName, List<String> remainingDetailTypes) {
@@ -109,10 +104,24 @@ public class EditProfileViewModel {
                 .show();
     }
 
-    private List<String> getRemainingDetailTypes(SingleViewAdapter<Provider,
-            EditProfileItemViewModel, ProviderDetailEditBinding> adapter) {
-        List<Provider> itemList = adapter.getItemList();
+    private rx.Observable<List<Provider>> getProvidersWithName(List<Provider> providers, String providerName) {
+        return rx.Observable.from(providers)
+                .filter(provider -> provider.name.equals(providerName))
+                .toList();
+    }
 
+    /**
+     * Given a list of providers of same type, it returns which detail type can be used.
+     * This is to be used only with Call and Email Providers.
+     * For example, if we have Call_Primary and Call_Work in firebase,
+     * then when we reach here We will have two providers with same names Call
+     * having different detailType. So passing these two providers as itemList
+     * will return the missing detailType. i don't remember the name.
+     *
+     * @param itemList Provider list of same name
+     * @return Remaining detailTypes
+     */
+    private List<String> getRemainingDetailTypes(List<Provider> itemList) {
         List<String> detailTypes = ProviderDetails.DetailType.getDetailTypes();
 
         for (Provider p: itemList) {
@@ -132,11 +141,11 @@ public class EditProfileViewModel {
         Log.d(TAG, "addAccount: pToAdd " + pToAdd);
         switch (providerName) {
             case ProviderNames.Call:
-                phoneAdapter.addItem(pToAdd);
+//                phoneAdapter.addItem(pToAdd);
                 break;
 
             case ProviderNames.Email:
-                emailAdapter.addItem(pToAdd);
+//                emailAdapter.addItem(pToAdd);
                 break;
 
             default:
@@ -144,6 +153,12 @@ public class EditProfileViewModel {
         }
     }
 
+    /**
+     * used for phone and email in which case the detail type is required
+     *
+     * @param providerName Provider to change
+     * @param detailType Detail type
+     */
     private void addAccount(String providerName, String detailType) {
         Provider provider = ProviderService.getInstance()
                 .getProviderHashMap().get(providerName);
@@ -153,11 +168,11 @@ public class EditProfileViewModel {
         Log.d(TAG, "addAccount: pToAdd " + pToAdd);
         switch (providerName) {
             case ProviderNames.Call:
-                phoneAdapter.addItem(pToAdd);
+//                phoneAdapter.addItem(pToAdd);
                 break;
 
             case ProviderNames.Email:
-                emailAdapter.addItem(pToAdd);
+//                emailAdapter.addItem(pToAdd);
                 break;
 
             default:
