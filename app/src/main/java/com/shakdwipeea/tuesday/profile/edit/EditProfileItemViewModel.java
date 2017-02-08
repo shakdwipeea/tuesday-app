@@ -1,23 +1,18 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.jakewharton.rxbinding.widget.RxTextSwitcher;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
-import com.shakdwipeea.tuesday.util.Util;
 import com.shakdwipeea.tuesday.util.adapter.ItemViewModel;
-import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,27 +152,18 @@ public class EditProfileItemViewModel
                 });
 
         // Attaching listener to the text field to save all the details
-        binding.detailContent.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d(TAG, "afterTextChanged: For provider and string " + provider + s);
-                ProviderDetails newProvider = updateProviderDetailsByType(
-                        provider.providerDetails, s.toString());
-                binding.detailTypeSpinner.getSelectedItem();
-                provider.setProviderDetails(newProvider);
-                itemPresenter.saveDetails(provider);
-            }
-        });
+        RxTextView.textChanges(binding.detailContent)
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .doOnNext(charSequence -> {
+                    Log.d(TAG, "bindDetail: Text changed for provider " + provider +
+                            " new text -> " + charSequence);
+                    ProviderDetails newProvider = updateProviderDetailsByType(
+                            provider.providerDetails, charSequence.toString());
+                    binding.detailTypeSpinner.getSelectedItem();
+                    provider.setProviderDetails(newProvider);
+                    itemPresenter.saveDetails(provider);
+                })
+                .subscribe();
 
 
         //Attaching listener to the private field

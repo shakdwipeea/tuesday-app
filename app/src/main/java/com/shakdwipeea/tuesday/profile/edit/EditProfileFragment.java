@@ -9,12 +9,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,13 +29,9 @@ import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
 import com.shakdwipeea.tuesday.picture.ProfilePicturePresenter;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.picture.ProfilePictureView;
-import com.shakdwipeea.tuesday.profile.view.ProfileContract;
-import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
 import com.shakdwipeea.tuesday.util.Util;
 import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 import com.squareup.picasso.Picasso;
-
-import org.parceler.Parcels;
 
 import java.util.concurrent.TimeUnit;
 
