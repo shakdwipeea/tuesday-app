@@ -63,7 +63,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:layout_width="0dp"
-                android:text="@={vm.getDetail(itemDetail)}"
+                android:text="@{vm.getDetail(itemDetail)}"
                 android:layout_height="wrap_content" />
 
             <CheckBox
