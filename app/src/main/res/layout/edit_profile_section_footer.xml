@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button
+        android:id="@+id/add_call_item"
+        android:background="@android:color/transparent"
+        android:text="@string/add_another_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</layout>

@@ -10,7 +10,6 @@
             name="itemDetail"
             type="com.shakdwipeea.tuesday.data.entities.user.ProviderDetails" />
 
-
         <variable
             name="vm"
             type="com.shakdwipeea.tuesday.profile.edit.EditProfileItemViewModel" />
@@ -44,7 +43,16 @@
                 android:layout_weight="4"
                 android:layout_width="0dp"
                 android:textSize="12sp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/social_detail_type"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                />
 
             <EditText
                 android:hint="@string/detail_label"
@@ -55,6 +63,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:layout_width="0dp"
+                android:text="@={vm.getDetail(itemDetail)}"
                 android:layout_height="wrap_content" />
 
             <CheckBox

@@ -9,8 +9,6 @@ import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.data.providers.ProviderService;
-import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
-import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,17 +22,15 @@ public class EditProfileViewModel {
     private static final String TAG = "EditProfileViewModel";
 
     private Context context;
-    private SingleViewAdapter<
-            Provider,
-            EditProfileItemViewModel,
-            ProviderDetailEditBinding> socialAdapter;
+    private EditProfileAdapter socialAdapter;
+    private EditProfilePresenter editProfilePresenter;
 
     public EditProfileViewModel(
             Context context,
-            SingleViewAdapter<Provider,
-                    EditProfileItemViewModel, ProviderDetailEditBinding> socialAdapter) {
+            EditProfileAdapter socialAdapter, EditProfilePresenter editProfilePresenter) {
         this.context = context;
         this.socialAdapter = socialAdapter;
+        this.editProfilePresenter = editProfilePresenter;
     }
 
     /**
@@ -59,7 +55,7 @@ public class EditProfileViewModel {
     public void addProviderAccount() {
         new MaterialDialog.Builder(context)
                 .title(R.string.select_provider_label)
-                .items(newProviderList(socialAdapter.getItemList()))
+                .items(newProviderList(socialAdapter.getSocialList()))
                 .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
                     if (text != null) {
                         addAccount(text.toString());
@@ -74,7 +70,8 @@ public class EditProfileViewModel {
 
     public void addPhoneOrEmailAccount(String providerName) {
         Log.d(TAG, "addPhoneOrEmailAccount: Providername " + providerName);
-        rx.Observable.from(socialAdapter.getItemList())
+        // todo get separate list for phone and email
+        rx.Observable.from(socialAdapter.getCallList())
                 .filter(provider -> provider.name.equals(providerName))
                 .toList()
                 .map(this::getRemainingDetailTypes)
@@ -138,19 +135,10 @@ public class EditProfileViewModel {
                 .getProviderHashMap().get(providerName);
 
         Provider pToAdd = new Provider(provider);
+
         Log.d(TAG, "addAccount: pToAdd " + pToAdd);
-        switch (providerName) {
-            case ProviderNames.Call:
-//                phoneAdapter.addItem(pToAdd);
-                break;
+        editProfilePresenter.saveDetails(pToAdd);
 
-            case ProviderNames.Email:
-//                emailAdapter.addItem(pToAdd);
-                break;
-
-            default:
-                socialAdapter.addItem(pToAdd);
-        }
     }
 
     /**
@@ -165,18 +153,8 @@ public class EditProfileViewModel {
 
         Provider pToAdd = new Provider(provider);
         pToAdd.providerDetails.detailType = detailType;
+
         Log.d(TAG, "addAccount: pToAdd " + pToAdd);
-        switch (providerName) {
-            case ProviderNames.Call:
-//                phoneAdapter.addItem(pToAdd);
-                break;
-
-            case ProviderNames.Email:
-//                emailAdapter.addItem(pToAdd);
-                break;
-
-            default:
-                socialAdapter.addItem(pToAdd);
-        }
+        editProfilePresenter.saveDetails(pToAdd);
     }
 }

@@ -1,48 +1,22 @@
 package com.shakdwipeea.tuesday.auth;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
-import android.accounts.AccountManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
+import android.text.TextUtils;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.phone.PhoneInputFragment;
-import com.shakdwipeea.tuesday.data.Preferences;
-import com.shakdwipeea.tuesday.data.contacts.sync.ContactSyncAdapter;
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.databinding.ActivityAuthBinding;
 import com.shakdwipeea.tuesday.home.HomeActivity;
-import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import io.fabric.sdk.android.Fabric;
 
 public class AuthActivity extends AppCompatActivity implements AuthContract.View {
     private static final String TAG = "AuthActivity";
@@ -108,15 +82,19 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.View
 //            Bundle bundle = new Bundle();
 //            bundle.putString(AccountManager.KEY_ACCOUNT_NAME, user.getDisplayName());
 //            bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, SyncUtils.ACCOUNT_TYPE);
-//            setAccountAuthenticatorResult(bundle);
-
+//            setAccountAuthenticatorResult(bundle);,
             finish();
         }
     }
 
     @Override
     public void setupAccount(FirebaseUser user) {
-        Account account = new Account(user.getDisplayName(), SyncUtils.ACCOUNT_TYPE);
+        String accountName = user.getDisplayName();
+        if (TextUtils.isEmpty(accountName)) {
+            accountName = "Tuesday";
+        }
+
+        Account account = new Account(accountName, SyncUtils.ACCOUNT_TYPE);
         SyncUtils.createSyncAccount(context, account);
     }
 }

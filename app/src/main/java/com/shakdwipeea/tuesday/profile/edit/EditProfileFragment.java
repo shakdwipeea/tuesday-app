@@ -25,12 +25,10 @@ import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentEditProfileBinding;
-import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
 import com.shakdwipeea.tuesday.picture.ProfilePicturePresenter;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.picture.ProfilePictureView;
 import com.shakdwipeea.tuesday.util.Util;
-import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.TimeUnit;
@@ -47,10 +45,7 @@ public class EditProfileFragment extends Fragment
 
     FragmentEditProfileBinding binding;
 
-    SingleViewAdapter<
-            Provider,
-            EditProfileItemViewModel,
-            ProviderDetailEditBinding> providerAdapter;
+    EditProfileAdapter providerAdapter;
 
     EditProfilePresenter editProfilePresenter;
     EditProfileViewModel editProfileViewModel;
@@ -81,7 +76,8 @@ public class EditProfileFragment extends Fragment
 
         setupNameDisplay();
 
-        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter);
+        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter,
+                editProfilePresenter);
         binding.setVm(editProfileViewModel);
 
         profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));
@@ -140,8 +136,7 @@ public class EditProfileFragment extends Fragment
     public void setupRecyclerViews() {
 
         LinearLayoutManager providerLM = new LinearLayoutManager(getContext());
-        providerAdapter = new SingleViewAdapter<>(R.layout.provider_detail_edit,
-                (provider) -> new EditProfileItemViewModel(editProfilePresenter, provider));
+        providerAdapter = new EditProfileAdapter(getContext(), editProfilePresenter);
 
         binding.providerList.setLayoutManager(providerLM);
         binding.providerList.setAdapter(providerAdapter);
@@ -265,7 +260,7 @@ public class EditProfileFragment extends Fragment
 
     @Override
     public void addProvider(Provider provider) {
-        providerAdapter.addItem(provider);
+        providerAdapter.addProvider(provider);
     }
 
     @Override
