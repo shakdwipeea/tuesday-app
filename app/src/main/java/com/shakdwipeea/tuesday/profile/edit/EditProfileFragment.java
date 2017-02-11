@@ -33,6 +33,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.TimeUnit;
 
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import rx.Observable;
 import rx.Subscription;
 
@@ -134,6 +135,7 @@ public class EditProfileFragment extends Fragment
 
         binding.providerList.setLayoutManager(providerLM);
         binding.providerList.setAdapter(providerAdapter);
+        binding.providerList.setItemAnimator(new SlideInUpAnimator());
     }
 
     /**

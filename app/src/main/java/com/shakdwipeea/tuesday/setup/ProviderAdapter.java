@@ -36,11 +36,6 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
         this.changeListener = changeListener;
     }
 
-    public void setProviders(List<Provider> providers) {
-        this.providers = providers;
-        notifyDataSetChanged();
-    }
-
     public void addProvider(Provider provider) {
         this.providers.add(provider);
         notifyDataSetChanged();
@@ -50,11 +45,16 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
         return providers;
     }
 
+    public void setProviders(List<Provider> providers) {
+        this.providers = providers;
+        notifyDataSetChanged();
+    }
+
     public Provider getProvider(int index) {
         return providers.get(index);
     }
 
-    public void unSelectAll() {
+    private void unSelectAll() {
         for (Provider p: providers) {
             p.setSelected(false);
         }
@@ -63,6 +63,7 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
     public void unSelectExcept(Provider provider) {
         unSelectAll();
         provider.setSelected(true);
+        notifyDataSetChanged();
     }
 
     @Override

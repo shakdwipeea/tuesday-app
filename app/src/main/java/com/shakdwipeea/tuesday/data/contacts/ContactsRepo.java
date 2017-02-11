@@ -101,18 +101,33 @@ public class ContactsRepo {
             return null;
         }
 
+        Log.d(TAG, "getContactsObservable: Creating obeserva");
+
         // TODO: 08-11-2016 prevent flickering of contacts
         return Observable
                 .create(subscriber -> {
+
                     String[] projection = new String[]{
                             CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER,
                             ContactsContract.RawContacts.ACCOUNT_TYPE};
 
-                    Cursor cursor = contentResolver.query(QUERY_URI, projection,
-                            HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
+                    String[] phoneBookProjection = new String[]{
+                            CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER};
+
+                    Cursor cursor;
+                    try {
+                        cursor = contentResolver.query(QUERY_URI, projection,
+                                HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
+                    } catch (IllegalArgumentException e) {
+                        cursor = contentResolver.query(QUERY_URI, phoneBookProjection,
+                                HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
+                    }
+
+
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
                             Contact contact = getContact(cursor);
+                            Log.d(TAG, "getContactsObservable: contact " + contact);
                             subscriber.onNext(contact);
                         }
 
@@ -138,8 +153,14 @@ public class ContactsRepo {
         contact.uriString = intentUriString;
         contact.phone = new ArrayList<>();
 
-        String accountType = cursor.getString(
-                cursor.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_TYPE));
+        String accountType;
+        try {
+            accountType = cursor.getString(
+                    cursor.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_TYPE));
+        } catch (Exception e) {
+            accountType = "";
+        }
+
         if (accountType.equals(SyncUtils.ACCOUNT_TYPE)) {
             contact.isTuesday = true;
         }

@@ -2,6 +2,7 @@ package com.shakdwipeea.tuesday.util.perm;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -11,7 +12,6 @@ import android.view.View;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Created by ashak on 18-11-2016.
@@ -49,12 +49,19 @@ public class PermViewUtil {
                                              ActionInterface actionInterface) {
         int reqCode = new Random().nextInt(100);
 
-        if (ContextCompat.checkSelfPermission(context,
-                permissionToCheck) != PackageManager.PERMISSION_GRANTED) {
-            pendingActionMap.append(reqCode, actionInterface);
-            permissionInterface.requestPermissions(permissions, reqCode);
-        } else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            Log.d(TAG, "performActionWithPermissions: Performing action directly, api less than 23");
             actionInterface.performAction();
+        } else {
+            if (ContextCompat.checkSelfPermission(context,
+                    permissionToCheck) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "performActionWithPermissions: will be performed later");
+                pendingActionMap.append(reqCode, actionInterface);
+                permissionInterface.requestPermissions(permissions, reqCode);
+            } else {
+                Log.d(TAG, "performActionWithPermissions: Performing now");
+                actionInterface.performAction();
+            }
         }
     }
 

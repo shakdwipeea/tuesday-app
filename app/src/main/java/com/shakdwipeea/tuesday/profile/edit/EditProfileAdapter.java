@@ -3,6 +3,7 @@ package com.shakdwipeea.tuesday.profile.edit;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -215,12 +216,15 @@ class EditProfileAdapter
         switch (section) {
             case SECTION_CALL: // Call section
                 provider = callList.get(indexPosition);
+                binding.detailContent.setInputType(InputType.TYPE_CLASS_PHONE);
                 break;
             case SECTION_EMAIL: // Mail section
                 provider = mailList.get(indexPosition);
+                binding.detailContent.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 break;
             default:
                 provider = socialList.get(indexPosition);
+                binding.detailContent.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         }
 
         holder.getBinding().setItemDetail(provider.getProviderDetails());
@@ -269,14 +273,10 @@ class EditProfileAdapter
         }
 
         private void bindListeners() {
-            Log.e(TAG, "bindListeners: " + binding + " " + provider);
-
             // Attaching listener to the text field to save all the details
             RxTextView.textChanges(binding.detailContent)
                     .debounce(500, TimeUnit.MILLISECONDS)
                     .doOnNext(charSequence -> {
-                        Log.e(TAG, "bindListeners: Text changed for provider " + provider +
-                                " new text -> " + charSequence);
                         ProviderDetails newProvider = updateProviderDetailsByType(
                                 provider.providerDetails, charSequence.toString());
                         provider.setProviderDetails(newProvider);
@@ -293,7 +293,6 @@ class EditProfileAdapter
 
             //Attach listener for  delete
             binding.detailDelete.setOnClickListener(v -> {
-                Log.d(TAG, "bindListeners: Going to delete provider " + provider);
                 editProfilePresenter.deleteDetail(provider);
             });
         }
