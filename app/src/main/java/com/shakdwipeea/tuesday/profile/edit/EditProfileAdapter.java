@@ -9,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.providers.ProviderNames;
+import com.shakdwipeea.tuesday.data.providers.ProviderService;
 import com.shakdwipeea.tuesday.databinding.EditProfileSectionFooterBinding;
 import com.shakdwipeea.tuesday.databinding.EditProfileSectionHeaderBinding;
 import com.shakdwipeea.tuesday.databinding.ProviderDetailEditBinding;
@@ -28,23 +30,16 @@ import java.util.concurrent.TimeUnit;
  * Created by akash on 9/2/17.
  */
 
-// TODO: 9/2/17 java.lang.IndexOutOfBoundsException: Inconsistency detected.
-// Invalid view holder adapter positionViewHolder{359cc82d position=15 id=-1, oldPos=4, pLpos:4
-// scrap [attachedScrap] tmpDetached no parent}
-
 class EditProfileAdapter
         extends SectionedRecyclerViewAdapter<EditProfileAdapter.EditProfileHeaderViewHolder,
         EditProfileAdapter.ProfileItemViewHolder, EditProfileAdapter.EditProfileFooterViewHolder> {
     private static final String TAG = "EditProfileAdapter";
-
-    private List<Provider> callList;
-    private List<Provider> mailList;
-    private List<Provider> socialList;
-
     private static final int SECTION_CALL = 0;
     private static final int SECTION_EMAIL = 1;
     private static final int SECTION_SOCIAL = 2;
-
+    private List<Provider> callList;
+    private List<Provider> mailList;
+    private List<Provider> socialList;
     private Context context;
     private EditProfilePresenter editProfilePresenter;
 
@@ -147,7 +142,8 @@ class EditProfileAdapter
      * @param viewType
      */
     @Override
-    protected EditProfileFooterViewHolder onCreateSectionFooterViewHolder(ViewGroup parent, int viewType) {
+    protected EditProfileFooterViewHolder onCreateSectionFooterViewHolder(ViewGroup parent,
+                                                                          int viewType) {
         EditProfileSectionFooterBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.edit_profile_section_footer, parent, false);
@@ -166,6 +162,7 @@ class EditProfileAdapter
         ProviderDetailEditBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.provider_detail_edit,
                         parent, false);
+
         return new ProfileItemViewHolder(binding);
     }
 
@@ -198,7 +195,7 @@ class EditProfileAdapter
      */
     @Override
     protected void onBindSectionFooterViewHolder(EditProfileFooterViewHolder holder, int section) {
-        // TODO: 9/2/17 add listeners here
+        holder.setSection(section);
     }
 
 
@@ -210,19 +207,19 @@ class EditProfileAdapter
      * @param position
      */
     @Override
-    protected void onBindItemViewHolder(ProfileItemViewHolder holder, int section, int position) {
+    protected void onBindItemViewHolder(ProfileItemViewHolder holder, int section, int indexPosition) {
         ProviderDetailEditBinding binding = holder.getBinding();
         Provider provider;
 
         switch (section) {
             case SECTION_CALL: // Call section
-                provider = callList.get(position);
+                provider = callList.get(indexPosition);
                 break;
             case SECTION_EMAIL: // Mail section
-                provider = mailList.get(position);
+                provider = mailList.get(indexPosition);
                 break;
             default:
-                provider = socialList.get(position);
+                provider = socialList.get(indexPosition);
         }
 
         holder.getBinding().setItemDetail(provider.getProviderDetails());
@@ -234,92 +231,7 @@ class EditProfileAdapter
             setSpinnerSelection(binding, provider.getName());
         }
 
-        bindListeners(binding, provider);
-    }
-
-
-    private void bindListeners(ProviderDetailEditBinding binding, Provider provider) {
-        Log.e(TAG, "bindListeners: " + binding + " " + provider);
-
-        // We are attaching a listener to Spinner so that we save every change
-        binding.detailTypeSpinner
-                .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position,
-                                               long id) {
-                        Log.d(TAG, "onItemSelected: Position " + position);
-
-                        binding.detailTypeSpinner.setSelection(position);
-
-                        ProviderDetails item = provider.getProviderDetails();
-
-                        String[] detailType = view.getContext()
-                                .getResources().getStringArray(R.array.detail_types);
-                        List<String> detailList = Arrays.asList(detailType);
-
-                        String detailSelected = detailList.get(position);
-
-                        item.setDetailType(detailSelected);
-                        provider.setProviderDetails(item);
-
-                        editProfilePresenter.saveDetails(provider);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // Nothing selected then what?
-                    }
-                });
-
-        // Attaching listener to the text field to save all the details
-        RxTextView.textChanges(binding.detailContent)
-                .debounce(300, TimeUnit.MILLISECONDS)
-                .doOnNext(charSequence -> {
-                    Log.e(TAG, "bindListeners: Text changed for provider " + provider +
-                            " new text -> " + charSequence);
-                    ProviderDetails newProvider = updateProviderDetailsByType(
-                            provider.providerDetails, charSequence.toString());
-                    binding.detailTypeSpinner.getSelectedItem();
-                    provider.setProviderDetails(newProvider);
-                    editProfilePresenter.saveDetails(provider);
-                })
-                .subscribe();
-
-
-        //Attaching listener to the private field
-        binding.detailPrivateCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            provider.providerDetails.isPersonal = isChecked;
-            editProfilePresenter.saveDetails(provider);
-        });
-
-        //Attach listener for  delete
-        binding.detailDelete.setOnClickListener(v -> {
-            Log.d(TAG, "bindListeners: Going to delete provider " + provider);
-            editProfilePresenter.deleteDetail(provider);
-        });
-    }
-
-    /**
-     * Updates the apt field in ProviderDetail
-     * @param oldProvider ProviderDetail to update
-     * @param updatedTypeValue New value of the identification type
-     * @return Updated ProviderDetails
-     */
-    private ProviderDetails updateProviderDetailsByType(ProviderDetails oldProvider,
-                                                        String updatedTypeValue) {
-        switch (oldProvider.getType()) {
-            case PHONE_NUMBER_VERIFICATION:
-            case PHONE_NUMBER_NO_VERIFICATION:
-                oldProvider.setPhoneNumber(updatedTypeValue);
-                return oldProvider;
-
-            case USERNAME_NO_VERIFICATION:
-            case API_VERIFICATION:
-                oldProvider.setUsername(updatedTypeValue);
-                return oldProvider;
-
-            default: return oldProvider;
-        }
+        holder.updateProvider(provider);
     }
 
     /**
@@ -362,21 +274,6 @@ class EditProfileAdapter
         }
     }
 
-    static class ProfileItemViewHolder extends RecyclerView.ViewHolder {
-
-        private ProviderDetailEditBinding binding;
-
-        ProfileItemViewHolder(ProviderDetailEditBinding itemViewBinding) {
-            super(itemViewBinding.getRoot());
-
-            this.binding = itemViewBinding;
-        }
-
-        public ProviderDetailEditBinding getBinding() {
-            return binding;
-        }
-    }
-
     static class EditProfileHeaderViewHolder extends RecyclerView.ViewHolder {
         private EditProfileSectionHeaderBinding binding;
 
@@ -390,16 +287,276 @@ class EditProfileAdapter
         }
     }
 
-    static class EditProfileFooterViewHolder extends RecyclerView.ViewHolder {
+    class ProfileItemViewHolder extends RecyclerView.ViewHolder {
+
+        private ProviderDetailEditBinding binding;
+        private Provider provider;
+
+        ProfileItemViewHolder(ProviderDetailEditBinding itemViewBinding) {
+            super(itemViewBinding.getRoot());
+
+            this.binding = itemViewBinding;
+            bindListeners();
+        }
+
+        public ProviderDetailEditBinding getBinding() {
+            return binding;
+        }
+
+        public void updateProvider(Provider provider) {
+            this.provider = provider;
+        }
+
+        private void bindListeners() {
+            Log.e(TAG, "bindListeners: " + binding + " " + provider);
+
+            // We are attaching a listener to Spinner so that we save every change
+            binding.detailTypeSpinner
+                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                                   long id) {
+                            Log.d(TAG, "onItemSelected: Position " + position);
+
+                            binding.detailTypeSpinner.setSelection(position);
+
+                            ProviderDetails item = provider.getProviderDetails();
+
+                            String[] detailType = view.getContext()
+                                    .getResources().getStringArray(R.array.detail_types);
+                            List<String> detailList = Arrays.asList(detailType);
+
+                            String detailSelected = detailList.get(position);
+
+                            item.setDetailType(detailSelected);
+                            provider.setProviderDetails(item);
+
+                            editProfilePresenter.saveDetails(provider);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            // Nothing selected then what?
+                        }
+                    });
+
+            // Attaching listener to the text field to save all the details
+            RxTextView.textChanges(binding.detailContent)
+                    .debounce(500, TimeUnit.MILLISECONDS)
+                    .doOnNext(charSequence -> {
+                        Log.e(TAG, "bindListeners: Text changed for provider " + provider +
+                                " new text -> " + charSequence);
+                        ProviderDetails newProvider = updateProviderDetailsByType(
+                                provider.providerDetails, charSequence.toString());
+                        binding.detailTypeSpinner.getSelectedItem();
+                        provider.setProviderDetails(newProvider);
+                        editProfilePresenter.saveDetails(provider);
+                    })
+                    .subscribe();
+
+
+            //Attaching listener to the private field
+            binding.detailPrivateCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                provider.providerDetails.isPersonal = isChecked;
+                editProfilePresenter.saveDetails(provider);
+            });
+
+            //Attach listener for  delete
+            binding.detailDelete.setOnClickListener(v -> {
+                Log.d(TAG, "bindListeners: Going to delete provider " + provider);
+                editProfilePresenter.deleteDetail(provider);
+            });
+        }
+
+        /**
+         * Updates the apt field in ProviderDetail
+         *
+         * @param oldProvider      ProviderDetail to update
+         * @param updatedTypeValue New value of the identification type
+         * @return Updated ProviderDetails
+         */
+        private ProviderDetails updateProviderDetailsByType(ProviderDetails oldProvider,
+                                                            String updatedTypeValue) {
+            switch (oldProvider.getType()) {
+                case PHONE_NUMBER_VERIFICATION:
+                case PHONE_NUMBER_NO_VERIFICATION:
+                    oldProvider.setPhoneNumber(updatedTypeValue);
+                    return oldProvider;
+
+                case USERNAME_NO_VERIFICATION:
+                case API_VERIFICATION:
+                    oldProvider.setUsername(updatedTypeValue);
+                    return oldProvider;
+
+                default:
+                    return oldProvider;
+            }
+        }
+    }
+
+    class EditProfileFooterViewHolder extends RecyclerView.ViewHolder {
+        private int section;
+
         private EditProfileSectionFooterBinding footerBinding;
 
         public EditProfileFooterViewHolder(EditProfileSectionFooterBinding footerBinding) {
             super(footerBinding.getRoot());
             this.footerBinding = footerBinding;
+
+            footerBinding.addCallItem.setOnClickListener(v -> {
+                if (section == 0) {
+                    addPhoneAccount(EditProfileAdapter.this.callList);
+                } else if (section == 1) {
+                    addMailAccount(EditProfileAdapter.this.mailList);
+                } else {
+                    addProviderAccount(EditProfileAdapter.this.socialList);
+                }
+            });
+        }
+
+        public void setSection(int section) {
+            this.section = section;
         }
 
         public EditProfileSectionFooterBinding getFooterBinding() {
             return footerBinding;
         }
+
+        /**
+         * Get providers which have not already been added
+         *
+         * @param addedProviders Providers which have been already added
+         * @return List of Provider Names which have not been added
+         */
+        private List<String> newProviderList(List<Provider> addedProviders) {
+            ArrayList<String> providerNames = new ArrayList<>(Arrays.asList(ProviderNames.getAll()));
+
+            for (Provider provider :
+                    addedProviders) {
+                providerNames.remove(provider.getName());
+            }
+
+            providerNames.remove(ProviderNames.Call);
+            providerNames.remove(ProviderNames.Email);
+
+            return providerNames;
+        }
+
+        public void addProviderAccount(List<Provider> socialList) {
+            new MaterialDialog.Builder(context)
+                    .title(R.string.select_provider_label)
+                    .items(newProviderList(socialList))
+                    .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
+                        if (text != null) {
+                            addAccount(text.toString());
+                            return true;
+                        }
+
+                        return false;
+                    })
+                    .positiveText(R.string.choose)
+                    .show();
+        }
+
+        public void addPhoneAccount(List<Provider> callList) {
+            String providerName = ProviderNames.Call;
+            Log.d(TAG, "addPhoneOrEmailAccount: Providername " + providerName);
+            rx.Observable.from(callList)
+                    .filter(provider -> provider.name.equals(providerName))
+                    .toList()
+                    .map(this::getRemainingDetailTypes)
+                    .subscribe(
+                            providers -> {
+                                showDialog(ProviderNames.Call, providers);
+                            }
+                    );
+        }
+
+        public void addMailAccount(List<Provider> mailList) {
+            String providerName = ProviderNames.Email;
+            Log.d(TAG, "addPhoneOrEmailAccount: Providername " + providerName);
+            rx.Observable.from(mailList)
+                    .filter(provider -> provider.name.equals(providerName))
+                    .toList()
+                    .map(this::getRemainingDetailTypes)
+                    .subscribe(
+                            providers -> {
+                                showDialog(ProviderNames.Email, providers);
+                            }
+                    );
+        }
+
+        private void showDialog(String providerName, List<String> remainingDetailTypes) {
+            new MaterialDialog.Builder(context)
+                    .title("Choose a detail type")
+                    .items(remainingDetailTypes)
+                    .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
+                        if (text != null && remainingDetailTypes.size() > 0) {
+                            addAccount(providerName, text.toString());
+                            return true;
+                        }
+
+                        return false;
+                    })
+                    .positiveText(R.string.choose)
+                    .show();
+        }
+
+        private rx.Observable<List<Provider>> getProvidersWithName(List<Provider> providers, String providerName) {
+            return rx.Observable.from(providers)
+                    .filter(provider -> provider.name.equals(providerName))
+                    .toList();
+        }
+
+        /**
+         * Given a list of providers of same type, it returns which detail type can be used.
+         * This is to be used only with Call and Email Providers.
+         * For example, if we have Call_Primary and Call_Work in firebase,
+         * then when we reach here We will have two providers with same names Call
+         * having different detailType. So passing these two providers as itemList
+         * will return the missing detailType. i don't remember the name.
+         *
+         * @param itemList Provider list of same name
+         * @return Remaining detailTypes
+         */
+        private List<String> getRemainingDetailTypes(List<Provider> itemList) {
+            List<String> detailTypes = ProviderDetails.DetailType.getDetailTypes();
+
+            for (Provider p : itemList) {
+                detailTypes.remove(p.providerDetails.detailType);
+            }
+
+            return detailTypes;
+        }
+
+        private void addAccount(String providerName) {
+            Log.d(TAG, "addAccount: Provider Name is " + providerName);
+
+            Provider provider = ProviderService.getInstance()
+                    .getProviderHashMap().get(providerName);
+
+            Provider pToAdd = new Provider(provider);
+
+            Log.d(TAG, "addAccount: pToAdd " + pToAdd);
+//            editProfilePresenter.saveDetails(pToAdd);
+            EditProfileAdapter.this.addProvider(pToAdd);
+        }
+
+        /**
+         * used for phone and email in which case the detail type is required
+         *
+         * @param providerName Provider to change
+         * @param detailType   Detail type
+         */
+        private void addAccount(String providerName, String detailType) {
+            Provider provider = ProviderService.getInstance()
+                    .getProviderHashMap().get(providerName);
+
+            Provider pToAdd = new Provider(provider);
+            pToAdd.providerDetails.detailType = detailType;
+
+            EditProfileAdapter.this.addProvider(pToAdd);
+        }
     }
+
 }

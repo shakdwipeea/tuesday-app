@@ -1,10 +1,5 @@
 package com.shakdwipeea.tuesday.data.entities.user;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-
-import com.shakdwipeea.tuesday.BR;
-
 import org.parceler.Parcel;
 
 /**
@@ -12,7 +7,7 @@ import org.parceler.Parcel;
  */
 
 @Parcel
-public class Provider extends BaseObservable{
+public class Provider {
     public String name;
     public String subName;
     public int icon;
@@ -60,14 +55,12 @@ public class Provider extends BaseObservable{
         this.icon = icon;
     }
 
-    @Bindable
     public boolean isSelected() {
         return selected;
     }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        notifyPropertyChanged(BR.selected);
     }
 
     @Override

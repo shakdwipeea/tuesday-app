@@ -19,7 +19,8 @@ public class EditProfileItemViewModel {
         this.provider = provider;
     }
 
-    public String getDetail(ProviderDetails providerDetails) {
+    public String getDetail() {
+        ProviderDetails providerDetails = provider.providerDetails;
         switch (providerDetails.getType()) {
             case PHONE_NUMBER_VERIFICATION:
             case PHONE_NUMBER_NO_VERIFICATION:

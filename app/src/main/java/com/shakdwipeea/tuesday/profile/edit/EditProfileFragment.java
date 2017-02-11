@@ -48,7 +48,6 @@ public class EditProfileFragment extends Fragment
     EditProfileAdapter providerAdapter;
 
     EditProfilePresenter editProfilePresenter;
-    EditProfileViewModel editProfileViewModel;
 
     ProfilePictureUtil profilePictureUtil;
 
@@ -72,18 +71,14 @@ public class EditProfileFragment extends Fragment
 
         editProfilePresenter = new EditProfilePresenter(this);
 
-        setupRecyclerViews();
-
         setupNameDisplay();
-
-        editProfileViewModel = new EditProfileViewModel(getContext(), providerAdapter,
-                editProfilePresenter);
-        binding.setVm(editProfileViewModel);
 
         profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));
         binding.cameraIcon.setOnClickListener(v -> profilePictureUtil.openImageMenu());
 
         progressDialog = Util.createProgressDialog(getContext()).build();
+
+        setupRecyclerViews();
 
         return binding.getRoot();
     }
@@ -134,7 +129,6 @@ public class EditProfileFragment extends Fragment
     }
 
     public void setupRecyclerViews() {
-
         LinearLayoutManager providerLM = new LinearLayoutManager(getContext());
         providerAdapter = new EditProfileAdapter(getContext(), editProfilePresenter);
 

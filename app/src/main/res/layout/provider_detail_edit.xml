@@ -17,11 +17,11 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:layout_margin="8dp"
-        android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <!--<TextView-->
             <!--tools:text="Phone"-->
@@ -33,54 +33,54 @@
             <!--android:layout_height="wrap_content" />-->
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/detail_type_spinner"
-                android:entries="@array/detail_types"
-                android:layout_weight="4"
                 android:layout_width="0dp"
-                android:textSize="12sp"
                 android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:entries="@array/detail_types"
+                android:textSize="12sp"
                 android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/social_detail_type"
                 android:layout_width="0dp"
-                android:layout_weight="4"
                 android:layout_height="wrap_content"
+                android:layout_weight="4"
                 android:textSize="12sp"
                 />
 
             <EditText
-                android:hint="@string/detail_label"
                 android:id="@+id/detail_content"
-                tools:text="ashakdwipeea@gmail.com"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:textSize="14sp"
+                android:hint="@string/detail_label"
                 android:inputType="text"
                 android:maxLines="1"
-                android:layout_width="0dp"
-                android:text="@{vm.getDetail(itemDetail)}"
-                android:layout_height="wrap_content" />
+                android:text="@{vm.getDetail()}"
+                android:textSize="14sp"
+                tools:text="ashakdwipeea@gmail.com" />
 
             <CheckBox
                 android:id="@+id/detail_private_check"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:checked="@{itemDetail.isPersonal}"
-                android:text="Private"
-                android:layout_height="wrap_content" />
+                android:text="Private" />
 
             <ImageView
                 android:id="@+id/detail_delete"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_clear_black_24dp"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_clear_black_24dp" />
 
         </LinearLayout>
 
