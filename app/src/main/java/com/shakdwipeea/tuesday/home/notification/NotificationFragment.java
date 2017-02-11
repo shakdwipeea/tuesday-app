@@ -75,10 +75,14 @@ public class NotificationFragment extends Fragment implements NotificationContra
                         switch (tab.getPosition()) {
                             case 0:
                                 binding.notificationList.setAdapter(requestAdapter);
+                                binding.title.setText(R.string.request_title);
+                                binding.description.setText(R.string.request_description);
                                // requestAdapter.notifyDataSetChanged();
                                 break;
                             case 1:
                                 binding.notificationList.setAdapter(grantedAdapter);
+                                binding.title.setText(R.string.view_title);
+                                binding.description.setText(R.string.view_description);
                                 //grantedAdapter.notifyDataSetChanged();
                                 break;
                         }

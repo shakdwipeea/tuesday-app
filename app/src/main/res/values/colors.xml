@@ -2,10 +2,11 @@
 <resources>
     <color name="colorPrimary">#00BCD4</color>
     <color name="colorPrimaryDark">#0097A7</color>
-    <color name="colorAccent">#FFEB3B</color>
+    <color name="colorAccent">#ff439f</color>
     <color name="colorAcc">#ff439f</color>
     <color name="torquoise_blue">#00bbd3</color>
     <color name="TransparentGrey">#7F000000</color>
     <color name="tintBackground">#7cacfc</color>
     <color name="black">#000</color>
+    <!--#FFEB3B-->
 </resources>

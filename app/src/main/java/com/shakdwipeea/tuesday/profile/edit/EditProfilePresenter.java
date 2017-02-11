@@ -1,5 +1,7 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
+import android.text.TextUtils;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -93,6 +95,11 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
 
     @Override
     public void saveDetails(Provider provider) {
+        if (TextUtils.isEmpty(provider.providerDetails.getUsername()) &&
+                TextUtils.isEmpty(provider.providerDetails.getPhoneNumber())) {
+            return;
+        }
+
         userService.saveProvider(provider);
     }
 

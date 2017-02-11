@@ -4,8 +4,8 @@
     <LinearLayout
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:orientation="vertical"
          android:layout_marginTop="@dimen/app_bar_height"
+        android:orientation="vertical"
          tools:context="com.shakdwipeea.tuesday.home.notification.NotificationFragment">
 
         <android.support.design.widget.TabLayout
@@ -15,24 +15,44 @@
 
             <android.support.design.widget.TabItem
                 android:id="@+id/notification_request"
-                android:text="Requests"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="Requests" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/notification_view"
-                android:text="View"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="View" />
 
         </android.support.design.widget.TabLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
+            android:padding="8dp"
+            android:text="@string/request_title"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"
+            android:text="@string/request_description"
+            android:textSize="15sp" />
+
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/notification_list"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:scrollbars="vertical" />
 
     </LinearLayout>
 </layout>
