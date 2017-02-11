@@ -5,9 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -34,12 +32,15 @@ class EditProfileAdapter
         extends SectionedRecyclerViewAdapter<EditProfileAdapter.EditProfileHeaderViewHolder,
         EditProfileAdapter.ProfileItemViewHolder, EditProfileAdapter.EditProfileFooterViewHolder> {
     private static final String TAG = "EditProfileAdapter";
+
     private static final int SECTION_CALL = 0;
     private static final int SECTION_EMAIL = 1;
     private static final int SECTION_SOCIAL = 2;
+
     private List<Provider> callList;
     private List<Provider> mailList;
     private List<Provider> socialList;
+
     private Context context;
     private EditProfilePresenter editProfilePresenter;
 
@@ -226,52 +227,12 @@ class EditProfileAdapter
         holder.getBinding().setVm(new EditProfileItemViewModel(editProfilePresenter, provider));
 
         if (section == SECTION_CALL || section == SECTION_EMAIL) {
-            setSpinnerSelection(binding, provider.providerDetails);
+            binding.detailType.setText(provider.providerDetails.detailType);
         } else {
-            setSpinnerSelection(binding, provider.getName());
+            binding.detailType.setText(provider.name);
         }
 
         holder.updateProvider(provider);
-    }
-
-    /**
-     * Spinner selection for phones and mails as their spinner value is retreived from
-     * detailType
-     *
-     * @param binding View Binding
-     * @param details Detail selected
-     */
-    public void setSpinnerSelection(ProviderDetailEditBinding binding, ProviderDetails details) {
-        Context context = binding.getRoot().getContext();
-
-        String[] stringArray = context.getResources().getStringArray(R.array.detail_types);
-        ArrayList<String> detailTypes = new ArrayList<>(Arrays.asList(stringArray));
-        int detailPos = detailTypes.indexOf(details.detailType);
-
-        binding.detailTypeSpinner.setSelection(detailPos);
-
-        showProviderTypeTextView(binding, false);
-    }
-
-    /**
-     * Spinner selection for social providers
-     *
-     * @param binding View Binding
-     * @param name Name of provider
-     */
-    public void setSpinnerSelection(ProviderDetailEditBinding binding, String name) {
-        binding.socialDetailType.setText(name);
-        showProviderTypeTextView(binding, true);
-    }
-
-    private void showProviderTypeTextView(ProviderDetailEditBinding binding, Boolean show) {
-        if (show) {
-            binding.socialDetailType.setVisibility(View.VISIBLE);
-            binding.detailTypeSpinner.setVisibility(View.GONE);
-        } else {
-            binding.socialDetailType.setVisibility(View.GONE);
-            binding.detailTypeSpinner.setVisibility(View.VISIBLE);
-        }
     }
 
     static class EditProfileHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -310,36 +271,6 @@ class EditProfileAdapter
         private void bindListeners() {
             Log.e(TAG, "bindListeners: " + binding + " " + provider);
 
-            // We are attaching a listener to Spinner so that we save every change
-            binding.detailTypeSpinner
-                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position,
-                                                   long id) {
-                            Log.d(TAG, "onItemSelected: Position " + position);
-
-                            binding.detailTypeSpinner.setSelection(position);
-
-                            ProviderDetails item = provider.getProviderDetails();
-
-                            String[] detailType = view.getContext()
-                                    .getResources().getStringArray(R.array.detail_types);
-                            List<String> detailList = Arrays.asList(detailType);
-
-                            String detailSelected = detailList.get(position);
-
-                            item.setDetailType(detailSelected);
-                            provider.setProviderDetails(item);
-
-                            editProfilePresenter.saveDetails(provider);
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                            // Nothing selected then what?
-                        }
-                    });
-
             // Attaching listener to the text field to save all the details
             RxTextView.textChanges(binding.detailContent)
                     .debounce(500, TimeUnit.MILLISECONDS)
@@ -348,7 +279,6 @@ class EditProfileAdapter
                                 " new text -> " + charSequence);
                         ProviderDetails newProvider = updateProviderDetailsByType(
                                 provider.providerDetails, charSequence.toString());
-                        binding.detailTypeSpinner.getSelectedItem();
                         provider.setProviderDetails(newProvider);
                         editProfilePresenter.saveDetails(provider);
                     })
