@@ -201,7 +201,6 @@ public class HomePresenter implements HomeContract.Presenter {
         Log.d(TAG, "getTuesContact: Search for " + phoneNumber);
         Subscription subscription = ApiFactory.getInstance().getContact(phoneNumber)
                 .compose(Util.applySchedulers())
-                .doOnSubscribe(() -> homeView.showProgress(true))
                 .subscribe(
                         user -> {
                             homeView.showProgress(false);

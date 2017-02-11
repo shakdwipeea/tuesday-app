@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -41,8 +42,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
-
-import static android.graphics.Typeface.DEFAULT_BOLD;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,23 +54,15 @@ public class HomeFragment extends Fragment
 
     private static final int REQUEST_WRITE_CONTACTS = 120;
     private static final String KEY_RECYCLER_STATE = "recycler_state";
-
+    static Bundle recyclerViewState;
     FragmentHomeBinding binding;
-
     Context context;
-
     HomePresenter presenter;
-
-    Subscription subscription;
-
+    CompositeSubscription compositeSubscription;
     ContactAdapter searchAdapter;
     ContactAdapter phoneContactAdapter;
     ContactAdapter tuesContactAdapter;
-
     MaterialDialog builder;
-
-    static Bundle recyclerViewState;
-
     boolean editingTuesId = false;
 
     PermViewUtil permViewUtil;
@@ -90,7 +83,7 @@ public class HomeFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();
-        subscription.unsubscribe();
+        compositeSubscription.unsubscribe();
     }
 
     @Override
@@ -149,6 +142,7 @@ public class HomeFragment extends Fragment
             return false;
         });
 
+
         permViewUtil.performActionWithPermissions(
                 getContext(),
                 Manifest.permission.READ_CONTACTS,
@@ -191,7 +185,7 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onPause() {
-;        super.onPause();
+        super.onPause();
 
         recyclerViewState = new Bundle();
         Parcelable listState = binding.phoneContactList.getLayoutManager().onSaveInstanceState();
@@ -228,11 +222,20 @@ public class HomeFragment extends Fragment
     public void showTuesidInput(boolean enable) {
         if (enable) {
             editingTuesId = true;
+
+            binding.phoneEdit.requestFocus();
+            binding.phoneEdit.postDelayed(() -> {
+                InputMethodManager keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.showSoftInput(binding.phoneEdit, 0);
+            }, 200);
+
             binding.tuesidCard.setVisibility(View.VISIBLE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_check_black_24dp));
         } else {
             editingTuesId = false;
+            // Clear field
+            binding.phoneEdit.setText("");
             binding.tuesidCard.setVisibility(View.GONE);
             binding.fab.setImageDrawable(
                     ContextCompat.getDrawable(context, R.drawable.ic_add_black_24dp));
@@ -266,10 +269,27 @@ public class HomeFragment extends Fragment
     }
 
     private void setupSearch() {
-        subscription = RxTextView.textChanges(binding.search)
-                .debounce(100, TimeUnit.MILLISECONDS)
+        compositeSubscription = new CompositeSubscription();
+
+        Subscription subscription = RxTextView.textChanges(binding.search)
+                .debounce(300, TimeUnit.MILLISECONDS)
                 .doOnNext(charSequence -> presenter.searchFriends(charSequence.toString()))
                 .subscribe();
+        compositeSubscription.add(subscription);
+
+        compositeSubscription.add(
+                RxTextView.textChanges(binding.phoneEdit)
+                        .debounce(300, TimeUnit.MILLISECONDS)
+                        .filter(charSequence -> charSequence.length() == 10)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(
+                                charSequence -> {
+                                    showProgress(true);
+                                    presenter.getTuesContact(charSequence.toString());
+                                }
+                        )
+                        .subscribe()
+        );
     }
 
     @Override
