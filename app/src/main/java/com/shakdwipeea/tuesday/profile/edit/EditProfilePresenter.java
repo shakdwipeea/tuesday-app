@@ -37,7 +37,7 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
 
     @Override
     public void loadProviders() {
-        editProfileView.setProgressBar(true);
+//        editProfileView.setProgressBar(true);
 
         // We dont want to watch changes here as all the update is done here itself
         Subscription subscription = userService.getProvider()

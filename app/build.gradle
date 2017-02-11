@@ -110,6 +110,9 @@ dependencies {
 
     // recycler view animations
     compile 'jp.wasabeef:recyclerview-animators:2.2.3'
+
+    // firebase crash reporting
+    compile 'com.google.firebase:firebase-crash:9.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

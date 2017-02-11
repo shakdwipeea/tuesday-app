@@ -144,4 +144,7 @@
     <string name="request_description">people asking for your details</string>
     <string name="view_title">View</string>
     <string name="view_description">details that you had asked for</string>
+    <string name="phone_hint">Enter phone</string>
+    <string name="email_hint">Enter email</string>
+    <string name="social_hint">Enter username</string>
 </resources>

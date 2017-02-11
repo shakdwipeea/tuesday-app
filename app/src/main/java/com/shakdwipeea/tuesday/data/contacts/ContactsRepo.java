@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.Contact;
 import com.shakdwipeea.tuesday.data.entities.user.User;
@@ -121,6 +122,7 @@ public class ContactsRepo {
                     } catch (IllegalArgumentException e) {
                         cursor = contentResolver.query(QUERY_URI, phoneBookProjection,
                                 HAS_PHONE_NUMBER + " > 0", null, DISPLAY_NAME + " ASC");
+                        FirebaseCrash.report(new Exception(e.getMessage()));
                     }
 
 

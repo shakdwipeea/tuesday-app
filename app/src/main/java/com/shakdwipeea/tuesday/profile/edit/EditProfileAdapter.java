@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -216,14 +217,17 @@ class EditProfileAdapter
         switch (section) {
             case SECTION_CALL: // Call section
                 provider = callList.get(indexPosition);
+                binding.detailContent.setHint(R.string.phone_hint);
                 binding.detailContent.setInputType(InputType.TYPE_CLASS_PHONE);
                 break;
             case SECTION_EMAIL: // Mail section
                 provider = mailList.get(indexPosition);
+                binding.detailContent.setHint(R.string.email_hint);
                 binding.detailContent.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 break;
             default:
                 provider = socialList.get(indexPosition);
+                binding.detailContent.setHint(R.string.social_hint);
                 binding.detailContent.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         }
 
@@ -234,6 +238,11 @@ class EditProfileAdapter
             binding.detailType.setText(provider.providerDetails.detailType);
         } else {
             binding.detailType.setText(provider.name);
+        }
+
+        if (section == SECTION_CALL &&
+                provider.providerDetails.detailType.equals(ProviderDetails.DetailType.PRIMARY)) {
+            binding.detailDelete.setVisibility(View.INVISIBLE);
         }
 
         holder.updateProvider(provider);
