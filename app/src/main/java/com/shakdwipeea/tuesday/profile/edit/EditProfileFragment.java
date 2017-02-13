@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -83,6 +84,8 @@ public class EditProfileFragment extends Fragment
 
         return binding.getRoot();
     }
+
+
 
     private void setupNameDisplay() {
         subscription = RxTextView.textChanges(binding.nameInput)
@@ -177,7 +180,17 @@ public class EditProfileFragment extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().onBackPressed();
+                try {
+                    InputMethodManager keyboard = (InputMethodManager) getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    if (getView() != null)
+                        keyboard.hideSoftInputFromInputMethod(getView().getWindowToken(), 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    getActivity().onBackPressed();
+                }
                 return true;
             case R.id.action_save_details:
                 Preferences preferences = Preferences.getInstance(getContext());

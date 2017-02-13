@@ -8,8 +8,10 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
 
@@ -128,23 +130,32 @@ public class ProfilePictureUtil {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case PHOTO_PICKER_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
-                    final Uri imageUri = data.getData();
-                    presenter.updateProfilePic(pictureView.getContext(), imageUri);
-                } else {
-                    // TODO: 19-10-2016 add error handling
-                    new File(currentPhotoPath).delete();
-                }
-                break;
-            case REQUEST_IMAGE_CAPTURE:
-                if (resultCode == RESULT_OK) {
-                    DeviceStorage.galleryAddPic(pictureView.getContext(), currentPhotoPath);
-                    presenter.updateProfilePic(currentPhotoPath);
-                } else {
-                    // TODO: 19-10-2016 add error handling
-                }
+        try {
+            switch (requestCode) {
+                case PHOTO_PICKER_REQUEST_CODE:
+                    if (resultCode == RESULT_OK) {
+                        final Uri imageUri = data.getData();
+                        presenter.updateProfilePic(pictureView.getContext(), imageUri);
+                    } else {
+                        // TODO: 19-10-2016 add error handling
+                        new File(currentPhotoPath).delete();
+                    }
+                    break;
+                case REQUEST_IMAGE_CAPTURE:
+                    if (resultCode == RESULT_OK) {
+                        DeviceStorage.galleryAddPic(pictureView.getContext(), currentPhotoPath);
+                        presenter.updateProfilePic(currentPhotoPath);
+                    } else {
+                        // TODO: 19-10-2016 add error handling
+                    }
+            }
+        } catch (Exception e) {
+            FirebaseCrash.log(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            Toast.makeText(presenter.getPictureView().getContext(),
+                    "Sorry, could not get your picture. Please retry.",Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,7 +85,11 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
         User user = new User();
         user.name = this.user.getDisplayName();
         user.uid = this.user.getUid();
-        user.pic = this.user.getPhotoUrl().toString();
+
+        Uri photoUrl = this.user.getPhotoUrl();
+        if (photoUrl != null)
+            user.pic = photoUrl.toString();
+
         editProfileView.displayUser(user);
     }
 

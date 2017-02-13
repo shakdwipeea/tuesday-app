@@ -6,16 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.databinding.ActivityProfileBinding;
 import com.shakdwipeea.tuesday.profile.edit.EditProfileFragment;
 import com.shakdwipeea.tuesday.profile.view.ProfileViewFragment;
-
-import org.parceler.Parcels;
 
 // ProfileActivity is independent from logged in user, so that the same can be used for
 // viewing of other people profile

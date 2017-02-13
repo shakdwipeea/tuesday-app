@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -73,7 +74,7 @@ public class Util {
                     .into(profilePicView);
         } else if (user.photo != null) {
             profilePicView.setImageBitmap(user.photo);
-        } else if (user.name != null){
+        } else if (!TextUtils.isEmpty(user.name)){
             // TODO: 17-11-2016 generalize text drawable thingy
             placeholderView
                     .setImageDrawable(

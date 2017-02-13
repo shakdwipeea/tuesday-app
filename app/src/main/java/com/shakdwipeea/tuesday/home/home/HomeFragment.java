@@ -225,7 +225,8 @@ public class HomeFragment extends Fragment
 
             binding.phoneEdit.requestFocus();
             binding.phoneEdit.postDelayed(() -> {
-                InputMethodManager keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager keyboard = (InputMethodManager) context
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
                 keyboard.showSoftInput(binding.phoneEdit, 0);
             }, 200);
 

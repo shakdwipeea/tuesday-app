@@ -63,6 +63,7 @@
 
             <EditText
                 android:visibility="gone"
+                android:layout_marginTop="16dp"
                 android:id="@+id/enter_tag"
                 android:hint="Enter tag"
                 android:layout_gravity="center_horizontal"

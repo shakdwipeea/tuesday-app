@@ -37,7 +37,6 @@ import com.shakdwipeea.tuesday.databinding.MailItemBinding;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.profile.edit.EditProfileFragment;
 import com.shakdwipeea.tuesday.setup.ProviderAdapter;
-import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.shakdwipeea.tuesday.util.Util;
 import com.shakdwipeea.tuesday.util.adapter.SingleViewAdapter;
 import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
@@ -405,9 +404,7 @@ public class ProfileViewFragment extends Fragment
             binding.saveButton.setText(R.string.edit_profile);
             binding.saveButton.setTextColor(colorAcc);
             binding.saveButton.setBackground(whiteRect);
-        } else {
-            // TODO: 23/1/17 this functionality is no longer required
-//            binding.toolbar.getMenu().clear();
+            binding.enterTag.setVisibility(View.VISIBLE);
         }
     }
 

@@ -10,16 +10,28 @@
             android:id="@+id/phone_input_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
+            android:textSize="30sp"
             android:layout_marginTop="80dp"
             android:gravity="center_horizontal"
-            android:text="@string/phone_label"
+            android:textColor="#ff439f"
+            android:text="Verify your number"
+            android:fontFamily="sans-serif"/>
+
+        <TextView
+            android:id="@+id/phone_input_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_margin="40dp"
+            android:gravity="center_horizontal"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:text="You can share your Tuesday profile using your phone number"
             android:fontFamily="sans-serif"/>
 
         <EditText
             android:id="@+id/phone_input"
-            android:layout_marginTop="70dp"
-            android:hint="eg 7676171398"
+            android:hint="Your phone number"
             android:textSize="17sp"
             android:inputType="phone"
             android:gravity="center_horizontal"

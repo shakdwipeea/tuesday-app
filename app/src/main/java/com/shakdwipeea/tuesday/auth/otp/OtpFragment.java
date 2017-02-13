@@ -6,14 +6,13 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -159,7 +158,7 @@ public class OtpFragment extends Fragment implements OtpContract.View,
 
     @Override
     public void displayError(String message) {
-        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT)
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT)
                 .show();
     }
 }

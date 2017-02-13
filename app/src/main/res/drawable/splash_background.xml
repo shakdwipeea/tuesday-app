@@ -4,7 +4,7 @@
     android:opacity="opaque"
     >
     <item
-        android:drawable="@color/torquoise_blue"/>
+        android:drawable="@color/tw__solid_white"/>
     <item>
         <bitmap
             android:gravity="center"

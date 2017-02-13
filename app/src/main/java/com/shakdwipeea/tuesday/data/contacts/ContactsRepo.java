@@ -13,6 +13,7 @@ import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
@@ -54,18 +55,25 @@ public class ContactsRepo {
     private Context context;
 
     // would make more sense to inject this via DI
-    private ContactsRepo(Context context) {
+    private ContactsRepo(Context context, boolean showError) {
         this.context = context;
         contentResolver = context.getContentResolver();
         replaySubject = ReplaySubject.create();
 
-        getContactsObservable()
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(replaySubject);
+        Observable<Contact> contactsObservable = getContactsObservable();
+        if (contactsObservable != null) {
+            contactsObservable.subscribeOn(Schedulers.newThread())
+                    .subscribe(replaySubject);
+        } else {
+            if (showError) {
+                Toast.makeText(context, "Please provide contacts permission.", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
     }
 
-    public static ContactsRepo getInstance(Context context) {
-        if (contactsRepo == null) contactsRepo = new ContactsRepo(context);
+    public static ContactsRepo getInstance(Context context, boolean showError) {
+        if (contactsRepo == null) contactsRepo = new ContactsRepo(context, showError);
 
         return contactsRepo;
     }

@@ -1,17 +1,13 @@
 package com.shakdwipeea.tuesday.data.contacts.sync;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.SyncResult;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +22,6 @@ import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
 import java.util.Iterator;
-import java.util.List;
 
 import rx.Observable;
 
@@ -47,7 +42,7 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize);
         Log.d(TAG, "ContactSyncAdapter: initialized");
 
-        contactsRepo = ContactsRepo.getInstance(context);
+        contactsRepo = ContactsRepo.getInstance(context, false);
         addContactService = new AddContactService(context);
         preferences = Preferences.getInstance(context);
     }
@@ -71,9 +66,16 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
 
         userService = UserService.getInstance();
 
-        Iterator<Contact> iterator = contactsRepo.getContactsObservable()
-                .toBlocking()
-                .getIterator();
+        Observable<Contact> contactsObservable = contactsRepo.getContactsObservable();
+
+        if (contactsObservable == null) {
+            Log.e(TAG, "Contacts permission not available");
+            return;
+        }
+
+        Iterator<Contact> iterator  = contactsObservable
+            .toBlocking()
+            .getIterator();
 
         while (iterator.hasNext()) {
             Contact contact = iterator.next();

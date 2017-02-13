@@ -152,7 +152,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     public void getContacts(Context context) {
         Log.d(TAG, "getContacts: ");
-        contactsRepo = ContactsRepo.getInstance(context);
+        contactsRepo = ContactsRepo.getInstance(context, true);
         Subscription subscription = contactsRepo.getContacts()
                 .filter(contact -> !contact.isTuesday)
                 .map(contact -> {
