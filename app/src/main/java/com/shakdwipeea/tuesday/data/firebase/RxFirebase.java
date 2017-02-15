@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Observable;
 import rx.subscriptions.Subscriptions;
@@ -73,6 +75,20 @@ public class RxFirebase {
                     }
 
                     return resultSet;
+                });
+    }
+
+    static Observable<Map<String, String>> getDataAsMap(DatabaseReference reference) {
+        return getData(reference)
+                .flatMap(dataSnapshot -> Observable.just(dataSnapshot.getChildren()))
+                .map(dataSnapshots -> {
+                    Map<String, String> map = new HashMap<>();
+                    for (DataSnapshot ds: dataSnapshots) {
+                        map.put(String.valueOf(ds.getKey()),
+                                String.valueOf(ds.getValue()));
+                    }
+
+                    return map;
                 });
     }
 

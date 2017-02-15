@@ -105,7 +105,11 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
                         }
                     }
 
-                    userService.saveTuesContacts(user.uid);
+                    userService.getTuesContactsWithTags()
+                            .first()
+                            .forEach(friendList ->
+                                    userService
+                                            .saveTuesContacts(user.uid, friendList.get(user.uid)));
 
                     FirebaseService firebaseService = new FirebaseService(user.getUid());
                     firebaseService.addSavedBy(firebaseUser.getUid());

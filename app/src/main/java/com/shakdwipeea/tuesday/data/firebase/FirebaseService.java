@@ -79,31 +79,6 @@ public class FirebaseService {
                 });
     }
 
-    public Observable<String> getFriendUid() {
-        return Observable.create(subscriber -> {
-            dbRef.child(User.KEY)
-                    .child(uid)
-                    .child(User.UserNode.TUES_CONTACTS)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                            for (DataSnapshot friendSnapshot : children) {
-                                subscriber.onNext(friendSnapshot.getKey());
-                            }
-
-                            subscriber.onCompleted();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            subscriber.onError(databaseError.toException());
-                        }
-                    });
-        });
-    }
-
     public void addSavedBy(String friendUid) {
         userRef.child(User.UserNode.ADDED_BY)
                 .child(friendUid)
@@ -115,41 +90,9 @@ public class FirebaseService {
                 .child(friendUid).removeValue();
     }
 
-    public Observable<String> getSavedBy() {
-        return Observable.create(subscriber -> {
-            userRef.child(User.UserNode.ADDED_BY)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                            for (DataSnapshot child: children) {
-                                subscriber.onNext(child.getKey());
-                            }
-
-                            subscriber.onCompleted();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            subscriber.onError(databaseError.toException());
-                        }
-                    });
-        });
-    }
-
     public Observable<List<Provider>> getProvider() {
         return getProviderInfo(userRef);
     }
-
-//    public Observable<Provider> populateProviderList(List<Provider> providerList) {
-//        return Observable.create(subscriber -> {
-//           for (Provider p: providerList) {
-//               getAccessedBy(p.name)
-//
-//           }
-//        });
-//    }
 
     public void addAccessGranted(GrantedToDetails details) {
         userRef.child(User.UserNode.GRANTED_BY)

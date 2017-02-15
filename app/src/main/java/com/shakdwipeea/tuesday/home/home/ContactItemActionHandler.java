@@ -28,7 +28,7 @@ public class ContactItemActionHandler {
 //        Bundle bundle = new Bundle();
 //        bundle.putParcelable(ProfileActivity.USER_EXTRA_KEY, Parcels.wrap(user));
 
-        if (!TextUtils.isEmpty(user.uid)) {
+        if (user != null && !TextUtils.isEmpty(user.uid)) {
             Intent intent = new Intent(context, ProfileActivity.class);
             intent.putExtra(ProfileViewFragment.USER_EXTRA_KEY, Parcels.wrap(User.class, user));
             context.startActivity(intent);

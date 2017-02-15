@@ -1,10 +1,12 @@
 package com.shakdwipeea.tuesday.home.home;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.contacts.ContactsRepo;
@@ -169,7 +171,15 @@ public class HomePresenter implements HomeContract.Presenter {
                         contactList -> {
                             homeView.displayPhoneContacts(contactList);
                         },
-                        Throwable::printStackTrace
+                        throwable -> {
+                            FirebaseCrash.log(new StringBuilder()
+                                    .append("Build device ").append(Build.DEVICE)
+                                    .append(" Bild brand").append(Build.BRAND)
+                                    .append(" Build Model ").append(Build.MODEL)
+                                    .append(" Build sdk version ").append(Build.VERSION.SDK_INT)
+                                    .append(throwable.getMessage()).toString());
+                            throwable.printStackTrace();
+                        }
                 );
         compositeSubscription.add(subscription);
     }

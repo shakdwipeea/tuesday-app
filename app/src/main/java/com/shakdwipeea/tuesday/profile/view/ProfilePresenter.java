@@ -104,14 +104,15 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                         () -> Log.e(TAG, "loadProfile: Complete called")
                 );
 
-        userService.getTuesContacts()
+        userService.getTuesContactsWithTags()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMapIterable(strings -> strings)
-                .filter( s -> s.equals(user.uid))
-                .doOnNext(s -> {
-                    isFriend = true;
-                    profileView.setAddFriendFabIcon(false);
+                .doOnNext(friendList -> {
+                    if (friendList.get(user.uid) != null) {
+                        isFriend = true;
+                        profileView.setAddFriendFabIcon(false);
+                        profileView.setFriendTag(friendList.get(user.uid));
+                    }
                 })
                 .subscribe(
                         s -> Log.d(TAG, "loadProfile: Friend uid is " + s),
@@ -194,11 +195,15 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
         }
     }
 
+    public void saveTag(String tag) {
+        userService.saveTuesContacts(user.uid, tag);
+    }
+
     private void saveContact() {
         Log.d(TAG, "saveContact: " + user);
 
         // add to my contacts
-        userService.saveTuesContacts(user.uid);
+        userService.saveTuesContacts(user.uid, profileView.getFriendTag());
 
         // add to his added_by
         firebaseService.addSavedBy(loggedInUser.getUid());

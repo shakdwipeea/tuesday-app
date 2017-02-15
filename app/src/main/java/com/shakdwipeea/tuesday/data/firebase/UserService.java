@@ -17,6 +17,7 @@ import com.shakdwipeea.tuesday.data.providers.ProviderService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -173,10 +174,14 @@ public class UserService {
                 .getChildKeysAsList(profileRef.child(User.UserNode.TUES_CONTACTS));
     }
 
-    public void saveTuesContacts(String contactUid) {
+    public Observable<Map<String, String>> getTuesContactsWithTags() {
+        return RxFirebase.getDataAsMap(profileRef.child(User.UserNode.TUES_CONTACTS));
+    }
+
+    public void saveTuesContacts(String contactUid, String tag) {
         profileRef.child(User.UserNode.TUES_CONTACTS)
                 .child(contactUid)
-                .setValue(true);
+                .setValue(tag);
     }
 
     public void removeTuesContact(String contactUid) {

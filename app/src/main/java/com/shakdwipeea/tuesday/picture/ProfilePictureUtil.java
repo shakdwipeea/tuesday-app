@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.crash.FirebaseCrash;
@@ -152,10 +151,6 @@ public class ProfilePictureUtil {
         } catch (Exception e) {
             FirebaseCrash.log(e.getMessage());
             e.printStackTrace();
-        } finally {
-            Toast.makeText(presenter.getPictureView().getContext(),
-                    "Sorry, could not get your picture. Please retry.",Toast.LENGTH_SHORT)
-                    .show();
         }
     }
 

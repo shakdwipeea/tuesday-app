@@ -23,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.crash.FirebaseCrash;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.NotificationService;
@@ -206,6 +207,10 @@ public class HomeFragment extends Fragment
 
     @Override
     public void displayPhoneContacts(List<User> users) {
+        if (users == null || users.size() == 0) {
+            FirebaseCrash.log("No contacts permission " + hasPermissions());
+        }
+
         phoneContactAdapter.setUsers(users);
     }
 

@@ -1,18 +1,13 @@
 package com.shakdwipeea.tuesday.auth.otp;
 
-import android.accounts.Account;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.api.ApiService;
-import com.shakdwipeea.tuesday.data.contacts.sync.ContactSyncAdapter;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.util.Util;
-
-import static com.google.android.gms.internal.zzs.TAG;
 
 /**
  * Created by akash on 20/12/16.
@@ -70,14 +65,7 @@ public class OtpPresenter implements OtpContract.Presenter {
                 .compose(Util.applySchedulers())
                 .doOnSubscribe(() -> otpView.displayProgressbar(true))
                 .subscribe(
-                        user1 -> {
-                            //if (TextUtils.isEmpty(user1.name))
-                                signInUser(user1);
-                                //otpView.launchDetailsInputView(user1.token);
-                           // else {
-                            //    signInUser(user1);
-                          //  }
-                        },
+                        this::signInUser,
                         throwable -> {
                             otpView.displayProgressbar(false);
                             otpView.displayError(throwable.getMessage());

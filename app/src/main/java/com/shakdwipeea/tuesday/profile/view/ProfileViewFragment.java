@@ -155,7 +155,20 @@ public class ProfileViewFragment extends Fragment
 
         binding.setHandler(presenter);
 
+        binding.enterTag.setOnClickListener(v -> openTagDialog());
+
         return binding.getRoot();
+    }
+
+    private void openTagDialog() {
+        new MaterialDialog.Builder(getContext())
+                .title("Setting Tag")
+                .content("Tag your friend")
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input("Enter a tag", "", (dialog, input) -> {
+                   presenter.saveTag(input.toString());
+                })
+                .show();
     }
 
     private void setupCallList() {
@@ -206,6 +219,22 @@ public class ProfileViewFragment extends Fragment
         } else {
             binding.detailProvider.setVisibility(View.VISIBLE);
             binding.requestAccess.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public String getFriendTag() {
+        return binding.enterTag.getText().toString();
+    }
+
+    @Override
+    public void setFriendTag(String tag) {
+        binding.enterTag.setVisibility(View.VISIBLE);
+
+        if (tag.equals("true")) {
+            binding.enterTag.setText("Click me to enter tag");
+        } else {
+            binding.enterTag.setText(tag);
         }
     }
 

@@ -33,6 +33,9 @@ public interface ProfileContract {
         void launchSetup();
         void displayProviderInfo(Provider provider, String providerDetails);
         void showAccessButton(boolean enable);
+
+        String getFriendTag();
+        void setFriendTag(String tag);
     }
 
     interface Presenter {
