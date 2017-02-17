@@ -19,12 +19,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.PermConstants;
-import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentDetailsBinding;
 import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
-import com.shakdwipeea.tuesday.setup.picker.ProviderPickerActivity;
 import com.shakdwipeea.tuesday.util.Util;
 import com.squareup.picasso.Picasso;
 
@@ -132,6 +130,11 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
                 .compose(Util.applyComputationScheduler())
                 .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
                 .subscribe();
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
     @Override

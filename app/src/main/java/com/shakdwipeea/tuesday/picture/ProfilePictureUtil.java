@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.util.DeviceStorage;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,6 +79,7 @@ public class ProfilePictureUtil {
             // create the file on device
             File imageFile = DeviceStorage.createImageFile(pictureView.getContext());
             currentPhotoPath = imageFile.getAbsolutePath();
+
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
             // check if anyone is present to handle the camera action
@@ -88,6 +90,10 @@ public class ProfilePictureUtil {
                         pictureView.getContext(),
                         pictureView.getApplicationContext().getPackageName() + ".provider",
                         imageFile);
+
+                CropImage.activity(photoURI)
+                        .start(pictureView.getContext(), pictureView.getFragment());
+
 
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
@@ -121,7 +127,6 @@ public class ProfilePictureUtil {
                             Manifest.permission.CAMERA
                     },
                     REQUEST_WRITE_EXTERNAL_STORAGE);
-
             return false;
         }
 
@@ -141,12 +146,17 @@ public class ProfilePictureUtil {
                     }
                     break;
                 case REQUEST_IMAGE_CAPTURE:
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     if (resultCode == RESULT_OK) {
+//                        Uri resultUri = result.getUri();
                         DeviceStorage.galleryAddPic(pictureView.getContext(), currentPhotoPath);
                         presenter.updateProfilePic(currentPhotoPath);
-                    } else {
-                        // TODO: 19-10-2016 add error handling
+                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                        Exception error = result.getError();
+                        pictureView.displayError(error.getMessage());
+                        error.printStackTrace();
                     }
+                    break;
             }
         } catch (Exception e) {
             FirebaseCrash.log(e.getMessage());

@@ -3,6 +3,7 @@ package com.shakdwipeea.tuesday.picture;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by akash on 28/12/16.
@@ -24,4 +25,6 @@ public interface ProfilePictureView {
     void displayProfilePicFromPath(String filePath);
 
     void displayProfilePic(Bitmap bitmap);
+
+    Fragment getFragment();
 }

@@ -1,9 +1,7 @@
 package com.shakdwipeea.tuesday.home;
 
 import android.content.Context;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -14,12 +12,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.NotificationService;
 import com.shakdwipeea.tuesday.databinding.ActivityHomeBinding;
 import com.shakdwipeea.tuesday.home.home.HomeFragment;
 import com.shakdwipeea.tuesday.home.notification.NotificationFragment;
 import com.shakdwipeea.tuesday.home.settings.SettingsFragment;
-import com.shakdwipeea.tuesday.setup.details.ProviderDetailsActivity;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
@@ -76,7 +72,6 @@ public class HomeActivity extends AppCompatActivity {
             if (tab != null) {
                 Drawable tabIcon = tab.getIcon();
                 if (tabIcon == null) {
-
                     switch (i) {
                         case 0:
                             tabIcon = ContextCompat.getDrawable(this,

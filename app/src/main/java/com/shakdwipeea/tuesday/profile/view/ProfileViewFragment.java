@@ -165,8 +165,9 @@ public class ProfileViewFragment extends Fragment
                 .title("Setting Tag")
                 .content("Tag your friend")
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input("Enter a tag", "", (dialog, input) -> {
-                   presenter.saveTag(input.toString());
+                .input("Enter a tag", binding.enterTag.getText(), (dialog, input) -> {
+                    if (!TextUtils.isEmpty(input.toString()))
+                        presenter.saveTag(input.toString());
                 })
                 .show();
     }
@@ -408,6 +409,12 @@ public class ProfileViewFragment extends Fragment
                 .compose(Util.applyComputationScheduler())
                 .doOnNext(bitmap -> binding.profilePic.setImageBitmap(bitmap))
                 .subscribe();
+    }
+
+    @Override
+    public Fragment getFragment() {
+        // TODO: 18/2/17 i think this is not required
+        return this;
     }
 
     @Override

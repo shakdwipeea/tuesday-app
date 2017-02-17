@@ -287,6 +287,11 @@ public class EditProfileFragment extends Fragment
     }
 
     @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
     public void displayProfilePicFromPath(String photoPath) {
         Util.resizeBitmapTo(photoPath,
                 binding.profilePic.getHeight(), binding.profilePic.getWidth())
@@ -306,5 +311,4 @@ public class EditProfileFragment extends Fragment
     public void clearProvider() {
         providerAdapter.clear();
     }
-
 }

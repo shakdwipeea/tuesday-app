@@ -113,6 +113,9 @@ dependencies {
 
     // firebase crash reporting
     compile 'com.google.firebase:firebase-crash:9.6.1'
+
+    // for cropping image
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
 }
 
 apply plugin: 'com.google.gms.google-services'
