@@ -8,17 +8,15 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
 
-import com.google.common.base.Strings;
-
 public class SmsReceiver extends BroadcastReceiver {
-
-    public interface SmsListener {
-        void onMessageReceived(String message);
-    }
 
     private static SmsListener smsListener;
 
     public SmsReceiver() {
+    }
+
+    public static void bindListener(SmsListener listener) {
+        smsListener = listener;
     }
 
     @Override
@@ -45,14 +43,14 @@ public class SmsReceiver extends BroadcastReceiver {
                     String messageBody = smsMessage.getMessageBody();
 
                     //Pass on the text to our listener.
-                    smsListener.onMessageReceived(messageBody);
+                    if (smsListener != null) smsListener.onMessageReceived(messageBody);
                 }
             }
         }
 
     }
 
-    public static void bindListener(SmsListener listener) {
-        smsListener = listener;
+    public interface SmsListener {
+        void onMessageReceived(String message);
     }
 }

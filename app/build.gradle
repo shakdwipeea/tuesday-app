@@ -116,6 +116,9 @@ dependencies {
 
     // for cropping image
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
+
+    // for compressing image
+    compile 'id.zelory:compressor:1.0.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

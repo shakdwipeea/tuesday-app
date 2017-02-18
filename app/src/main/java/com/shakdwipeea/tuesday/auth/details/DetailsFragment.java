@@ -1,9 +1,10 @@
 package com.shakdwipeea.tuesday.auth.details;
 
 
+import android.Manifest;
+import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +20,15 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseUser;
 import com.shakdwipeea.tuesday.R;
-import com.shakdwipeea.tuesday.data.PermConstants;
+import com.shakdwipeea.tuesday.data.Preferences;
+import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.databinding.FragmentDetailsBinding;
 import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.util.Util;
+import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
+import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 import com.squareup.picasso.Picasso;
 
 import rx.Observable;
@@ -31,10 +36,11 @@ import rx.Observable;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment implements DetailsContract.View {
+public class DetailsFragment extends Fragment
+        implements DetailsContract.View, RequestPermissionInterface {
     public static final String KEY_TOKEN = "token";
     public static final String KEY_PHONE = "phone";
-
+    private static final String TAG = "DetailsFragment";
     FragmentDetailsBinding binding;
 
     DetailsPresenter presenter;
@@ -42,6 +48,9 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
     MaterialDialog dialog;
 
     ProfilePictureUtil pictureUtil;
+    PermViewUtil permViewUtil;
+
+    private String profileUrl;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -63,15 +72,32 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
         String phone = getArguments().getString(KEY_PHONE);
 
         binding.saveButton.setOnClickListener(v -> {
+            String name = binding.nameInput.getText().toString();
+            if (TextUtils.isEmpty(name)) {
+                displayError("Please enter your name");
+                return;
+            }
+
             User user = new User();
-            user.name = binding.nameInput.getText().toString();
+            user.name = name;
             user.token = token;
+            user.pic = profileUrl;
             user.phoneNumber = phone;
             presenter.saveDetails(user);
         });
 
         binding.cameraIcon.setOnClickListener(v -> {
-            pictureUtil.openImageMenu();
+            permViewUtil = new PermViewUtil(binding.getRoot());
+            permViewUtil.performActionWithPermissions(
+                    getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
+                    },
+                    this,
+                    () -> pictureUtil.openImageMenu()
+            );
         });
 
         return binding.getRoot();
@@ -84,27 +110,36 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
 
     @Override
     public void setProgressBar(boolean enable) {
-        if (dialog == null)
-            dialog = Util.createProgressDialog(getContext()).show();
+        try {
+            if (dialog == null)
+                dialog = Util.createProgressDialog(getContext()).show();
 
-        if (enable)
-            dialog.show();
-        else
-            dialog.dismiss();
+            if (enable)
+                dialog.show();
+            else
+                dialog.dismiss();
+        } catch (Exception e) {
+            Log.e(TAG, "setProgressBar: error hogaya " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void displayError(String reason) {
         Snackbar.make(binding.getRoot(), reason, Snackbar.LENGTH_SHORT)
+                .setAction("Retry", v -> {
+                })
                 .show();
     }
 
     @Override
     public void openProfile(FirebaseUser user) {
-        Intent intent;
-         intent = new Intent(getContext(), HomeActivity.class);
+        setupAccount(user);
 
+        Intent intent;
+        intent = new Intent(getContext(), HomeActivity.class);
         startActivity(intent);
+
         getActivity().finish();
     }
 
@@ -157,17 +192,20 @@ public class DetailsFragment extends Fragment implements DetailsContract.View {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PermConstants.REQUEST_WRITE_EXTERNAL_STORAGE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pictureUtil.openCamera();
-                } else {
-                    displayError("Cannot save photo then");
-                }
-            }
-            // other 'case' lines to check for other
-            // permissions this app might request
+        permViewUtil.onPermissionResult(requestCode, permissions, grantResults);
+    }
+
+    public void setupAccount(FirebaseUser user) {
+        String accountName = user.getDisplayName();
+        if (TextUtils.isEmpty(accountName)) {
+            accountName = "Tuesday";
         }
+
+        Preferences preferences = Preferences.getInstance(getContext());
+        preferences.setLoggedIn(true);
+        preferences.setAccountName(accountName);
+
+        Account account = new Account(accountName, SyncUtils.ACCOUNT_TYPE);
+        SyncUtils.createSyncAccount(getContext(), account);
     }
 }

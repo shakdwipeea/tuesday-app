@@ -51,7 +51,7 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
         super(profileView);
 
         this.profileView = profileView;
-        userService = UserService.getInstance();
+        userService = new UserService();
         addContactService = new AddContactService(profileView.getContext());
     }
 

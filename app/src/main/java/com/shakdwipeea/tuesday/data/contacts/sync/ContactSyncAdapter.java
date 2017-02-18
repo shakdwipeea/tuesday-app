@@ -8,6 +8,7 @@ import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +22,9 @@ import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -64,7 +67,7 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
 
-        userService = UserService.getInstance();
+        userService = new UserService();
 
         Observable<Contact> contactsObservable = contactsRepo.getContactsObservable();
 
@@ -105,11 +108,21 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
                         }
                     }
 
+                    Map<String, String> defaultFriendValue = new HashMap<>();
+                    defaultFriendValue.put(user.uid, "true");
+
                     userService.getTuesContactsWithTags()
+                            .defaultIfEmpty(defaultFriendValue)
                             .first()
-                            .forEach(friendList ->
-                                    userService
-                                            .saveTuesContacts(user.uid, friendList.get(user.uid)));
+                            .forEach(friendList -> {
+                                Log.d(TAG, "onPerformSync: FriendList is " + friendList.size());
+
+                                String savedTag = friendList.get(user.uid);
+                                if (TextUtils.isEmpty(savedTag))
+                                    savedTag = "true";
+
+                                userService.saveTuesContacts(user.uid, savedTag);
+                            });
 
                     FirebaseService firebaseService = new FirebaseService(user.getUid());
                     firebaseService.addSavedBy(firebaseUser.getUid());

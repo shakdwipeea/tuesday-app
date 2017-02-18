@@ -147,4 +147,5 @@
     <string name="phone_hint">Enter phone</string>
     <string name="email_hint">Enter email</string>
     <string name="social_hint">Enter username</string>
+    <string name="details_view_error">Could not save the details. Please retry.</string>
 </resources>

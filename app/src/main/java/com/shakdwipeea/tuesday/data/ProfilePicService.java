@@ -7,7 +7,6 @@ import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import com.shakdwipeea.tuesday.data.entities.CloudinaryUploadResponse;
 
-import java.io.IOException;
 import java.util.Map;
 
 import rx.Observable;
@@ -51,6 +50,7 @@ public class ProfilePicService {
 
     public static String transformUrl(CloudinaryUploadResponse response) {
         Cloudinary cloudinary = new Cloudinary(CloudinaryConfig.CLOUDINARY_URL);
+        Log.d(TAG, "transformUrl: Transforming the transformer");
         return cloudinary.url()
                 .publicId(response.publicId)
                 .transformation(new Transformation().width(0.5))

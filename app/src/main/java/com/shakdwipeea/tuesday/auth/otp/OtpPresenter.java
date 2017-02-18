@@ -9,6 +9,9 @@ import com.shakdwipeea.tuesday.data.api.ApiService;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 import com.shakdwipeea.tuesday.util.Util;
 
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by akash on 20/12/16.
  */
@@ -23,11 +26,13 @@ public class OtpPresenter implements OtpContract.Presenter {
     private String signInToken;
 
     private FirebaseAuth.AuthStateListener authListener;
+    private CompositeSubscription compositeSubscription;
 
     public OtpPresenter(OtpContract.View otpView) {
         this.otpView = otpView;
         this.apiService = ApiFactory.getInstance();
         this.firebaseAuth = FirebaseAuth.getInstance();
+        this.compositeSubscription = new CompositeSubscription();
         setupListener();
     }
 
@@ -61,7 +66,7 @@ public class OtpPresenter implements OtpContract.Presenter {
         user.otp = otp;
         user.phoneNumber = phoneNumber;
 
-        apiService.verifyOtp(user)
+        Subscription subscribe = apiService.verifyOtp(user)
                 .compose(Util.applySchedulers())
                 .doOnSubscribe(() -> otpView.displayProgressbar(true))
                 .subscribe(
@@ -72,6 +77,7 @@ public class OtpPresenter implements OtpContract.Presenter {
                             throwable.printStackTrace();
                         }
                 );
+        compositeSubscription.add(subscribe);
     }
 
     private void signInUser(User user) {
@@ -84,5 +90,9 @@ public class OtpPresenter implements OtpContract.Presenter {
                                 "Now you stay here for eternity");
                     }
                 });
+    }
+
+    public void unsubscribe() {
+        compositeSubscription.clear();
     }
 }

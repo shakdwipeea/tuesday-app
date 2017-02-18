@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
 import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
@@ -35,11 +34,52 @@ public class FirebaseService {
     private List<ValueEventListener> valueEventListeners;
 
     public FirebaseService(String uid) {
-        dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef = FirebaseDatabaseUtil.getDatabase().getReference();
         this.uid = uid;
         userRef = dbRef
                 .child(User.KEY)
                 .child(uid);
+    }
+
+    public static Observable<List<Provider>> getProviderInfo(DatabaseReference profileRef) {
+        return RxFirebase
+                .getData(profileRef.child(User.UserNode.PROVIDERS))
+                .map(dataSnapshot -> {
+                    Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                    List<Provider> providerList = new ArrayList<>();
+
+                    for (DataSnapshot snap : dataSnapshots) {
+                        ProviderDetails providerDetails = snap.getValue(ProviderDetails.class);
+
+                        DataSnapshot requestedByData = snap
+                                .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY);
+                        providerDetails.requestedBy = RxFirebase.getKeys(requestedByData);
+
+                        String providerName = snap.getKey();
+
+                        // extract provider name in other cases
+                        if (providerName.startsWith(ProviderNames.Call) ||
+                                providerName.startsWith(ProviderNames.Email)) {
+                            providerName = ProviderNames.getProvider(providerName);
+                        }
+
+
+                        Provider provider = ProviderService.getInstance()
+                                .getProviderHashMap()
+                                .get(providerName);
+
+                        if (provider != null) {
+                            Provider pToAdd = new Provider(provider);
+                            pToAdd.setProviderDetails(providerDetails);
+
+                            Log.d(TAG, "getProviderInfo: provider " + provider);
+                            Log.d(TAG, "onDataChange: providerDetails " + provider.providerDetails);
+                            providerList.add(pToAdd);
+                        }
+                    }
+
+                    return providerList;
+                });
     }
 
     public Observable<User> getProfile() {
@@ -97,47 +137,6 @@ public class FirebaseService {
     public void addAccessGranted(GrantedToDetails details) {
         userRef.child(User.UserNode.GRANTED_BY)
                 .child(details.grantedByuid).setValue(details.providerName);
-    }
-
-    public static Observable<List<Provider>> getProviderInfo(DatabaseReference profileRef) {
-        return RxFirebase
-                .getData(profileRef.child(User.UserNode.PROVIDERS))
-                .map(dataSnapshot -> {
-                    Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
-                    List<Provider> providerList = new ArrayList<>();
-
-                    for (DataSnapshot snap : dataSnapshots) {
-                        ProviderDetails providerDetails = snap.getValue(ProviderDetails.class);
-
-                        DataSnapshot requestedByData = snap
-                                .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY);
-                        providerDetails.requestedBy = RxFirebase.getKeys(requestedByData);
-
-                        String providerName = snap.getKey();
-
-                        // extract provider name in other cases
-                        if (providerName.startsWith(ProviderNames.Call) ||
-                                providerName.startsWith(ProviderNames.Email)) {
-                            providerName = ProviderNames.getProvider(providerName);
-                        }
-
-
-                        Provider provider = ProviderService.getInstance()
-                                .getProviderHashMap()
-                                .get(providerName);
-
-                        if (provider != null) {
-                            Provider pToAdd = new Provider(provider);
-                            pToAdd.setProviderDetails(providerDetails);
-
-                            Log.d(TAG, "getProviderInfo: provider " + provider);
-                            Log.d(TAG, "onDataChange: providerDetails " + provider.providerDetails);
-                            providerList.add(pToAdd);
-                        }
-                    }
-
-                    return providerList;
-                });
     }
 
     public Observable<String> getAccessedBy(String providerName) {

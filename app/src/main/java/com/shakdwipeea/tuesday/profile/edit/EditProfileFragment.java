@@ -1,6 +1,7 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,8 @@ import com.shakdwipeea.tuesday.picture.ProfilePicturePresenter;
 import com.shakdwipeea.tuesday.picture.ProfilePictureUtil;
 import com.shakdwipeea.tuesday.picture.ProfilePictureView;
 import com.shakdwipeea.tuesday.util.Util;
+import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
+import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.TimeUnit;
@@ -44,7 +47,7 @@ import rx.Subscription;
  * A simple {@link Fragment} subclass.
  */
 public class EditProfileFragment extends Fragment
-        implements EditProfileContract.View, ProfilePictureView {
+        implements EditProfileContract.View, ProfilePictureView, RequestPermissionInterface {
     private static final String TAG = "EditProfileFragment";
 
     FragmentEditProfileBinding binding;
@@ -78,7 +81,19 @@ public class EditProfileFragment extends Fragment
         setupNameDisplay();
 
         profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));
-        binding.cameraIcon.setOnClickListener(v -> profilePictureUtil.openImageMenu());
+        binding.cameraIcon.setOnClickListener(v -> {
+            PermViewUtil permViewUtil = new PermViewUtil(binding.getRoot());
+            permViewUtil.performActionWithPermissions(
+                    getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
+                    },
+                    this,
+                    () -> profilePictureUtil.openImageMenu()
+            );
+        });
 
         progressDialog = Util.createProgressDialog(getContext()).build();
 

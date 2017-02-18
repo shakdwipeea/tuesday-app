@@ -209,9 +209,11 @@ public class HomeFragment extends Fragment
     public void displayPhoneContacts(List<User> users) {
         if (users == null || users.size() == 0) {
             FirebaseCrash.log("No contacts permission " + hasPermissions());
+            Log.e(TAG, "displayPhoneContacts: No contacts permission");
+        } else {
+            Log.d(TAG, "displayPhoneContacts: Displaying contacts " + users.size());
+            phoneContactAdapter.setUsers(users);
         }
-
-        phoneContactAdapter.setUsers(users);
     }
 
     public void addTuesContact(User user) {

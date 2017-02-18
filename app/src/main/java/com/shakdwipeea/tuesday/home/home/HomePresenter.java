@@ -53,7 +53,7 @@ public class HomePresenter implements HomeContract.Presenter {
     public void subscribe(Context context) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        userService = UserService.getInstance();
+        userService = new UserService();
         preferences = Preferences.getInstance(context);
 
         // Check if name is already indexed if not then index it
@@ -155,13 +155,15 @@ public class HomePresenter implements HomeContract.Presenter {
     public void getContacts(Context context) {
         Log.d(TAG, "getContacts: ");
         contactsRepo = ContactsRepo.getInstance(context, true);
-        Subscription subscription = contactsRepo.getContacts()
+        Subscription subscription = contactsRepo.getContactsObservable()
                 .filter(contact -> !contact.isTuesday)
                 .map(contact -> {
-                    Log.d(TAG, "getContacts: " + contact);
                     User user = new User();
                     user.name = contact.name;
-                    user.phoneNumber = contact.phone.get(0);
+
+                    if (contact.phone.size() > 0)
+                        user.phoneNumber = contact.phone.get(0);
+
                     user.photo = contact.thumbNail;
                     return user;
                 })
@@ -169,6 +171,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 .compose(Util.applySchedulers())
                 .subscribe(
                         contactList -> {
+                            Log.d(TAG, "getContacts: Display contacts in UI dear " + contactList.size());
                             homeView.displayPhoneContacts(contactList);
                         },
                         throwable -> {

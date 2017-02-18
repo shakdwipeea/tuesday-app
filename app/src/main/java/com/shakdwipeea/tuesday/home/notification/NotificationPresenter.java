@@ -35,7 +35,7 @@ public class NotificationPresenter implements NotificationContract.Presenter {
     @Override
     public void subscribe() {
         // TODO: 30-11-2016 Check if using getInstance here is wise 🤔
-        userService = UserService.getInstance();
+        userService = new UserService();
 
         subscribeRequestNotifications();
         getGrantedDetails();

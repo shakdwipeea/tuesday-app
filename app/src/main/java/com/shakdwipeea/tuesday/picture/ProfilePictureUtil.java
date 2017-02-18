@@ -26,11 +26,9 @@ import static com.shakdwipeea.tuesday.data.PermConstants.REQUEST_WRITE_EXTERNAL_
  */
 
 public class ProfilePictureUtil {
-    private static final String TAG = "ProfilePictureUtil";
-
     public static final int PHOTO_PICKER_REQUEST_CODE = 260;
     public static final int REQUEST_IMAGE_CAPTURE = 582;
-
+    private static final String TAG = "ProfilePictureUtil";
     private ProfilePicturePresenter presenter;
     private ProfilePictureView pictureView;
 
@@ -46,27 +44,19 @@ public class ProfilePictureUtil {
         new MaterialDialog.Builder(pictureView.getContext())
                 .title("Change Profile Picture")
                 .items(R.array.items)
-                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
-                    /**
-                     * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                     * returning false here won't allow the newly selected radio button
-                     * to actually be selected.
-                     **/
+                .itemsCallback((dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
                             openCamera();
-                            return true;
+                            break;
                         case 1:
                             openPhotoPicker();
-                            return true;
+                            break;
                         case 2:
                             presenter.deleteProfilePic();
-                            return true;
+                            break;
                     }
-
-                    return true;
                 })
-                .positiveText("Select")
                 .show();
     }
 
@@ -108,6 +98,11 @@ public class ProfilePictureUtil {
     }
 
     public void openPhotoPicker() {
+        if (!hasPermission()) {
+            Log.e(TAG, "openPhotoPicker: No permission exiting");
+            return;
+        }
+
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         pictureView.startActivityForResult(photoPickerIntent, PHOTO_PICKER_REQUEST_CODE);
@@ -141,8 +136,7 @@ public class ProfilePictureUtil {
                         final Uri imageUri = data.getData();
                         presenter.updateProfilePic(pictureView.getContext(), imageUri);
                     } else {
-                        // TODO: 19-10-2016 add error handling
-                        new File(currentPhotoPath).delete();
+                        pictureView.displayError("Could not get image. " + resultCode);
                     }
                     break;
                 case REQUEST_IMAGE_CAPTURE:
@@ -155,6 +149,7 @@ public class ProfilePictureUtil {
                         Exception error = result.getError();
                         pictureView.displayError(error.getMessage());
                         error.printStackTrace();
+                        new File(currentPhotoPath).delete();
                     }
                     break;
             }

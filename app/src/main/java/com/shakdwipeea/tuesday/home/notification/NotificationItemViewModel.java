@@ -12,7 +12,7 @@ public class NotificationItemViewModel {
     private UserService userService;
 
     public NotificationItemViewModel() {
-        userService = UserService.getInstance();
+        userService = new UserService();
     }
 
     /**

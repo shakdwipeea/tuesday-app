@@ -55,7 +55,8 @@ public class PermViewUtil {
         } else {
             if (ContextCompat.checkSelfPermission(context,
                     permissionToCheck) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "performActionWithPermissions: will be performed later");
+                Log.d(TAG, "performActionWithPermissions: will be performed later with req code "
+                        + reqCode);
                 pendingActionMap.append(reqCode, actionInterface);
                 permissionInterface.requestPermissions(permissions, reqCode);
             } else {
@@ -85,6 +86,8 @@ public class PermViewUtil {
      */
     public void onPermissionResult(int requestCode, @NonNull String[] permissions,
                                    @NonNull int[] grantResults) {
+        Log.d(TAG, "onPermissionResult: Forwarded req code is " + requestCode);
+
         ActionInterface actionInterface = pendingActionMap.get(requestCode);
 
         if (actionInterface != null && grantResults.length > 0

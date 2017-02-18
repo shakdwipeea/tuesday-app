@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -14,10 +13,9 @@ import android.util.Log;
 
 public class SyncUtils {
     private static final String TAG = "SyncUtils";
-
-    public static String ACCOUNT_TYPE = "com.shakdwipeea.tuesday.account";
     private static final long SYNC_FREQUENCY = 60 * 60;  // 1 hour (in seconds)
     private static final String CONTENT_AUTHORITY = "com.android.contacts";
+    public static String ACCOUNT_TYPE = "com.shakdwipeea.tuesday.account";
 
     public static void createSyncAccount(Context context, Account account) {
         boolean newAccount = false;
@@ -32,7 +30,7 @@ public class SyncUtils {
             // Recommend a schedule for automatic synchronization. The system may modify this based
             // on other scheduled syncs and network utilization.
             ContentResolver.addPeriodicSync(
-                    account, CONTENT_AUTHORITY, new Bundle(),SYNC_FREQUENCY);
+                    account, CONTENT_AUTHORITY, new Bundle(), SYNC_FREQUENCY);
             newAccount = true;
         }
 

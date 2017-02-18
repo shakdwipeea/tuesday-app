@@ -1,7 +1,5 @@
 package com.shakdwipeea.tuesday.auth.otp;
 
-import com.google.firebase.auth.FirebaseUser;
-
 /**
  * Created by akash on 20/12/16.
  */

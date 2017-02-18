@@ -47,7 +47,7 @@ public class PickerPresenter implements PickerContract.Presenter {
 //                        () -> SelectedProviders.setProviderList(selectedProviders)
 //                );
 
-        Observable<List<Provider>> providerObservable = UserService.getInstance()
+        Observable<List<Provider>> providerObservable = new UserService()
                 .getProvider()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

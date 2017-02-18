@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
@@ -23,8 +21,6 @@ import com.shakdwipeea.tuesday.data.entities.user.User;
 import java.util.ArrayList;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
-import rx.subjects.ReplaySubject;
 
 /**
  * Created by ashak on 07-11-2016.
@@ -50,7 +46,7 @@ public class ContactsRepo {
 
     private ContentResolver contentResolver;
 
-    private ReplaySubject<Contact> replaySubject;
+//    private ReplaySubject<Contact> replaySubject;
 
     private Context context;
 
@@ -58,18 +54,19 @@ public class ContactsRepo {
     private ContactsRepo(Context context, boolean showError) {
         this.context = context;
         contentResolver = context.getContentResolver();
-        replaySubject = ReplaySubject.create();
+//        replaySubject = ReplaySubject.create();
 
-        Observable<Contact> contactsObservable = getContactsObservable();
-        if (contactsObservable != null) {
-            contactsObservable.subscribeOn(Schedulers.newThread())
-                    .subscribe(replaySubject);
-        } else {
-            if (showError) {
-                Toast.makeText(context, "Please provide contacts permission.", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
+//         Now we do it directly fuck this shit
+//        Observable<Contact> contactsObservable = getContactsObservable();
+//        if (contactsObservable != null) {
+//            contactsObservable.subscribeOn(Schedulers.newThread())
+//                    .subscribe(replaySubject);
+//        } else {
+//            if (showError) {
+//                Toast.makeText(context, "Please provide contacts permission.", Toast.LENGTH_SHORT)
+//                        .show();
+//            }
+//        }
     }
 
     public static ContactsRepo getInstance(Context context, boolean showError) {
@@ -100,9 +97,9 @@ public class ContactsRepo {
         }
     }
 
-    public Observable<Contact> getContacts() {
-        return replaySubject;
-    }
+//    public Observable<Contact> getContacts() {
+//        return replaySubject;
+//    }
 
     public Observable<Contact> getContactsObservable() {
         if (ContextCompat.checkSelfPermission(context,
@@ -110,7 +107,6 @@ public class ContactsRepo {
             return null;
         }
 
-        Log.d(TAG, "getContactsObservable: Creating obeserva");
 
         // TODO: 08-11-2016 prevent flickering of contacts
         return Observable
@@ -137,7 +133,6 @@ public class ContactsRepo {
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
                             Contact contact = getContact(cursor);
-                            Log.d(TAG, "getContactsObservable: contact " + contact);
                             subscriber.onNext(contact);
                         }
 

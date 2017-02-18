@@ -1,7 +1,6 @@
 package com.shakdwipeea.tuesday.auth.phone;
 
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,18 +9,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.auth.otp.OtpFragment;
 import com.shakdwipeea.tuesday.databinding.FragmentPhoneInputBinding;
-import com.shakdwipeea.tuesday.home.HomeActivity;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.util.concurrent.TimeUnit;
 
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -48,6 +46,20 @@ public class PhoneInputFragment extends Fragment implements PhoneInputContract.V
                 .inflate(inflater, R.layout.fragment_phone_input, container, false);
 
         presenter = new PhoneInputPresenter(this);
+
+        binding.phoneInput.setOnEditorActionListener(
+                (v, actionId, event) -> {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        String phone = binding.phoneInput.getText().toString();
+                        if (phone.length() == 10) {
+                            presenter.getAccountDetails(phone);
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+        );
 
         viewSubscription = RxTextView.textChanges(binding.phoneInput)
                 .debounce(200, TimeUnit.MILLISECONDS)

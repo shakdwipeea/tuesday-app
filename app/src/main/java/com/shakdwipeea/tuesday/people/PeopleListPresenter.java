@@ -26,7 +26,7 @@ public class PeopleListPresenter implements PeopleListContract.Presenter {
 
     public PeopleListPresenter(PeopleListContract.View peopleView) {
         this.peopleView = peopleView;
-        userService = UserService.getInstance();
+        userService = new UserService();
     }
 
     @Override

@@ -1,10 +1,10 @@
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         tools:context="com.shakdwipeea.tuesday.auth.details.DetailsFragment">
 
         <FrameLayout
@@ -13,37 +13,39 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_pic"
-                android:src="@drawable/ic_users_11"
                 android:layout_width="226dp"
-                android:layout_height="226dp" />
+                android:layout_height="226dp"
+                android:src="@drawable/ic_users_11" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/camera_icon"
-                android:src="@drawable/camer"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:layout_gravity="bottom|right|end" />
+                android:layout_gravity="bottom|right|end"
+                android:src="@drawable/camer" />
 
         </FrameLayout>
 
 
 
         <EditText
-            android:layout_margin="8dp"
             android:id="@+id/name_input"
-            android:hint="@string/name_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:hint="@string/name_label"
+            android:inputType="text"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/save_button"
-            android:layout_margin="8dp"
-            android:text="@string/save"
-            android:textColor="#fff"
-            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/save"
+            android:textColor="#fff" />
 
     </LinearLayout>
 </layout>

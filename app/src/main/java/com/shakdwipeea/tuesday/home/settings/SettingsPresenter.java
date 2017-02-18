@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
-import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
@@ -27,7 +26,7 @@ public class SettingsPresenter implements SettingsContract.Presenter {
 
     public SettingsPresenter(SettingsContract.View settingsView, Context context) {
         this.settingsView = settingsView;
-        userService = UserService.getInstance();
+        userService = new UserService();
         preferences = Preferences.getInstance(context);
     }
 

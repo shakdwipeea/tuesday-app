@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,21 +35,14 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class OtpFragment extends Fragment implements OtpContract.View,
         RequestPermissionInterface {
-    private static final String TAG = "OtpFragment";
-
-    FragmentPhoneInputBinding binding;
-
-    private Subscription subscription;
-
-    private MaterialDialog dialog;
-
-    private OtpPresenter presenter;
-
-    PermViewUtil permViewUtil;
-
-    String phone;
-
     public static final String PHONE_NUMBER_ARG_KEY = "phone";
+    private static final String TAG = "OtpFragment";
+    FragmentPhoneInputBinding binding;
+    PermViewUtil permViewUtil;
+    String phone;
+    private Subscription subscription;
+    private MaterialDialog dialog;
+    private OtpPresenter presenter;
 
     public OtpFragment() {
         // Required empty public constructor
@@ -75,6 +69,20 @@ public class OtpFragment extends Fragment implements OtpContract.View,
         presenter = new OtpPresenter(this);
 
         setupForOtp();
+
+        binding.phoneInput.setOnEditorActionListener(
+                (v, actionId, event) -> {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        String otp = binding.phoneInput.getText().toString();
+                        if (otp.length() == 6) {
+                            presenter.verifyOtp(otp, phone);
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+        );
 
         subscription = RxTextView.textChanges(binding.phoneInput)
                 .debounce(200, TimeUnit.MILLISECONDS)

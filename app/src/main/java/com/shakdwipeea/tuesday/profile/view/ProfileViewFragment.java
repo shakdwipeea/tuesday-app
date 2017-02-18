@@ -59,28 +59,19 @@ public class ProfileViewFragment extends Fragment
 
     public static String PROFILE_IMAGE_EXTRA = "profilePic";
     public static String USER_EXTRA_KEY = "user";
-
-    private ProfilePresenter presenter;
-    private Drawable thumbnailDrawable;
-
     MaterialDialog progressBar;
-
     User user;
-
     ProviderAdapter providerAdapter;
     SingleViewAdapter<ProviderDetails, CallItemViewModel, CallItemBinding> callListAdapter;
     SingleViewAdapter<ProviderDetails, MailItemViewModel, MailItemBinding> mailListAdapter;
-
     ProfilePictureUtil pictureUtil;
-
     PermViewUtil permViewUtil;
-
     int colorAcc;
     int white;
-
     Drawable whiteRect;
-
     FragmentProfileViewBinding binding;
+    private ProfilePresenter presenter;
+    private Drawable thumbnailDrawable;
 
 
 
@@ -232,7 +223,7 @@ public class ProfileViewFragment extends Fragment
     public void setFriendTag(String tag) {
         binding.enterTag.setVisibility(View.VISIBLE);
 
-        if (tag.equals("true")) {
+        if (TextUtils.isEmpty(tag) || tag.equals("true")) {
             binding.enterTag.setText("Click me to enter tag");
         } else {
             binding.enterTag.setText(tag);

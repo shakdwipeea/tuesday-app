@@ -31,7 +31,7 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
 
     public EditProfilePresenter(EditProfileContract.View editProfileView) {
         this.editProfileView = editProfileView;
-        this.userService = UserService.getInstance();
+        this.userService = new UserService();
         this.compositeSubscription = new CompositeSubscription();
         this.user = FirebaseAuth.getInstance().getCurrentUser();
     }

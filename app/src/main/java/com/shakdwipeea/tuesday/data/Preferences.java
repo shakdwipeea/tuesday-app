@@ -3,8 +3,6 @@ package com.shakdwipeea.tuesday.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.shakdwipeea.tuesday.data.entities.user.User;
-
 /**
  * Created by ashak on 15-10-2016.
  */
@@ -16,6 +14,10 @@ public class Preferences {
     private static String KEY_SETUP_DONE = "setup_complete";
 
     private static String KEY_SYNC_FLAG = "sync_contact";
+
+    private static String KEY_LOGGED_IN = "logged_in";
+
+    private static String KEY_ACCOUNT_NAME = "account_name";
 
     private static Preferences preferences;
 
@@ -53,18 +55,40 @@ public class Preferences {
                 .apply();
     }
 
+    public boolean isSync() {
+        return sharedPreferences.getBoolean(KEY_SYNC_FLAG, false);
+    }
+
     public void setSync(boolean enable) {
         sharedPreferences.edit()
                 .putBoolean(KEY_SYNC_FLAG, enable)
                 .apply();
     }
 
-    public boolean isSync() {
-        return sharedPreferences.getBoolean(KEY_SYNC_FLAG, false);
+    public boolean isLoggedIn() {
+        return sharedPreferences.getBoolean(KEY_LOGGED_IN, false);
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        sharedPreferences.edit()
+                .putBoolean(KEY_LOGGED_IN, loggedIn)
+                .apply();
+    }
+
+    public String getAccountName() {
+        return sharedPreferences.getString(KEY_ACCOUNT_NAME, "Tuesday");
+    }
+
+    public void setAccountName(String accountName) {
+        sharedPreferences.edit()
+                .putString(KEY_ACCOUNT_NAME, accountName)
+                .apply();
     }
 
     public void clear() {
         setNameIndexed(false);
         setSetupComplete(false);
+        setLoggedIn(false);
+        setAccountName("Tuesday");
     }
 }

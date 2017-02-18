@@ -16,7 +16,7 @@ public class ProviderDetailsPresenter implements ProviderDetailsContract.Present
             , Provider provider) {
         this.providerDetailsView = providerDetailsView;
         this.provider = provider;
-        this.userService = UserService.getInstance();
+        this.userService = new UserService();
     }
 
     @Override

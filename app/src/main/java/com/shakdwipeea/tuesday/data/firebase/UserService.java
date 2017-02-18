@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
@@ -39,22 +38,13 @@ public class UserService {
     // TODO: 29-11-2016 check if tracking progress of writing value is required
     // rename this to FirebaseRepository and make it a subscription model so that listeners
     // can be attached on subscribe() and removed on unsubscribe()
-    private UserService() {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
+    public UserService() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef = FirebaseDatabaseUtil.getDatabase().getReference();
         userRef = dbRef
                 .child(User.KEY);
         profileRef = userRef
                 .child(user.getUid());
-    }
-
-    public static UserService getInstance() {
-        if (userService == null)
-            userService = new UserService();
-
-        return userService;
     }
 
     public Observable<User> getUserDetails() {
@@ -68,8 +58,9 @@ public class UserService {
     }
 
     public void saveUserDetails() {
+        FirebaseAuth.getInstance().getCurrentUser();
         if (user.getDisplayName() != null)
-            profileRef.child(User.UserNode.NAME).setValue(user.getDisplayName());
+            profileRef.child(User.UserNode.NAME).setValue(user.getDisplayName().substring(0, 100));
         else
             Log.e(TAG, "saveUserDetails: " + user );
 
@@ -179,6 +170,7 @@ public class UserService {
     }
 
     public void saveTuesContacts(String contactUid, String tag) {
+        Log.d(TAG, "saveTuesContacts: Saving contact " + contactUid + " with tag " + tag);
         profileRef.child(User.UserNode.TUES_CONTACTS)
                 .child(contactUid)
                 .setValue(tag);
