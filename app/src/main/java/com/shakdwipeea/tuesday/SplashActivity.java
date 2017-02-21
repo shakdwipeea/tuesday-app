@@ -18,10 +18,14 @@ public class SplashActivity extends AppCompatActivity {
         Preferences prefs = Preferences.getInstance(this);
 
         Intent intent;
-        if (prefs.isLoggedIn()) {
-            intent = new Intent(this, HomeActivity.class);
+        if (prefs.getOnboardingDone()) {
+            if (prefs.isLoggedIn()) {
+                intent = new Intent(this, HomeActivity.class);
+            } else {
+                intent = new Intent(this, AuthActivity.class);
+            }
         } else {
-            intent = new Intent(this, AuthActivity.class);
+            intent = new Intent(this, IntroActivity.class);
         }
 
         startActivity(intent);

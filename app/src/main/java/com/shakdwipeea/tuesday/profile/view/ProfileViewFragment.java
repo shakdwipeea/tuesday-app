@@ -73,7 +73,7 @@ public class ProfileViewFragment extends Fragment
     private ProfilePresenter presenter;
     private Drawable thumbnailDrawable;
 
-
+    private Provider curProvider;
 
     public ProfileViewFragment() {
         // Required empty public constructor
@@ -137,6 +137,7 @@ public class ProfileViewFragment extends Fragment
                 LinearLayoutManager.HORIZONTAL, false);
         providerAdapter = new ProviderAdapter();
         providerAdapter.setChangeListener(curProvider -> {
+            this.curProvider = curProvider;
             providerAdapter.unSelectExcept(curProvider);
             presenter.displayProviderDetails(curProvider);
         });
@@ -199,7 +200,7 @@ public class ProfileViewFragment extends Fragment
     @Override
     public void displayProviderInfo(Provider provider, String providerDetail) {
         binding.setProvider(provider);
-        binding.providerName.setText(provider.name);
+//        binding.providerName.setText(provider.name);
         binding.detailProvider.setText(providerDetail);
     }
 
@@ -337,12 +338,10 @@ public class ProfileViewFragment extends Fragment
     @Override
     public void addProvider(List<Provider> providerList) {
         providerAdapter.setProviders(providerList);
-
-        if (providerList.size() > 0) {
-            // show first provider
-            presenter.displayProviderDetails(providerAdapter.getProvider(0));
-            providerAdapter.unSelectExcept(providerAdapter.getProvider(0));
-        }
+        if (curProvider != null)
+            providerAdapter.unSelectExcept(curProvider);
+        else
+            providerAdapter.unSelectAll();
     }
 
     @Override

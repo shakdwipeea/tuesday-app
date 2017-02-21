@@ -30,7 +30,9 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth);
+
         loadFragment(new PhoneInputFragment());
+
     }
 
     public void loadFragment(Fragment fragment) {

@@ -54,7 +54,7 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
         return providers.get(index);
     }
 
-    private void unSelectAll() {
+    public void unSelectAll() {
         for (Provider p: providers) {
             p.setSelected(false);
         }
@@ -62,7 +62,11 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.Provid
 
     public void unSelectExcept(Provider provider) {
         unSelectAll();
-        provider.setSelected(true);
+        for (Provider p : providers) {
+            if (p.name.equals(provider.name)) {
+                p.setSelected(true);
+            }
+        }
         notifyDataSetChanged();
     }
 

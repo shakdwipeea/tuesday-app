@@ -71,9 +71,6 @@ public class FirebaseService {
                         if (provider != null) {
                             Provider pToAdd = new Provider(provider);
                             pToAdd.setProviderDetails(providerDetails);
-
-                            Log.d(TAG, "getProviderInfo: provider " + provider);
-                            Log.d(TAG, "onDataChange: providerDetails " + provider.providerDetails);
                             providerList.add(pToAdd);
                         }
                     }

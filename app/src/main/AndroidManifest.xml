@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -41,8 +42,7 @@
 
         <activity
             android:name=".auth.AuthActivity"
-            android:theme="@style/NoActionBarAppThemeWithSplash">
-        </activity>
+            android:theme="@style/NoActionBarAppThemeWithSplash"></activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -138,6 +138,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".IntroActivity"></activity>
     </application>
 
 </manifest>

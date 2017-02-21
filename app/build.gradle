@@ -30,6 +30,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -119,6 +120,13 @@ dependencies {
 
     // for compressing image
     compile 'id.zelory:compressor:1.0.4'
+
+    // onboarding
+    compile 'com.codemybrainsout.onboarding:onboarder:1.0.3'
+
+    //multidex
+    compile 'com.android.support:multidex:1.0.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

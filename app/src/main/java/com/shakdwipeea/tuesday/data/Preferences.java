@@ -19,6 +19,8 @@ public class Preferences {
 
     private static String KEY_ACCOUNT_NAME = "account_name";
 
+    private static String KEY_ONBOARDING_DONE = "onboarding_done";
+
     private static Preferences preferences;
 
     private SharedPreferences sharedPreferences;
@@ -85,10 +87,22 @@ public class Preferences {
                 .apply();
     }
 
+    public boolean getOnboardingDone() {
+        return sharedPreferences
+                .getBoolean(KEY_ONBOARDING_DONE, false);
+    }
+
+    public void setOnboardingDone(boolean value) {
+        sharedPreferences.edit()
+                .putBoolean(KEY_ONBOARDING_DONE, value)
+                .apply();
+    }
+
     public void clear() {
         setNameIndexed(false);
         setSetupComplete(false);
         setLoggedIn(false);
         setAccountName("Tuesday");
+        setOnboardingDone(false);
     }
 }

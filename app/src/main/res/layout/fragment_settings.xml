@@ -19,23 +19,37 @@
             android:id="@+id/contact_item"
             layout="@layout/contact_item" />
 
-        <TextView
-            android:background="@drawable/rectangle"
-            android:padding="10dp"
-            android:textSize="20sp"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/log_out"
-            android:onClick="@{presenter::logOut}"/>
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/black" />
 
         <TextView
-            android:background="@drawable/rectangle"
-            android:padding="10dp"
-            android:textSize="20sp"
-            android:text="@string/having_contact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{presenter::viewPeopleHavingContact}"/>
+            android:onClick="@{presenter::logOut}"
+            android:padding="10dp"
+            android:text="@string/log_out"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{presenter::viewPeopleHavingContact}"
+            android:padding="10dp"
+            android:text="@string/having_contact"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,21 +57,26 @@
             android:orientation="horizontal">
 
             <TextView
-                android:padding="10dp"
-                android:textSize="20sp"
-                android:text="@string/sync_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/sync_label"
+                android:textSize="20sp"
                 />
 
             <Switch
                 android:id="@+id/sync_contact_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right|center_vertical|end"
-                android:layout_gravity="center|end" />
+                android:layout_gravity="center|end"
+                android:gravity="right|center_vertical|end" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black" />
 
     </LinearLayout>
 </layout>
