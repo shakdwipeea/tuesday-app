@@ -48,14 +48,17 @@ class EditProfileAdapter
     private Context context;
     private EditProfilePresenter editProfilePresenter;
 
+    private EditProfileContract.ImportData importData;
+
     public EditProfileAdapter(Context context,
-                              EditProfilePresenter editProfilePresenter) {
+                              EditProfilePresenter editProfilePresenter, EditProfileContract.ImportData importData) {
         this.callList = new ArrayList<>();
         this.mailList = new ArrayList<>();
         this.socialList = new ArrayList<>();
 
         this.context = context;
         this.editProfilePresenter = editProfilePresenter;
+        this.importData = importData;
     }
 
     public List<Provider> getCallList() {
@@ -308,6 +311,26 @@ class EditProfileAdapter
             //Attach listener for  delete
             binding.detailDelete.setOnClickListener(v -> {
                 editProfilePresenter.deleteDetail(provider);
+
+                // Log out user when he deletes
+                if (provider.name.equals(ProviderNames.Facebook)) {
+                    importData.performClick(null);
+                }
+            });
+
+            binding.importContent.setOnClickListener(v -> {
+                if (provider.name.equals(ProviderNames.Facebook)) {
+                    importData.performClick(id -> {
+                        ProviderDetails newProvider = updateProviderDetailsByType(
+                                provider.providerDetails, id
+                        );
+                        provider.setProviderDetails(newProvider);
+                        editProfilePresenter.saveDetails(provider);
+
+                        // set text explicitly
+                        binding.importContent.setText("Logged In");
+                    });
+                }
             });
         }
 
@@ -389,6 +412,7 @@ class EditProfileAdapter
             new MaterialDialog.Builder(context)
                     .title(R.string.select_provider_label)
                     .items(newProviderList(socialList))
+                    .contentColor(context.getResources().getColor(R.color.black))
                     .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
                         if (text != null) {
                             addAccount(text.toString());
@@ -433,6 +457,7 @@ class EditProfileAdapter
             new MaterialDialog.Builder(context)
                     .title("Choose a detail type")
                     .items(remainingDetailTypes)
+                    .contentColor(context.getResources().getColor(R.color.black))
                     .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
                         if (text != null && remainingDetailTypes.size() > 0) {
                             addAccount(providerName, text.toString());

@@ -148,4 +148,6 @@
     <string name="email_hint">Enter email</string>
     <string name="social_hint">Enter username</string>
     <string name="details_view_error">Could not save the details. Please retry.</string>
+    <string name="import_data">Import</string>
+    <string name="logged_in">Logged In</string>
 </resources>

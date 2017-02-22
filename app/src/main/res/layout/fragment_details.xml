@@ -17,6 +17,18 @@
                 android:layout_height="226dp"
                 android:src="@drawable/ic_users_11" />
 
+            <TextView
+                android:id="@+id/placeholder_profile_pic"
+                android:layout_width="226dp"
+                android:layout_height="226dp"
+                android:layout_gravity="center"
+                android:background="@drawable/profile_placeholder"
+                android:gravity="center"
+                android:text="Select your profile picture"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/camera_icon"
                 android:layout_width="55dp"

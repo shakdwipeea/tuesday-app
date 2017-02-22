@@ -49,6 +49,8 @@ public class DetailsPresenter extends ProfilePicturePresenter implements Details
 
             if (firebaseUser.getPhotoUrl() != null)
                 detailsView.displayProfilePic(firebaseUser.getPhotoUrl().toString());
+            else
+                detailsView.displayProfilePic("");
         }
     }
 

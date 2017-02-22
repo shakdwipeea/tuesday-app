@@ -10,12 +10,14 @@
 
     <TextView
         android:id="@+id/section_header"
-        tools:text="Phone"
-        android:text="@{text}"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        android:text="@{text}"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:text="Phone" />
 </layout>

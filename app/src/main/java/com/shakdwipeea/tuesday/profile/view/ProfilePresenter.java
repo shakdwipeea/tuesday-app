@@ -253,6 +253,7 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                 providerDetail = provider.getProviderDetails().phoneNumber;
                 break;
             case USERNAME_NO_VERIFICATION:
+            case API_VERIFICATION:
                 providerDetail = provider.getProviderDetails().username;
                 break;
         }

@@ -58,7 +58,7 @@ public class ProviderService {
         providerDetails = new ProviderDetails();
         provider.setName(ProviderNames.Facebook);
         provider.setIcon(R.drawable.facebook_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        providerDetails.setType(Provider.Type.API_VERIFICATION);
         provider.setProviderDetails(providerDetails);
         providers.add(provider);
 
@@ -102,7 +102,7 @@ public class ProviderService {
         providerDetails = new ProviderDetails();
         provider.setName(ProviderNames.LinkedIn);
         provider.setIcon(R.drawable.linkedin_color);
-        providerDetails.setType(Provider.Type.USERNAME_NO_VERIFICATION);
+        providerDetails.setType(Provider.Type.API_VERIFICATION);
         provider.setSelected(true);
         provider.setProviderDetails(providerDetails);
         providers.add(provider);

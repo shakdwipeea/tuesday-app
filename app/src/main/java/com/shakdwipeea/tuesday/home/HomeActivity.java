@@ -2,6 +2,7 @@ package com.shakdwipeea.tuesday.home;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -62,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupTabs() {
         int tabIconWhiteColor = ContextCompat.getColor(context, R.color.tw__solid_white);
-        int tabIconAccentColor = ContextCompat.getColor(context, R.color.colorAccent);
+        int tabIconAccentColor = ContextCompat.getColor(context, R.color.black);
 
         // Add white filter to all tab icons
         int numTabs = binding.homeTab.getTabCount();
@@ -75,29 +76,30 @@ public class HomeActivity extends AppCompatActivity {
                     switch (i) {
                         case 0:
                             tabIcon = ContextCompat.getDrawable(this,
-                                            R.drawable.ic_home_black_24dp);
+                                    R.drawable.ic_home);
+
                             break;
                         case 1:
                             tabIcon = ContextCompat.getDrawable(this,
-                                            R.drawable.ic_notifications_black_24dp);
+                                    R.drawable.ic_notifications_none_black_24dp);
                             break;
                         case 2:
                             tabIcon = ContextCompat.getDrawable(this,
-                                    R.drawable.ic_tune_black_24dp);
+                                    R.drawable.ic_icon_filters);
                             break;
                         default:
                             tabIcon = ContextCompat.getDrawable(this,
                                     R.drawable.ic_person_add_black_24dp);
                     }
+                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
                     tab.setIcon(tabIcon);
                 }
 
-//                if (tab.isSelected())
-//                    tabIcon.setColorFilter(tabIconAccentColor, PorterDuff.Mode.SRC_IN);
-//                else
-//                    tabIcon.setColorFilter(tabIconWhiteColor, PorterDuff.Mode.SRC_IN);
+                setTabIcon(tab, false);
             }
         }
+
+        setTabIcon(binding.homeTab.getTabAt(0), true);
 
         // Make selected tab as accent color
         binding.homeTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -107,6 +109,8 @@ public class HomeActivity extends AppCompatActivity {
                 if (item instanceof FragmentViewPagerLifeCycle) {
                     ((FragmentViewPagerLifeCycle) item).onResumeFragment();
                 }
+
+                setTabIcon(tab, true);
             }
 
             @Override
@@ -115,14 +119,47 @@ public class HomeActivity extends AppCompatActivity {
                 if (item instanceof FragmentViewPagerLifeCycle) {
                     ((FragmentViewPagerLifeCycle) item).onPauseFragment();
                 }
+
+                setTabIcon(tab, false);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                setTabIcon(tab, true);
             }
 
         });
+    }
+
+    private void setTabIcon(TabLayout.Tab tab, boolean selectd) {
+        int position = tab.getPosition();
+
+        switch (position) {
+            case 0:
+                if (selectd)
+                    tab.setIcon(getDrawableFromId(R.drawable.ic_home_black_24dp));
+                else
+                    tab.setIcon(getDrawableFromId(R.drawable.ic_home));
+                break;
+
+            case 1:
+                if (selectd)
+                    tab.setIcon(getDrawableFromId(R.drawable.ic_notifications_black_24dp));
+                else
+                    tab.setIcon(getDrawableFromId(R.drawable.ic_notification));
+                break;
+
+            case 2:
+                if (selectd)
+                    tab.setIcon(getDrawableFromId(R.drawable.ic_tune_black_24dp));
+                else
+                    tab.setIcon(getDrawableFromId(R.drawable.ic_icon_filters));
+                break;
+        }
+    }
+
+    private Drawable getDrawableFromId(int id) {
+        return ContextCompat.getDrawable(context, id);
     }
 
     @Override

@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +25,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.login.LoginResult;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.shakdwipeea.tuesday.R;
 import com.shakdwipeea.tuesday.data.Preferences;
@@ -36,6 +44,8 @@ import com.shakdwipeea.tuesday.util.Util;
 import com.shakdwipeea.tuesday.util.perm.PermViewUtil;
 import com.shakdwipeea.tuesday.util.perm.RequestPermissionInterface;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
 
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +72,10 @@ public class EditProfileFragment extends Fragment
 
     Subscription subscription;
 
+    CallbackManager fbCallbackManager;
+
+    EditProfileContract.SaveImportData saveImportData;
+
     public EditProfileFragment() {
         // Required empty public constructor
     }
@@ -70,6 +84,8 @@ public class EditProfileFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile,
                 container, false);
@@ -99,9 +115,54 @@ public class EditProfileFragment extends Fragment
 
         setupRecyclerViews();
 
+        fbCallbackManager = CallbackManager.Factory.create();
+        setupFbLogin();
+
         return binding.getRoot();
     }
 
+    private void setupFbLogin() {
+        binding.fbLoginButton.setReadPermissions("email");
+        binding.fbLoginButton.setFragment(this);
+
+        binding.fbLoginButton.registerCallback(fbCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Bundle params = new Bundle();
+                        params.putString("fields", "email");
+
+                        GraphRequest graphRequest = GraphRequest
+                                .newMeRequest(loginResult.getAccessToken(),
+                                        (object, response) -> {
+                                            try {
+                                                String email = object.getString("email");
+
+                                                if (saveImportData != null)
+                                                    saveImportData.save(email);
+
+                                                Log.d(TAG, "onSuccess: Email is " + email);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
+
+                        graphRequest.setParameters(params);
+                        graphRequest.executeAsync();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        displayError("Login cancelled");
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        displayError(error.getMessage());
+                        error.printStackTrace();
+                    }
+                });
+    }
 
 
     private void setupNameDisplay() {
@@ -151,11 +212,19 @@ public class EditProfileFragment extends Fragment
 
     public void setupRecyclerViews() {
         LinearLayoutManager providerLM = new LinearLayoutManager(getContext());
-        providerAdapter = new EditProfileAdapter(getContext(), editProfilePresenter);
+        providerAdapter = new EditProfileAdapter(getContext(), editProfilePresenter,
+                saveImportData -> {
+                    this.saveImportData = saveImportData;
+                    binding.fbLoginButton.performClick();
+                });
+
+        DividerItemDecoration decoration = new DividerItemDecoration(getContext(),
+                providerLM.getOrientation());
 
         binding.providerList.setLayoutManager(providerLM);
         binding.providerList.setAdapter(providerAdapter);
         binding.providerList.setItemAnimator(new SlideInUpAnimator());
+        binding.providerList.addItemDecoration(decoration);
     }
 
     /**
@@ -251,6 +320,7 @@ public class EditProfileFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        fbCallbackManager.onActivityResult(requestCode, resultCode, data);
         profilePictureUtil.onActivityResult(requestCode, resultCode, data);
     }
 

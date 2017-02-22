@@ -29,4 +29,12 @@ public class EditProfileContract {
         void saveDetails(Provider provider);
         void deleteDetail(Provider provider);
     }
+
+    interface ImportData {
+        void performClick(SaveImportData saveImportData);
+    }
+
+    interface SaveImportData {
+        void save(String id);
+    }
 }

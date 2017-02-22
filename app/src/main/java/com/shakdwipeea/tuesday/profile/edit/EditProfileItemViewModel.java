@@ -1,5 +1,7 @@
 package com.shakdwipeea.tuesday.profile.edit;
 
+import android.text.TextUtils;
+
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 
@@ -32,6 +34,18 @@ public class EditProfileItemViewModel {
 
             default: return providerDetails.getUsername();
         }
+    }
+
+    public String getButtonText() {
+        if (TextUtils.isEmpty(provider.providerDetails.getUsername())) {
+            return "Import";
+        } else {
+            return "Logged In";
+        }
+    }
+
+    public boolean showImportButton() {
+        return provider.providerDetails.type.equals(Provider.Type.API_VERIFICATION);
     }
 
 

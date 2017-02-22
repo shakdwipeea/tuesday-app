@@ -155,7 +155,7 @@ public class DetailsFragment extends Fragment
                     .load(url)
                     .into(binding.profilePic);
         } else {
-            // TODO: 17-11-2016 display text drawable from first letter
+            binding.placeholderProfilePic.setVisibility(View.VISIBLE);
         }
     }
 
