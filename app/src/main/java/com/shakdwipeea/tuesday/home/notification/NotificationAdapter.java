@@ -77,7 +77,8 @@ public class NotificationAdapter extends
         holder.binding.setProvider(notificationDetail.provider);
         holder.binding.setContact(notificationDetail.user);
         holder.binding.setActionHandler(new ContactItemActionHandler());
-        Util.displayProfilePic(context, holder.binding.profilePic, notificationDetail.user);
+        Util.displayProfilePic(context, holder.binding.profilePic, holder.binding.placeholderProfilePic,
+                notificationDetail.user);
 
         if (actionRequired) {
             // TODO: 26/2/17 move action listener to oncreate

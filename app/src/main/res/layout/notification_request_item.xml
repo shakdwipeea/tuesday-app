@@ -32,6 +32,11 @@
             android:layout_height="56dp"
             />
 
+        <ImageView
+            android:id="@+id/placeholder_profile_pic"
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
+
         <LinearLayout
             android:layout_toRightOf="@id/profile_pic"
             android:layout_alignParentTop="true"

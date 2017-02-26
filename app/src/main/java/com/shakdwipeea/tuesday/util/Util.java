@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -64,7 +65,8 @@ public class Util {
      * @param profilePicView CircularImageView to display profile pic present
      * @param user User whose picture and/or name is to be displayed
      */
-    public static void displayProfilePic(Context context, CircleImageView profilePicView, User user) {
+    public static void displayProfilePic(Context context, CircleImageView profilePicView,
+                                         ImageView placeholderView, User user) {
         if (user.pic != null && !user.pic.equals("")) {
             Picasso.with(context)
                     .load(user.pic)
@@ -73,13 +75,16 @@ public class Util {
             profilePicView.setImageBitmap(user.photo);
         } else if (!TextUtils.isEmpty(user.name)){
             // TODO: 17-11-2016 generalize text drawable thingy
-            profilePicView
+            placeholderView
                     .setImageDrawable(
                             TextDrawable.builder()
                                     .buildRound(
                                             String.valueOf(user.name.toUpperCase().charAt(0)),
                                             ColorGenerator.MATERIAL.getColor(user.name))
                     );
+
+            placeholderView.setVisibility(View.VISIBLE);
+            profilePicView.setVisibility(View.GONE);
         }
     }
 

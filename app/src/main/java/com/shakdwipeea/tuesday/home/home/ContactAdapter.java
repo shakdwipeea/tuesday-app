@@ -77,7 +77,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         binding.setContact(user);
         binding.setActionHandler(actionHandler);
 
-        Util.displayProfilePic(context, binding.profilePic, user);
+        Util.displayProfilePic(context, binding.profilePic, binding.placeholderProfilePic, user);
     }
 
     @Override

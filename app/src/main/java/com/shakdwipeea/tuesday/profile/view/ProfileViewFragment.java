@@ -400,7 +400,8 @@ public class ProfileViewFragment extends Fragment
                     .load(url)
                     .into(binding.profilePic);
         } else {
-            Util.displayProfilePic(getContext(), binding.profilePic, user);
+            Util.displayProfilePic(getContext(), binding.profilePic, binding.placeholderProfilePic,
+                    user);
         }
     }
 

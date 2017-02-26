@@ -25,6 +25,12 @@
             android:layout_height="56dp"
             />
 
+        <ImageView
+            android:id="@+id/placeholder_profile_pic"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:visibility="gone" />
+
         <LinearLayout
             android:layout_marginLeft="16dp"
             android:orientation="vertical"

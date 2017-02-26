@@ -76,6 +76,8 @@ public class EditProfileFragment extends Fragment
 
     CallbackManager fbCallbackManager;
 
+    PermViewUtil permViewUtil;
+
     EditProfileContract.SaveImportData saveImportData;
     private User user;
 
@@ -101,7 +103,7 @@ public class EditProfileFragment extends Fragment
 
         profilePictureUtil = new ProfilePictureUtil(new ProfilePicturePresenter(this));
         binding.cameraIcon.setOnClickListener(v -> {
-            PermViewUtil permViewUtil = new PermViewUtil(binding.getRoot());
+            permViewUtil = new PermViewUtil(binding.getRoot());
             permViewUtil.performActionWithPermissions(
                     getContext(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -364,12 +366,7 @@ public class EditProfileFragment extends Fragment
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         // Any correct permission go to camera
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            profilePictureUtil.openCamera();
-
-        }
+        permViewUtil.onPermissionResult(requestCode, permissions, grantResults);
     }
 
     @Override

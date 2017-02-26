@@ -109,7 +109,8 @@ public class SettingsFragment extends Fragment
     @Override
     public void displayUserDetails(User user) {
         binding.contactItem.setContact(user);
-        Util.displayProfilePic(getContext(), binding.contactItem.profilePic, user);
+        Util.displayProfilePic(getContext(), binding.contactItem.profilePic,
+                binding.contactItem.placeholderProfilePic, user);
     }
 
     @Override
