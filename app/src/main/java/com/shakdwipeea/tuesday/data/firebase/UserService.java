@@ -240,6 +240,8 @@ public class UserService {
                             GrantedToDetails grantedToDetails = new GrantedToDetails();
                             grantedToDetails.grantedByuid = dataSnapshot.getKey();
                             grantedToDetails.providerName = (String) dataSnapshot.getValue();
+                            grantedToDetails.providerDetailType = ProviderNames
+                                    .getProviderDetailType(grantedToDetails.providerName);
                             return grantedToDetails;
                         }
                 );

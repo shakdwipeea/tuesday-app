@@ -58,6 +58,16 @@ public class ProviderNames {
         return providerName.split("_")[0];
     }
 
+    /**
+     * Get the provider detail type
+     *
+     * @param providerName provider name with `_`
+     * @return provider detail type name after removing detail type
+     */
+    public static String getProviderDetailType(String providerName) {
+        return providerName.split("_")[1];
+    }
+
     public static String[] getAll() {
         return new String[]{
           Google, Github, Twitter, LinkedIn, WhatsApp, StackOverflow, Facebook, Email, Call

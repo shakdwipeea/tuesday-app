@@ -3,8 +3,10 @@ package com.shakdwipeea.tuesday.home.notification;
 import com.shakdwipeea.tuesday.data.entities.NotificationDetail;
 import com.shakdwipeea.tuesday.data.entities.user.GrantedToDetails;
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
+import com.shakdwipeea.tuesday.data.entities.user.ProviderDetails;
 import com.shakdwipeea.tuesday.data.firebase.FirebaseService;
 import com.shakdwipeea.tuesday.data.firebase.UserService;
+import com.shakdwipeea.tuesday.data.providers.ProviderNames;
 import com.shakdwipeea.tuesday.util.Util;
 
 import java.util.ArrayList;
@@ -126,14 +128,22 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                 .flatMap(details -> {
                     FirebaseService firebaseService = new FirebaseService(details.grantedByuid);
                     NotificationDetail notificationDetail = new NotificationDetail();
-                    notificationDetail.provider.name = details.providerName;
+                    notificationDetail.provider.name = ProviderNames
+                            .getProvider(details.providerName);
+
+                    ProviderDetails providerDetails = new ProviderDetails();
+                    providerDetails.detailType = details.providerDetailType;
+                    notificationDetail.provider.providerDetails = providerDetails;
+
                     return firebaseService.inflateNotificationUser(notificationDetail);
                 })
                 .compose(Util.applySchedulers())
                 .doOnSubscribe(() -> notificationView.clearGrantedNotification())
+                .doOnNext(notificationDetail -> notificationView
+                        .addGrantedNotification(notificationDetail))
                 .subscribe(
-                        notificationDetail ->
-                                notificationView.addGrantedNotification(notificationDetail),
+                        notificationDetail -> {
+                        },
                         throwable -> {
                             notificationView.displayError(throwable.getMessage());
                             throwable.printStackTrace();
