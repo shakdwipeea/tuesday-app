@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2Fragment;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
+import com.shakdwipeea.tuesday.data.Preferences;
 
 public class IntroActivity extends AppIntro {
 
@@ -49,12 +50,13 @@ public class IntroActivity extends AppIntro {
             setImmersive(true);
         }
 
-        setZoomAnimation();
+        setDepthAnimation();
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
+        Preferences.getInstance(this).setOnboardingDone(true);
 
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);

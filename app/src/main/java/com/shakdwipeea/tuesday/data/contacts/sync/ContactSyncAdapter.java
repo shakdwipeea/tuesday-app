@@ -4,15 +4,14 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.api.ApiFactory;
 import com.shakdwipeea.tuesday.data.contacts.AddContactService;
@@ -91,46 +90,55 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
                         .toBlocking()
                         .single();
 
-                Log.d(TAG, "onPerformSync: User for phone " + phoneNumber +
-                        " name " + contact.name + " data is " + user);
-
                 if (user != null) {
-                    Log.d(TAG, "onPerformSync: User was not null");
 
-                    if (!contactsRepo.isContactPresent(user)) {
-                        Log.d(TAG, "onPerformSync: contact not present hence adding");
-                        try {
+                    try {
+                        FirebaseService firebaseService = new FirebaseService(user.uid);
+                        User firebaseInfo = firebaseService.getProfile()
+                                .toBlocking()
+                                .single();
+
+                        user.pic = firebaseInfo.pic;
+
+                        Log.d(TAG, "onPerformSync: User for phone " + phoneNumber +
+                                " name " + contact.name + " data is " + user);
+
+                        if (!contactsRepo.isContactPresent(user)) {
+                            Log.d(TAG, "onPerformSync: contact not present hence adding");
                             addContactService.addContact(user);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        } catch (OperationApplicationException e) {
-                            e.printStackTrace();
                         }
+
+                        setupTag(user);
+
+                        firebaseService.addSavedBy(firebaseUser.getUid());
+
+                    } catch (Exception e) {
+                        FirebaseCrash.report(e);
+                        e.printStackTrace();
                     }
-
-                    Map<String, String> defaultFriendValue = new HashMap<>();
-                    defaultFriendValue.put(user.uid, "true");
-
-                    userService.getTuesContactsWithTags()
-                            .defaultIfEmpty(defaultFriendValue)
-                            .first()
-                            .forEach(friendList -> {
-                                Log.d(TAG, "onPerformSync: FriendList is " + friendList.size());
-
-                                String savedTag = friendList.get(user.uid);
-                                if (TextUtils.isEmpty(savedTag))
-                                    savedTag = "true";
-
-                                userService.saveTuesContacts(user.uid, savedTag);
-                            });
-
-                    FirebaseService firebaseService = new FirebaseService(user.getUid());
-                    firebaseService.addSavedBy(firebaseUser.getUid());
                 }
 
             }
         }
 
         Log.d(TAG, "onPerformSync: ended");
+    }
+
+    private void setupTag(User user) {
+        Map<String, String> defaultFriendValue = new HashMap<>();
+        defaultFriendValue.put(user.uid, "true");
+
+        userService.getTuesContactsWithTags()
+                .defaultIfEmpty(defaultFriendValue)
+                .first()
+                .forEach(friendList -> {
+                    Log.d(TAG, "onPerformSync: FriendList is " + friendList.size());
+
+                    String savedTag = friendList.get(user.uid);
+                    if (TextUtils.isEmpty(savedTag))
+                        savedTag = "true";
+
+                    userService.saveTuesContacts(user.uid, savedTag);
+                });
     }
 }
