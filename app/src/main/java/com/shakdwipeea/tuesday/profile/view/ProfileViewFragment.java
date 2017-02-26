@@ -75,6 +75,8 @@ public class ProfileViewFragment extends Fragment
 
     private Provider curProvider;
 
+    private String loggedInUserId;
+
     public ProfileViewFragment() {
         // Required empty public constructor
     }
@@ -126,6 +128,7 @@ public class ProfileViewFragment extends Fragment
         permViewUtil = new PermViewUtil(binding.getRoot());
 
         presenter = new ProfilePresenter(this);
+        loggedInUserId = presenter.getLoggedInUserId();
         binding.setHandler(presenter);
 
         pictureUtil = new ProfilePictureUtil(presenter);
@@ -168,7 +171,10 @@ public class ProfileViewFragment extends Fragment
         LinearLayoutManager callListLayoutManager = new LinearLayoutManager(getContext());
 
         callListAdapter = new SingleViewAdapter<>(R.layout.call_item,
-                (providerDetails) -> new CallItemViewModel(permViewUtil, this));
+                (providerDetails) -> {
+                    return new CallItemViewModel(permViewUtil, this, providerDetails,
+                            loggedInUserId, presenter, user.uid.equals(loggedInUserId));
+                });
 
         binding.callDetailList.setLayoutManager(callListLayoutManager);
         binding.callDetailList.setAdapter(callListAdapter);
@@ -178,7 +184,8 @@ public class ProfileViewFragment extends Fragment
         LinearLayoutManager mailListLayoutManager = new LinearLayoutManager(getContext());
 
         mailListAdapter = new SingleViewAdapter<>(R.layout.mail_item,
-                item -> new MailItemViewModel());
+                item -> new MailItemViewModel(item, loggedInUserId, presenter,
+                        user.uid.equals(loggedInUserId)));
 
         binding.emailDetailList.setLayoutManager(mailListLayoutManager);
         binding.emailDetailList.setAdapter(mailListAdapter);
@@ -393,8 +400,7 @@ public class ProfileViewFragment extends Fragment
                     .load(url)
                     .into(binding.profilePic);
         } else {
-            Util.displayProfilePic(getContext(), binding.profilePic,
-                    binding.placeholderProfilePic, user);
+            Util.displayProfilePic(getContext(), binding.profilePic, user);
         }
     }
 

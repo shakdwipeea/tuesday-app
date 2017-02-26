@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -19,9 +20,8 @@
             type="com.shakdwipeea.tuesday.home.notification.NotificationItemViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_margin="10dp"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{(notificationView) -> actionHandler.openProfile(notificationView, contact)}">
@@ -32,13 +32,9 @@
             android:layout_height="56dp"
             />
 
-        <ImageView
-            android:id="@+id/placeholder_profile_pic"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:visibility="gone"/>
-
         <LinearLayout
+            android:layout_toRightOf="@id/profile_pic"
+            android:layout_alignParentTop="true"
             android:layout_marginLeft="16dp"
             android:orientation="vertical"
             android:layout_width="wrap_content"
@@ -47,6 +43,7 @@
             <TextView
                 android:id="@+id/name"
                 android:textSize="20sp"
+                tools:text="Akash  "
                 android:text="@{contact.name}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -55,33 +52,53 @@
                 android:id="@+id/phone_number"
                 android:textSize="20sp"
                 android:text="@{provider.name}"
+                tools:text="Work"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="right"
+            android:gravity="right"
             android:id="@+id/action_button_holder"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <ImageButton
+            <ImageView
                 android:src="@drawable/ic_check_black_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:tint="@android:color/holo_orange_dark"
+                android:padding="8dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                android:layout_gravity="center_vertical"
                 android:onClick="@{() -> viewModel.handleApproval(true, provider, contact)}"
-                />
-
-            <ImageButton
-                android:src="@drawable/ic_clear_black_24dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <View
+                android:layout_margin="8dp"
+                android:background="#000"
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:scaleX="1"
+                android:scaleY="1"
+                android:layout_gravity="center_vertical"
+                android:tint="@android:color/holo_red_dark"
+                android:src="@drawable/ic_clear_black_24dp"
+                android:padding="8dp"
                 android:onClick="@{() -> viewModel.handleApproval(false, provider, contact)}"
-                />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </layout>

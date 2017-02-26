@@ -55,6 +55,10 @@ public class FirebaseService {
                                 .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY);
                         providerDetails.requestedBy = RxFirebase.getKeys(requestedByData);
 
+                        DataSnapshot accessedByData = snap
+                                .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY);
+                        providerDetails.accessibleBy = RxFirebase.getKeys(accessedByData);
+
                         String providerName = snap.getKey();
 
                         // extract provider name in other cases
@@ -144,6 +148,23 @@ public class FirebaseService {
         return RxFirebase.getChildKeys(reference);
     }
 
+    /**
+     * Add requested by in case of special providers: (i.e Call & Email)
+     *
+     * @param providerName   Provider name
+     * @param detailType     Detail type
+     * @param requestedByUid Uid of user asking for permission
+     */
+    public void addRequestedBy(String providerName, String detailType, String requestedByUid) {
+        addRequestedBy(ProviderNames.getProviderKey(providerName, detailType), requestedByUid);
+    }
+
+    /**
+     * Add requested request to the database snapshot of other user
+     *
+     * @param providerName   Provider name for which access was requested
+     * @param requestedByUid Uid of user asking for permission
+     */
     public void addRequestedBy(String providerName, String requestedByUid) {
         userRef.child(User.UserNode.PROVIDERS)
                 .child(providerName)

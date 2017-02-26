@@ -51,6 +51,11 @@ public class NotificationAdapter extends
         notifyDataSetChanged();
     }
 
+    public void removeItem(int position) {
+        notificationDetails.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public NotificationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -72,11 +77,11 @@ public class NotificationAdapter extends
         holder.binding.setProvider(notificationDetail.provider);
         holder.binding.setContact(notificationDetail.user);
         holder.binding.setActionHandler(new ContactItemActionHandler());
-        Util.displayProfilePic(context, holder.binding.profilePic,
-                holder.binding.placeholderProfilePic, notificationDetail.user);
+        Util.displayProfilePic(context, holder.binding.profilePic, notificationDetail.user);
 
         if (actionRequired) {
-            holder.binding.setViewModel(new NotificationItemViewModel());
+            // TODO: 26/2/17 move action listener to oncreate
+            holder.binding.setViewModel(new NotificationItemViewModel(this, position));
             holder.binding.actionButtonHolder.setVisibility(View.VISIBLE);
         } else {
             holder.binding.actionButtonHolder.setVisibility(View.GONE);

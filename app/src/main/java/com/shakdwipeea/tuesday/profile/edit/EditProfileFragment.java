@@ -25,6 +25,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -75,6 +77,7 @@ public class EditProfileFragment extends Fragment
     CallbackManager fbCallbackManager;
 
     EditProfileContract.SaveImportData saveImportData;
+    private User user;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -201,6 +204,7 @@ public class EditProfileFragment extends Fragment
     }
 
     public void displayUser(User user) {
+        this.user = user;
         binding.nameInput.setText(user.name);
 
         if (user.pic != null) {
@@ -331,7 +335,12 @@ public class EditProfileFragment extends Fragment
                     .load(url)
                     .into(binding.profilePic);
         } else {
-            // TODO: 17-11-2016 display text drawable from first letter
+            binding.profilePic.setImageDrawable(
+                    TextDrawable.builder()
+                            .buildRound(
+                                    String.valueOf(user.name.toUpperCase().charAt(0)),
+                                    ColorGenerator.MATERIAL.getColor(user.name))
+            );
         }
     }
 

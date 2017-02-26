@@ -10,8 +10,12 @@ import com.shakdwipeea.tuesday.data.firebase.UserService;
 
 public class NotificationItemViewModel {
     private UserService userService;
+    private NotificationAdapter notificationAdapter;
+    private int position;
 
-    public NotificationItemViewModel() {
+    public NotificationItemViewModel(NotificationAdapter notificationAdapter, int position) {
+        this.notificationAdapter = notificationAdapter;
+        this.position = position;
         userService = new UserService();
     }
 
@@ -27,6 +31,8 @@ public class NotificationItemViewModel {
             userService.approveRequest(provider, user.uid);
         else
             userService.rejectRequest(provider, user.uid);
+
+        notificationAdapter.removeItem(position);
     }
 
 }

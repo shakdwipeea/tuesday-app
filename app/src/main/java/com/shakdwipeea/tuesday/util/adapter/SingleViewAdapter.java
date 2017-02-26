@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.shakdwipeea.tuesday.BR;
-import com.shakdwipeea.tuesday.data.entities.user.Provider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,18 +76,6 @@ public class SingleViewAdapter<ItemType,
     @Override
     public void onBindViewHolder(SingleViewHolder<ViewBindingType> holder, int position) {
         Log.d(TAG, "onBindViewHolder: Here " + position + " " + itemList.get(position)) ;
-
-//
-//        try {
-//            if (presenter != null) {
-//                itemViewModel = this.viewModel
-//                        .getDeclaredConstructor(new Class[]{presenterTypeClass}).newInstance();
-//            } else {
-//                itemViewModel = this.viewModel.newInstance();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
         if (itemViewModelFactory != null) {
             ItemViewModel<ViewBindingType> itemViewModel = itemViewModelFactory

@@ -82,7 +82,8 @@ public class EditProfilePresenter implements EditProfileContract.Presenter,
     public void subscribe() {
         loadProviders();
 
-        User user = new User();
+        User user;
+        user = new User();
         user.name = this.user.getDisplayName();
         user.uid = this.user.getUid();
 

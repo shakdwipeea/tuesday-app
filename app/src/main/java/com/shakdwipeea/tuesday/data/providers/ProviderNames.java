@@ -2,9 +2,6 @@ package com.shakdwipeea.tuesday.data.providers;
 
 import com.shakdwipeea.tuesday.data.entities.user.Provider;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by akash on 21/1/17.
  */
@@ -33,6 +30,22 @@ public class ProviderNames {
 
     public static String getProviderKey(Provider provider) {
         return getProviderKey(provider.name, provider.providerDetails.detailType);
+    }
+
+    public static boolean isSpecialProvider(String providerName) {
+        return providerName.equals(ProviderNames.Call) ||
+                providerName.equals(ProviderNames.Email);
+    }
+
+    public static String getDbProviderName(Provider provider) {
+        String providerName = provider.name;
+
+        if (ProviderNames.isSpecialProvider(provider.name)) {
+            providerName = ProviderNames.getProviderKey(provider.name,
+                    provider.providerDetails.detailType);
+        }
+
+        return providerName;
     }
 
     /**

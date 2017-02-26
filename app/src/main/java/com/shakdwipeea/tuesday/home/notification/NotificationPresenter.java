@@ -43,6 +43,7 @@ public class NotificationPresenter implements NotificationContract.Presenter {
 
     private void subscribeRequestNotifications() {
         Subscription subscribe = userService.getProvider()
+                .doOnNext(providers -> notificationView.clearRequestNotification())
                 .doOnNext(this::getRequestNotifications)
                 .compose(Util.applySchedulers())
                 .subscribe(
@@ -67,7 +68,6 @@ public class NotificationPresenter implements NotificationContract.Presenter {
                 .doOnNext(notificationDetail ->
                         notificationView.addRequestNotification(notificationDetail))
                 .compose(Util.applySchedulers())
-                .doOnSubscribe(() -> notificationView.clearRequestNotification())
                 .subscribe(
                         notificationDetail -> {},
                         Throwable::printStackTrace

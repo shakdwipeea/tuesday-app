@@ -51,13 +51,13 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
         super(profileView);
 
         this.profileView = profileView;
+        loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         userService = new UserService();
         addContactService = new AddContactService(profileView.getContext());
     }
 
     @Override
     public void subscribe(User user) {
-        loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         firebaseService = new FirebaseService(user.uid);
         //setupProfile();
         //getTuesID();
@@ -152,6 +152,10 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                 );
     }
 
+    @Override
+    public String getLoggedInUserId() {
+        return loggedInUser.getUid();
+    }
 
     public void toggleContact() {
 //        if (!profileView.hasContactPermission()) {
@@ -241,7 +245,6 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                         profileView.displayProviderInfo(provider, getProviderDetails(provider ));
                     }
                 });
-
     }
 
     private String getProviderDetails(Provider provider) {
@@ -258,6 +261,16 @@ public class ProfilePresenter extends ProfilePicturePresenter implements Profile
                 break;
         }
         return providerDetail;
+    }
+
+    /**
+     * Request access for special providers
+     *
+     * @param providerName Provider name for which requesting access
+     * @param detailType   Detail type
+     */
+    public void requestSpAccess(String providerName, String detailType) {
+        firebaseService.addRequestedBy(providerName, detailType, loggedInUser.getUid());
     }
 
     public void requestAccess(Provider provider) {

@@ -2,6 +2,8 @@
 <layout>
 
     <data>
+
+        <import type="android.view.View" />
         <variable
             name="item"
             type="com.shakdwipeea.tuesday.data.entities.user.ProviderDetails" />
@@ -29,13 +31,27 @@
 
             <TextView
                 android:id="@+id/email"
-                tools:text="ashakdwipeea@gmail.com"
+                andtext="ashakdwipeea@gmail.com"
                 android:text="@{item.username}"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:padding="8dp"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+
+            <Button
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:id="@+id/request_access"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_rounded"
+                android:gravity="center"
+                android:text="@string/request_access"
+                android:textColor="#ff439f"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/email_type"

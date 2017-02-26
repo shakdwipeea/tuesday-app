@@ -218,12 +218,15 @@ public class ProfilePicturePresenter {
                 .setPhotoUri(null)
                 .build();
 
+        userService.updateProfilePicDatabase(null);
+
         pictureView.setProgressBar(true);
         userService.updateProfile(request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> {
                     //setupProfile();
+                    pictureView.displayProfilePic("");
                     pictureView.setProgressBar(false);
                 })
                 .subscribe(
@@ -262,6 +265,8 @@ public class ProfilePicturePresenter {
         UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(Uri.parse(url))
                 .build();
+
+        userService.updateProfilePicDatabase(url);
 
         userService.updateProfile(profileChangeRequest)
                 .subscribeOn(Schedulers.newThread())

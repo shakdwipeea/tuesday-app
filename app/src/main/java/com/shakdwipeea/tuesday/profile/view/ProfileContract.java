@@ -48,5 +48,7 @@ public interface ProfileContract {
         void displayProviderDetails(Provider provider);
         void toggleContact();
         void changeName(String name);
+
+        String getLoggedInUserId();
     }
 }

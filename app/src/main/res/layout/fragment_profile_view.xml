@@ -39,17 +39,6 @@
                 android:src="@drawable/ic_users_11"
                 app:layout_collapseParallaxMultiplier="0.7" />
 
-            <ImageView
-                android:id="@+id/placeholder_profile_pic"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_gravity="center_horizontal"
-                android:contentDescription="Profile picture"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_users_11"
-                android:visibility="gone"
-                app:layout_collapseParallaxMultiplier="0.7" />
-
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"

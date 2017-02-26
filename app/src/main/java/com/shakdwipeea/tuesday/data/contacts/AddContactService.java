@@ -4,14 +4,19 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.shakdwipeea.tuesday.data.Preferences;
 import com.shakdwipeea.tuesday.data.contacts.sync.SyncUtils;
 import com.shakdwipeea.tuesday.data.entities.user.User;
 
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -146,6 +151,35 @@ public class AddContactService {
 //                    .withValue(ContactsContract.CommonDataKinds.Organization.TYPE, ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
 //                    .build());
 //        }
+
+
+        //--------------------------------------------------------Photo
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        try {
+            URL url = new URL(user.pic);
+            Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            if (image != null) {    // If an image is selected successfully
+                image.compress(Bitmap.CompressFormat.PNG, 75, stream);
+
+                // Adding insert operation to operations list
+                // to insert Photo in the table ContactsContract.Data
+                ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.IS_SUPER_PRIMARY, 1)
+                        .withValue(ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO,
+                                stream.toByteArray())
+                        .build());
+
+                stream.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+        }
+
         return ops;
     }
 }

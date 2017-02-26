@@ -188,12 +188,12 @@ public class UserService {
     }
 
     public void approveRequest(Provider provider, String friendUid) {
-        removeRequestedBy(provider.name, friendUid);
-        addAccessedBy(provider.name, friendUid);
+        removeRequestedBy(provider, friendUid);
+        addAccessedBy(provider, friendUid);
 
         // Add access granted info
         GrantedToDetails details = new GrantedToDetails();
-        details.providerName = provider.name;
+        details.providerName = ProviderNames.getProviderKey(provider);
         details.grantedByuid = user.getUid();
 
         FirebaseService firebaseService = new FirebaseService(friendUid);
@@ -201,25 +201,31 @@ public class UserService {
     }
 
     public void rejectRequest(Provider provider, String uid) {
-        removeRequestedBy(provider.name, uid);
-        removeAccessedBy(provider.name, uid);
+        removeRequestedBy(provider, uid);
+        removeAccessedBy(provider, uid);
     }
 
-    public void removeAccessedBy(String providerName, String friendUid) {
+    public void removeAccessedBy(Provider provider, String friendUid) {
+        String providerName = ProviderNames.getDbProviderName(provider);
+
         profileRef.child(User.UserNode.PROVIDERS)
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
                 .child(friendUid).removeValue();
     }
 
-    public void removeRequestedBy(String providerName, String uid) {
+    public void removeRequestedBy(Provider provider, String uid) {
+        String providerName = ProviderNames.getDbProviderName(provider);
+
         profileRef.child(User.UserNode.PROVIDERS)
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.REQUESTED_BY_KEY)
                 .child(uid).removeValue();
     }
 
-    public void addAccessedBy(String providerName, String friendUid) {
+    public void addAccessedBy(Provider provider, String friendUid) {
+        String providerName = ProviderNames.getDbProviderName(provider);
+
         profileRef.child(User.UserNode.PROVIDERS)
                 .child(providerName)
                 .child(ProviderDetails.ProviderDetailNode.ACCESSIBLE_BY_KEY)
