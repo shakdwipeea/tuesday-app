@@ -1,61 +1,64 @@
 package com.shakdwipeea.tuesday;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 
-import com.codemybrainsout.onboarder.AhoyOnboarderActivity;
-import com.codemybrainsout.onboarder.AhoyOnboarderCard;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntro2Fragment;
 import com.shakdwipeea.tuesday.auth.AuthActivity;
-import com.shakdwipeea.tuesday.data.Preferences;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class IntroActivity extends AhoyOnboarderActivity {
-    List<AhoyOnboarderCard> onboarderPages;
+public class IntroActivity extends AppIntro {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onboarderPages = new ArrayList<>();
+
+        int white = ContextCompat.getColor(this, android.R.color.white);
+        int black = ContextCompat.getColor(this, android.R.color.black);
+        int gray = ContextCompat.getColor(this, R.color.tw__light_gray);
 
         // Create your first page
-        AhoyOnboarderCard AhoyOnboarderCard1 = new AhoyOnboarderCard("Title 1", "Description 1", R.drawable.transfere);
-        AhoyOnboarderCard AhoyOnboarderCard2 = new AhoyOnboarderCard("Go back", "Go ahead", R.drawable.updartee);
-        AhoyOnboarderCard AhoyOnboarderCard3 = new AhoyOnboarderCard("Go back", "Go ahead", R.drawable.sharee);
+        addSlide(AppIntro2Fragment.newInstance("Too many IDs to share?",
+                "Fill in all account IDs in your Tuesday's profile & and just share your registered " +
+                        "phone number to your friends", R.drawable.sharee, white, black, black));
 
-        // You can define title and description colors (by default white)
-        AhoyOnboarderCard1.setTitleColor(R.color.black);
-        AhoyOnboarderCard1.setDescriptionColor(R.color.black);
+        addSlide(AppIntro2Fragment.newInstance("Changing your number?",
+                "Just update your new number in Tuesday's profile & all your friend's phonebook " +
+                        "will be updated automatically", R.drawable.updartee, white, black, black));
 
-        AhoyOnboarderCard2.setTitleColor(R.color.black);
-        AhoyOnboarderCard2.setDescriptionColor(R.color.black);
+        addSlide(AppIntro2Fragment.newInstance("Transfer contacts to new phone?",
+                "Just install TUESDAY in new phone & TA-DA all your contacts will appear in an " +
+                        "instant in your new phone", R.drawable.transfere, white, black, black));
 
-        AhoyOnboarderCard3.setTitleColor(R.color.black);
-        AhoyOnboarderCard3.setDescriptionColor(R.color.black);
 
-        // Don't forget to set background color for your page
-        AhoyOnboarderCard1.setBackgroundColor(R.color.white);
-        AhoyOnboarderCard2.setBackgroundColor(R.color.white);
-        AhoyOnboarderCard3.setBackgroundColor(R.color.white);
+        // Hide Skip/Done button.
+        showSkipButton(false);
+        setProgressButtonEnabled(true);
 
-        // Add your pages to the list
-        onboarderPages.add(AhoyOnboarderCard1);
-        onboarderPages.add(AhoyOnboarderCard2);
-        onboarderPages.add(AhoyOnboarderCard3);
+        setColorDoneText(black);
 
-        // And pass your pages to 'setOnboardPagesReady' method
-        setOnboardPages(onboarderPages);
-        setGradientBackground();
+        setDoneText("Start Tuesday");
 
+        setIndicatorColor(black, gray);
+        setNextArrowColor(black);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            setImmersive(true);
+        }
+
+        setZoomAnimation();
     }
 
     @Override
-    public void onFinishButtonPressed() {
-        Preferences.getInstance(this).setOnboardingDone(true);
+    public void onDonePressed(Fragment currentFragment) {
+        super.onDonePressed(currentFragment);
 
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
         finish();
     }
+
 }
